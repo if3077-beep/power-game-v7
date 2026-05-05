@@ -1,0 +1,71 @@
+- generic [ref=e4]:
+  - heading "未来推演 告诉我你的处境，我用三条路径推演你的未来" [level=1] [ref=e9]:
+    - generic [ref=e10]: 未来推演
+    - generic [ref=e11]: 告诉我你的处境，我用三条路径推演你的未来
+  - generic [ref=e12]:
+    - generic [ref=e13]: 💡
+    - generic [ref=e14]:
+      - generic [ref=e15]: 人生没有白走的路，每一步都算数。
+      - generic [ref=e16]: — 史铁生
+  - generic [ref=e18]:
+    - button "💼 职业十字路口 稳定 vs 激情" [ref=e19] [cursor=pointer]:
+      - generic [ref=e20]: 💼
+      - generic [ref=e21]: 职业十字路口
+      - generic [ref=e22]: 稳定 vs 激情
+    - button "💔 感情僵局 冷战第三天" [ref=e23] [cursor=pointer]:
+      - generic [ref=e24]: 💔
+      - generic [ref=e25]: 感情僵局
+      - generic [ref=e26]: 冷战第三天
+    - button "🏢 职场风暴 裁员传闻四起" [ref=e27] [cursor=pointer]:
+      - generic [ref=e28]: 🏢
+      - generic [ref=e29]: 职场风暴
+      - generic [ref=e30]: 裁员传闻四起
+    - button "🚀 创业抉择 梦想 vs 现实" [ref=e31] [cursor=pointer]:
+      - generic [ref=e32]: 🚀
+      - generic [ref=e33]: 创业抉择
+      - generic [ref=e34]: 梦想 vs 现实
+    - button "🤖 AI 时代焦虑 会被取代吗" [ref=e35] [cursor=pointer]:
+      - generic [ref=e36]: 🤖
+      - generic [ref=e37]: AI 时代焦虑
+      - generic [ref=e38]: 会被取代吗
+    - button "📉 投资焦虑 割肉还是坚守" [ref=e39] [cursor=pointer]:
+      - generic [ref=e40]: 📉
+      - generic [ref=e41]: 投资焦虑
+      - generic [ref=e42]: 割肉还是坚守
+    - button "📚 高考倒计时 全家总动员" [ref=e43] [cursor=pointer]:
+      - generic [ref=e44]: 📚
+      - generic [ref=e45]: 高考倒计时
+      - generic [ref=e46]: 全家总动员
+    - button "✈️ 城市迁徙 新城市新生活" [ref=e47] [cursor=pointer]:
+      - generic [ref=e48]: ✈️
+      - generic [ref=e49]: 城市迁徙
+      - generic [ref=e50]: 新城市新生活
+    - button "❤️‍🩹 健康警报 体检异常" [ref=e51] [cursor=pointer]:
+      - generic [ref=e52]: ❤️‍🩹
+      - generic [ref=e53]: 健康警报
+      - generic [ref=e54]: 体检异常
+    - button "📱 副业探索 第二曲线" [ref=e55] [cursor=pointer]:
+      - generic [ref=e56]: 📱
+      - generic [ref=e57]: 副业探索
+      - generic [ref=e58]: 第二曲线
+    - button "💳 债务漩涡 越还越多" [ref=e59] [cursor=pointer]:
+      - generic [ref=e60]: 💳
+      - generic [ref=e61]: 债务漩涡
+      - generic [ref=e62]: 越还越多
+    - button "👨‍👩‍👧 家庭冲突 催婚风暴" [ref=e63] [cursor=pointer]:
+      - generic [ref=e64]: 👨‍👩‍👧
+      - generic [ref=e65]: 家庭冲突
+      - generic [ref=e66]: 催婚风暴
+  - generic [ref=e67]:
+    - textbox "试着这样写：我在考虑要不要接手家族生意，但怕做不好；或者：最近总失眠，工作压力大到喘不过气..." [ref=e69]
+    - generic [ref=e70]:
+      - generic [ref=e71]:
+        - button "😰 焦虑" [ref=e72] [cursor=pointer]
+        - button "😤 愤怒" [ref=e73] [cursor=pointer]
+        - button "😢 难过" [ref=e74] [cursor=pointer]
+        - button "😵‍💫 迷茫" [ref=e75] [cursor=pointer]
+        - button "🙂 期待" [ref=e76] [cursor=pointer]
+        - button "😨 恐惧" [ref=e77] [cursor=pointer]
+        - button "😐 平静" [ref=e78] [cursor=pointer]
+        - button "🤩 兴奋" [ref=e79] [cursor=pointer]
+      - button "推演未来" [disabled] [ref=e80]: 推演未来

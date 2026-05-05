@@ -1,0 +1,3 @@
+[   14045ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://api.quotable.io/quotes/random?limit=1:0
+[   77020ms] [ERROR] Access to fetch at 'https://zenquotes.io/api/random' from origin 'http://localhost:8082' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:8082/:0
+[   77020ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://zenquotes.io/api/random:0

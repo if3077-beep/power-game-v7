@@ -1,0 +1,74 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e4]:
+      - link "i导航解析器" [ref=e5] [cursor=pointer]:
+        - /url: ./
+        - generic [ref=e6]: i导航解析器
+      - generic [ref=e7]:
+        - list
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - button "批量解析 " [ref=e10] [cursor=pointer]
+          - listitem [ref=e11]:
+            - button "文案提取 " [ref=e12] [cursor=pointer]
+          - listitem [ref=e13]:
+            - button "视频下载 " [ref=e14] [cursor=pointer]
+          - listitem [ref=e15]:
+            - link "常见问题" [ref=e16] [cursor=pointer]:
+              - /url: /faq.html
+          - listitem [ref=e17]:
+            - link "使用教程" [ref=e18] [cursor=pointer]:
+              - /url: /tutorial.html
+          - listitem [ref=e19]:
+            - link "建议反馈" [ref=e20] [cursor=pointer]:
+              - /url: /suggestion.html
+          - text: 
+  - generic [ref=e21]:
+    - generic [ref=e22]:
+      - generic [ref=e25]:
+        - heading "i导航解析器" [level=1] [ref=e26]
+        - paragraph [ref=e27]: 支持100+主流热门平台，真正免费、专注体验、高效下载
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - generic: 
+          - textbox "Recipient's username" [ref=e33]:
+            - /placeholder: 请粘贴单条视频分享链接
+          - generic [ref=e35] [cursor=pointer]: 
+        - button "单链接解析" [ref=e36] [cursor=pointer]
+      - generic [ref=e37]:
+        - heading "使用方法" [level=2] [ref=e38]
+        - paragraph [ref=e39]: 按照以下简单步骤解析去水印，无水印下载保存到电脑或手机相册
+        - generic [ref=e40]:
+          - generic [ref=e42]:
+            - generic [ref=e43]: "1"
+            - generic [ref=e44]: 复制视频链接
+            - generic [ref=e45]: 在视频APP里复制视频链接
+          - generic [ref=e47]:
+            - generic [ref=e48]: "2"
+            - generic [ref=e49]: 粘贴链接并解析
+            - generic [ref=e50]: 将复制的链接粘贴到输入框，点击解析
+          - generic [ref=e52]:
+            - generic [ref=e53]: "3"
+            - generic [ref=e54]: 下载无水印内容
+            - generic [ref=e55]: 处理完成后即可下载无水印视频或图片
+      - generic [ref=e56]:
+        - heading "常见问题" [level=2] [ref=e57]
+        - generic [ref=e58]:
+          - generic [ref=e60] [cursor=pointer]:
+            - text: 如何使用i导航解析器下载保存无水印视频？
+            - generic [ref=e61]: ▼
+          - generic [ref=e63] [cursor=pointer]:
+            - text: 解析成功后，点击下载按钮直接跳转到视频播放页，如何下载该视频到本地？
+            - generic [ref=e64]: ▼
+          - generic [ref=e66] [cursor=pointer]:
+            - text: 可以在哪些设备使用i导航解析器网站？
+            - generic [ref=e67]: ▼
+          - generic [ref=e69] [cursor=pointer]:
+            - text: 下载成功后，存在部分视频或图片打不开怎么办？
+            - generic [ref=e70]: ▼
+          - generic [ref=e72] [cursor=pointer]:
+            - text: 在使用过程中，碰到链接“解析失败”怎么办？
+            - generic [ref=e73]: ▼
+    - contentinfo [ref=e74]:
+      - paragraph [ref=e76]: 版权说明：本站不存储任何网站的视频内容，涉及的视频和图片归相关网站及作者所有，本网站仅供个人学习使用 Copyright @2025 i导航解析器

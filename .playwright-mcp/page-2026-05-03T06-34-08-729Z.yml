@@ -1,0 +1,16 @@
+- generic [active] [ref=e1]:
+  - status [ref=e4]:
+    - generic [ref=e5]: Loading...
+  - contentinfo [ref=e6]:
+    - text: Powered by
+    - link "PyWebIO" [ref=e7] [cursor=pointer]:
+      - /url: https://www.pyweb.io/
+  - generic [ref=e8] [cursor=pointer]: 看板娘
+  - generic [ref=e12]:
+    - img [ref=e14] [cursor=pointer]
+    - img [ref=e17] [cursor=pointer]
+    - img [ref=e20] [cursor=pointer]
+    - img [ref=e23] [cursor=pointer]
+    - img [ref=e26] [cursor=pointer]
+    - img [ref=e29] [cursor=pointer]
+    - img [ref=e32] [cursor=pointer]

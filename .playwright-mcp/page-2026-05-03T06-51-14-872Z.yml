@@ -1,0 +1,260 @@
+- generic [active] [ref=e1]:
+  - button "开启读屏标签" [ref=e2]
+  - generic: 读屏标签已关闭
+  - generic [ref=e4]:
+    - generic [ref=e6]:
+      - link [ref=e7] [cursor=pointer]:
+        - /url: //www.douyin.com/jingxuan
+      - generic [ref=e13]:
+        - generic [ref=e15]:
+          - link "精选" [ref=e19] [cursor=pointer]:
+            - /url: https://www.douyin.com/jingxuan?from_nav=1
+            - generic [ref=e22]: 精选
+          - link "推荐" [ref=e26] [cursor=pointer]:
+            - /url: https://www.douyin.com/?recommend=1&from_nav=1
+            - generic [ref=e29]: 推荐
+          - link "搜索" [ref=e33] [cursor=pointer]:
+            - /url: https://www.douyin.com/aisearch?from_nav=1
+            - generic [ref=e36]: 搜索
+          - link "关注" [ref=e40] [cursor=pointer]:
+            - /url: https://www.douyin.com/follow?from_nav=1
+            - generic [ref=e43]: 关注
+          - link "朋友" [ref=e48] [cursor=pointer]:
+            - /url: https://www.douyin.com/friend?from_nav=1
+            - generic [ref=e51]: 朋友
+          - link "我的" [ref=e55] [cursor=pointer]:
+            - /url: https://www.douyin.com/user/self?from_nav=1
+            - generic [ref=e58]: 我的
+          - link "直播" [ref=e64] [cursor=pointer]:
+            - /url: https://live.douyin.com/?from_nav=1
+            - generic [ref=e67]: 直播
+          - link "放映厅" [ref=e71] [cursor=pointer]:
+            - /url: https://www.douyin.com/vs?from_nav=1
+            - generic [ref=e74]: 放映厅
+          - link "短剧" [ref=e78] [cursor=pointer]:
+            - /url: https://www.douyin.com/series?from_nav=1
+            - generic [ref=e81]: 短剧
+          - link "小游戏" [ref=e85] [cursor=pointer]:
+            - /url: https://www.douyin.com/microgame?from_nav=1
+            - generic [ref=e88]: 小游戏
+        - generic [ref=e91]:
+          - img [ref=e94] [cursor=pointer]
+          - img [ref=e98] [cursor=pointer]
+          - img [ref=e102] [cursor=pointer]
+    - generic [ref=e104]:
+      - generic [ref=e105]:
+        - banner [ref=e107]:
+          - generic [ref=e109]:
+            - generic [ref=e113]:
+              - textbox "搜索你感兴趣的内容" [ref=e115]
+              - button "搜索" [ref=e117] [cursor=pointer]:
+                - img [ref=e118]
+                - generic [ref=e120]: 搜索
+            - generic [ref=e124]:
+              - generic [ref=e126] [cursor=pointer]:
+                - img [ref=e128]:
+                  - img [ref=e129]
+                - paragraph [ref=e131]: 充钻石
+              - link "客户端" [ref=e136] [cursor=pointer]:
+                - /url: ""
+                - generic [ref=e138]:
+                  - img [ref=e140]:
+                    - img [ref=e141]
+                  - paragraph [ref=e144]: 客户端
+              - generic [ref=e146] [cursor=pointer]:
+                - img [ref=e148]:
+                  - img [ref=e149]
+                - paragraph [ref=e151]: 壁纸
+              - list [ref=e152]:
+                - generic [ref=e155] [cursor=pointer]:
+                  - img [ref=e157]:
+                    - img [ref=e158]
+                  - paragraph [ref=e161]: 通知
+              - generic [ref=e165] [cursor=pointer]:
+                - img [ref=e167]:
+                  - img [ref=e168]
+                - paragraph [ref=e170]: 投稿
+              - link [ref=e173] [cursor=pointer]:
+                - /url: //www.douyin.com/user/self
+                - listitem [ref=e174]
+        - generic [ref=e177]:
+          - generic [ref=e179] [cursor=pointer]:
+            - img [ref=e181]
+            - img [ref=e182]
+          - generic [ref=e184]:
+            - generic [ref=e185]:
+              - generic [ref=e186]: 是否续播手机抖音未看完的视频？
+              - generic [ref=e187]: 可在抖音App【播放设置】中进行关闭
+            - generic [ref=e189] [cursor=pointer]: 继续播放
+          - img [ref=e190] [cursor=pointer]
+      - generic [ref=e193]:
+        - generic [ref=e194]:
+          - generic [ref=e195]:
+            - generic [ref=e197]:
+              - generic [ref=e199]:
+                - generic [ref=e200]:
+                  - img [ref=e203] [cursor=pointer]:
+                    - img [ref=e204]
+                  - generic [ref=e206] [cursor=pointer]:
+                    - generic [ref=e207]: 00:00
+                    - generic [ref=e208]: /
+                    - generic [ref=e209]: 00:00
+                - generic [ref=e214]:
+                  - img [ref=e217] [cursor=pointer]:
+                    - img [ref=e218]
+                  - img [ref=e222] [cursor=pointer]:
+                    - img [ref=e223]
+                  - img [ref=e227] [cursor=pointer]:
+                    - img [ref=e228]
+              - generic [ref=e233]:
+                - img [ref=e235]:
+                  - img [ref=e236]
+                - img [ref=e240]:
+                  - img [ref=e241]
+            - generic [ref=e246]:
+              - 'heading "5月1日(1) #马山 #寻枪 #整活 被洗脑了太有意思了" [level=1] [ref=e249]':
+                - generic [ref=e252]:
+                  - generic [ref=e255]: 5月1日(1)
+                  - link "#马山" [ref=e257] [cursor=pointer]:
+                    - /url: //www.douyin.com/search/%E9%A9%AC%E5%B1%B1?enter_from=video_detail&source=pc_click_hashtag_feed
+                  - link "#寻枪" [ref=e262] [cursor=pointer]:
+                    - /url: //www.douyin.com/search/%E5%AF%BB%E6%9E%AA?enter_from=video_detail&source=pc_click_hashtag_feed
+                  - link "#整活" [ref=e267] [cursor=pointer]:
+                    - /url: //www.douyin.com/search/%E6%95%B4%E6%B4%BB?enter_from=video_detail&source=pc_click_hashtag_feed
+                  - generic [ref=e270]: 被洗脑了太有意思了
+              - generic [ref=e271]:
+                - generic [ref=e272]:
+                  - generic [ref=e273] [cursor=pointer]:
+                    - img [ref=e276]
+                    - generic [ref=e284]: 1.7万
+                  - generic [ref=e285] [cursor=pointer]:
+                    - img [ref=e288]
+                    - generic [ref=e293]: "379"
+                  - generic [ref=e294] [cursor=pointer]:
+                    - img [ref=e297]
+                    - generic [ref=e306]: "560"
+                  - generic [ref=e307] [cursor=pointer]:
+                    - img [ref=e310]
+                    - generic [ref=e315]: "8424"
+                - generic [ref=e316]:
+                  - generic [ref=e317] [cursor=pointer]:
+                    - img [ref=e318]
+                    - generic [ref=e320]: 举报
+                  - generic [ref=e321]: 发布时间：2026-05-01 20:15
+            - generic [ref=e324]:
+              - generic [ref=e325]:
+                - generic [ref=e327]: 全部评论
+                - generic [ref=e330]:
+                  - link "云彪头像" [ref=e332] [cursor=pointer]:
+                    - /url: //www.douyin.com/user/MS4wLjABAAAAPzjIGt7sszNtjJ7acyoNcJZ3xespZa6aQaiYhCNwldOUY8COh5b-u6eP-YRSIKzp
+                    - listitem [ref=e333]:
+                      - img "云彪头像" [ref=e334]
+                  - generic [ref=e337]:
+                    - generic [ref=e338]: 留下你的精彩评论吧
+                    - generic [ref=e340]:
+                      - img [ref=e342] [cursor=pointer]
+                      - img [ref=e345] [cursor=pointer]
+                - generic [ref=e348]:
+                  - generic [ref=e349]: 大家都在搜：
+                  - link "五千块钱" [ref=e353] [cursor=pointer]:
+                    - /url: //www.douyin.com/search/%E4%BA%94%E5%8D%83%E5%9D%97%E9%92%B1?aweme_id=7634895850497461545&enter_from=video_detail&gid=7634895850497461545&source=comment_related_search
+                    - generic [ref=e354]: 五千块钱
+                    - img [ref=e355]
+              - generic [ref=e359]: 加载中
+          - generic [ref=e361]:
+            - generic [ref=e362]:
+              - link "竹子丶" [ref=e365] [cursor=pointer]:
+                - /url: //www.douyin.com/user/MS4wLjABAAAAlT3g8zZ-Fdwbdj2w4Wdw53xijr9S-04JiVocTsWe7N8kKtgiaRnDRJv2wfEyUle-
+                - listitem [ref=e366]:
+                  - img "竹子丶" [ref=e367]
+              - generic [ref=e368]:
+                - link "竹子丶" [ref=e369] [cursor=pointer]:
+                  - /url: //www.douyin.com/user/MS4wLjABAAAAlT3g8zZ-Fdwbdj2w4Wdw53xijr9S-04JiVocTsWe7N8kKtgiaRnDRJv2wfEyUle-
+                  - generic [ref=e375]: 竹子丶
+                - paragraph [ref=e376]: 粉丝79获赞1.7万
+              - button "关注" [ref=e378] [cursor=pointer]:
+                - generic [ref=e379]: 关注
+            - generic [ref=e381]:
+              - heading "推荐视频" [level=2] [ref=e383]
+              - list
+              - img [ref=e386]
+              - img [ref=e397]
+              - img [ref=e408]
+              - img [ref=e419]
+              - img [ref=e430]
+              - img [ref=e441]
+        - contentinfo [ref=e452]:
+          - generic [ref=e453]:
+            - generic [ref=e454]:
+              - link "广告投放" [ref=e456] [cursor=pointer]:
+                - /url: https://www.oceanengine.com/resource/douyin
+              - link "用户服务协议" [ref=e458] [cursor=pointer]:
+                - /url: https://www.douyin.com/agreements/?id=6773906068725565448
+              - link "隐私政策" [ref=e460] [cursor=pointer]:
+                - /url: https://www.douyin.com/agreements/?id=6773901168964798477
+              - link "账号找回" [ref=e462] [cursor=pointer]:
+                - /url: https://www.douyin.com/recovery_account/
+              - link "联系我们" [ref=e464] [cursor=pointer]:
+                - /url: https://www.douyin.com/aboutus/
+              - link "加入我们" [ref=e466] [cursor=pointer]:
+                - /url: https://www.douyin.com/aboutus/
+              - link "营业执照" [ref=e468] [cursor=pointer]:
+                - /url: https://www.douyin.com/business_license/
+              - link "友情链接" [ref=e470] [cursor=pointer]:
+                - /url: https://www.douyin.com/friend_links
+              - link "站点地图" [ref=e472] [cursor=pointer]:
+                - /url: https://www.douyin.com/htmlmap/hotauthor_0_1
+              - link "下载抖音" [ref=e474] [cursor=pointer]:
+                - /url: https://www.douyin.com/downloadpage/pc
+              - link "抖音电商" [ref=e476] [cursor=pointer]:
+                - /url: https://mix.jinritemai.com/falcon/mix_page/index.html
+            - generic [ref=e477]:
+              - link "网络谣言曝光台 ｜" [ref=e479] [cursor=pointer]:
+                - /url: https://www.piyao.org.cn/yybgt/index.htm
+              - link "网上有害信息举报" [ref=e481] [cursor=pointer]:
+                - /url: https://www.12377.cn/
+              - generic [ref=e482]: ｜ 违法和不良信息举报：400-140-2108 ｜ 算法推荐专项举报：sfjubao@bytedance.com ｜ 网络内容从业人员违法违规行为举报：feedback@douyin.com | 体育饭圈专项举报：tyfq@bytedance.com
+            - generic [ref=e483]:
+              - link "京ICP备16016397号-3" [ref=e485] [cursor=pointer]:
+                - /url: https://beian.miit.gov.cn/
+              - link "｜ 广播电视节目制作经营许可证" [ref=e487] [cursor=pointer]:
+                - /url: https://lf3-static.bytednsdoc.com/obj/eden-cn/ild_jw_upfbvk_lm/ljhwZthlaukjlkulzlp/license/jiemuzhizuojingying.jpg
+              - link "｜ 京B2-20170846" [ref=e489] [cursor=pointer]:
+                - /url: https://lf3-static.bytednsdoc.com/obj/eden-cn/ild_jw_upfbvk_lm/ljhwZthlaukjlkulzlp/license/zengzhixuke.jpg
+              - link "｜ 网络文化许可证-京网文-（2025）0181-061号 ｜" [ref=e491] [cursor=pointer]:
+                - /url: https://lf-douyin-pc-web.douyinstatic.com/obj/douyin-pc-web/20250519-201253.jpeg
+              - generic [ref=e492]:
+                - img "icon" [ref=e493]
+                - link "京公网安备 11000002002046号" [ref=e494] [cursor=pointer]:
+                  - /url: http://www.beian.gov.cn/portal/registerSystemInfo
+              - generic [ref=e495]: ｜ 互联网宗教信息服务许可证 京（2025）0000017
+            - generic [ref=e496]:
+              - generic [ref=e498]: 热门：
+              - link "抖音游戏" [ref=e500] [cursor=pointer]:
+                - /url: https://www.douyin.com/jingxuan/game
+              - link "抖音美食" [ref=e502] [cursor=pointer]:
+                - /url: https://www.douyin.com/jingxuan/food
+              - link "能率" [ref=e504] [cursor=pointer]:
+                - /url: https://www.douyin.com/user/MS4wLjABAAAABYnLdDv-lazDSdvhy3VXhriX6JC1PBrEMUDpxSl_UTc
+              - 'link "#四年级 开始写英语作文了，作文不会写，可以每日读一读押题范文，积累词汇句子。#小学英语 #英语晨读 #英语作文" [ref=e506] [cursor=pointer]':
+                - /url: https://www.douyin.com/video/7635427936396496164
+              - link "报考指南是什么" [ref=e508] [cursor=pointer]:
+                - /url: https://www.douyin.com/topic/7509886488637868073
+              - link "文科过一本10分的学校" [ref=e510] [cursor=pointer]:
+                - /url: https://www.douyin.com/shipin/7509915161973721151
+              - link "南京工业大学分数线 浙江" [ref=e512] [cursor=pointer]:
+                - /url: https://www.douyin.com/search/%E5%8D%97%E4%BA%AC%E5%B7%A5%E4%B8%9A%E5%A4%A7%E5%AD%A6%E5%88%86%E6%95%B0%E7%BA%BF+%E6%B5%99%E6%B1%9F
+              - link "机械心若懂美深处自生电子蝶" [ref=e514] [cursor=pointer]:
+                - /url: https://www.douyin.com/video/7577365270994373922?source=Baiduspider
+              - 'link "天津三石峰三轴、单轴MEMS加速度传感器产品使用介绍#自动化 #电子技术" [ref=e516] [cursor=pointer]':
+                - /url: https://www.douyin.com/video/7360597206329576742?source=Baiduspider
+              - 'link "#小说推文 #推文超好看小说 #小说推文每日更新" [ref=e518] [cursor=pointer]':
+                - /url: https://www.douyin.com/video/7331371127597550902?source=Baiduspider
+              - 'link "如何简单有效提高工作效率、学习效率，早上做这6件事，高手的秘诀#效率 #目标 #正能量 #状态 #情绪" [ref=e520] [cursor=pointer]':
+                - /url: https://www.douyin.com/video/7584449160889011456?source=Baiduspider-sdc
+              - 'link "郑州别墅出租，科学大道附近，可以办公的别墅，适合企业办公接待，直播公司等等，视频实拍#郑州别墅 #郑州租房 #郑州同城" [ref=e522] [cursor=pointer]':
+                - /url: https://www.douyin.com/video/7375010240481201443?source=Baiduspider
+              - 'link "请查收情人节高段位送礼指南，不同预算也能直接套公式！ #情人节礼物 #情人节高段位送礼指南 #送礼指南 #高段位送礼 #礼物推荐" [ref=e524] [cursor=pointer]':
+                - /url: https://www.douyin.com/video/7469758035003559222?source=Baiduspider
+              - 'link "南瓜的侧枝长得比较多，川南把它打了一些回去做汤吃，这样的南瓜尖肉片汤你喜欢吃吗？婆婆看见说牛吃都嫌老了！#新农人计划2025 #抖音乡村生活家" [ref=e526] [cursor=pointer]':
+                - /url: https://www.douyin.com/video/7504215526651120954?source=Baiduspider-sdc

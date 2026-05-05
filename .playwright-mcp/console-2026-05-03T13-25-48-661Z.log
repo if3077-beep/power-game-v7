@@ -1,0 +1,3 @@
+[   10310ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://if3077-beep.github.io/favicon.ico:0
+[   19477ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://dog.ceo/api/breeds/image/random:0
+[   19477ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://v1.hitokoto.cn/:0

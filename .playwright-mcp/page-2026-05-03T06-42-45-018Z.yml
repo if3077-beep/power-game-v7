@@ -1,0 +1,81 @@
+- generic [active] [ref=e1]:
+  - button "开启读屏标签" [ref=e2]
+  - generic: 读屏标签已关闭
+  - generic [ref=e4]:
+    - generic [ref=e6]:
+      - link [ref=e7] [cursor=pointer]:
+        - /url: //www.douyin.com/jingxuan
+      - generic [ref=e13]:
+        - generic [ref=e15]:
+          - link "精选" [ref=e19] [cursor=pointer]:
+            - /url: https://www.douyin.com/jingxuan?from_nav=1
+            - generic [ref=e22]: 精选
+          - link "推荐" [ref=e26] [cursor=pointer]:
+            - /url: https://www.douyin.com/?recommend=1&from_nav=1
+            - generic [ref=e29]: 推荐
+          - link "搜索" [ref=e33] [cursor=pointer]:
+            - /url: https://www.douyin.com/aisearch?from_nav=1
+            - generic [ref=e36]: 搜索
+          - link "关注" [ref=e40] [cursor=pointer]:
+            - /url: https://www.douyin.com/follow?from_nav=1
+            - generic [ref=e43]: 关注
+          - link "朋友" [ref=e47] [cursor=pointer]:
+            - /url: https://www.douyin.com/friend?from_nav=1
+            - generic [ref=e50]: 朋友
+          - link "我的" [ref=e54] [cursor=pointer]:
+            - /url: https://www.douyin.com/user/self?from_nav=1
+            - generic [ref=e57]: 我的
+          - link "直播" [ref=e62] [cursor=pointer]:
+            - /url: https://live.douyin.com/?from_nav=1
+            - generic [ref=e65]: 直播
+          - link "放映厅" [ref=e69] [cursor=pointer]:
+            - /url: https://www.douyin.com/vs?from_nav=1
+            - generic [ref=e72]: 放映厅
+          - link "短剧" [ref=e76] [cursor=pointer]:
+            - /url: https://www.douyin.com/series?from_nav=1
+            - generic [ref=e79]: 短剧
+          - link "小游戏" [ref=e83] [cursor=pointer]:
+            - /url: https://www.douyin.com/microgame?from_nav=1
+            - generic [ref=e86]: 小游戏
+        - generic [ref=e88]:
+          - img [ref=e91]
+          - img [ref=e95]
+          - img [ref=e99]
+    - generic [ref=e101]:
+      - banner [ref=e104]:
+        - generic [ref=e106]:
+          - generic [ref=e110]:
+            - textbox "搜索你感兴趣的内容" [ref=e112]
+            - button "搜索" [ref=e114] [cursor=pointer]:
+              - img [ref=e115]
+              - generic [ref=e117]: 搜索
+          - generic [ref=e121]:
+            - generic [ref=e123] [cursor=pointer]:
+              - img [ref=e125]:
+                - img [ref=e126]
+              - paragraph [ref=e128]: 充钻石
+            - link "客户端" [ref=e133] [cursor=pointer]:
+              - /url: ""
+              - generic [ref=e135]:
+                - img [ref=e137]:
+                  - img [ref=e138]
+                - paragraph [ref=e141]: 客户端
+            - generic [ref=e143] [cursor=pointer]:
+              - img [ref=e145]:
+                - img [ref=e146]
+              - paragraph [ref=e148]: 壁纸
+            - list [ref=e149]:
+              - generic [ref=e152] [cursor=pointer]:
+                - img [ref=e154]:
+                  - img [ref=e155]
+                - paragraph [ref=e158]: 通知
+            - generic [ref=e162] [cursor=pointer]:
+              - img [ref=e164]:
+                - img [ref=e165]
+              - paragraph [ref=e167]: 投稿
+            - link [ref=e170] [cursor=pointer]:
+              - /url: //www.douyin.com/user/self
+              - listitem [ref=e171]
+      - generic [ref=e173]:
+        - generic [ref=e177]: 视频数据加载中
+        - contentinfo [ref=e178]

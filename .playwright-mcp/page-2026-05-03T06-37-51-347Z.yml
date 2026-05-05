@@ -1,0 +1,221 @@
+- generic [active] [ref=e1]:
+  - heading "Directory listing for /" [level=1] [ref=e2]
+  - separator [ref=e3]
+  - list [ref=e4]:
+    - listitem [ref=e5]:
+      - link ".bash_completion.d/" [ref=e6] [cursor=pointer]:
+        - /url: .bash_completion.d/
+    - listitem [ref=e7]:
+      - link ".cache/" [ref=e8] [cursor=pointer]:
+        - /url: .cache/
+    - listitem [ref=e9]:
+      - link ".cc-switch/" [ref=e10] [cursor=pointer]:
+        - /url: .cc-switch/
+    - listitem [ref=e11]:
+      - link ".claude/" [ref=e12] [cursor=pointer]:
+        - /url: .claude/
+    - listitem [ref=e13]:
+      - link ".claude-code-ui/" [ref=e14] [cursor=pointer]:
+        - /url: .claude-code-ui/
+    - listitem [ref=e15]:
+      - link ".claude.json" [ref=e16] [cursor=pointer]:
+        - /url: .claude.json
+    - listitem [ref=e17]:
+      - link ".cloakbrowser/" [ref=e18] [cursor=pointer]:
+        - /url: .cloakbrowser/
+    - listitem [ref=e19]:
+      - link ".cloudcli/" [ref=e20] [cursor=pointer]:
+        - /url: .cloudcli/
+    - listitem [ref=e21]:
+      - link ".codex/" [ref=e22] [cursor=pointer]:
+        - /url: .codex/
+    - listitem [ref=e23]:
+      - link ".config/" [ref=e24] [cursor=pointer]:
+        - /url: .config/
+    - listitem [ref=e25]:
+      - link ".cursor/" [ref=e26] [cursor=pointer]:
+        - /url: .cursor/
+    - listitem [ref=e27]:
+      - link ".dotnet/" [ref=e28] [cursor=pointer]:
+        - /url: .dotnet/
+    - listitem [ref=e29]:
+      - link ".gemini/" [ref=e30] [cursor=pointer]:
+        - /url: .gemini/
+    - listitem [ref=e31]:
+      - link ".gitconfig" [ref=e32] [cursor=pointer]:
+        - /url: .gitconfig
+    - listitem [ref=e33]:
+      - link ".learnings/" [ref=e34] [cursor=pointer]:
+        - /url: .learnings/
+    - listitem [ref=e35]:
+      - link ".local/" [ref=e36] [cursor=pointer]:
+        - /url: .local/
+    - listitem [ref=e37]:
+      - link ".mcp.json" [ref=e38] [cursor=pointer]:
+        - /url: .mcp.json
+    - listitem [ref=e39]:
+      - link ".nodemid" [ref=e40] [cursor=pointer]:
+        - /url: .nodemid
+    - listitem [ref=e41]:
+      - link ".opencli/" [ref=e42] [cursor=pointer]:
+        - /url: .opencli/
+    - listitem [ref=e43]:
+      - link ".playwright-mcp/" [ref=e44] [cursor=pointer]:
+        - /url: .playwright-mcp/
+    - listitem [ref=e45]:
+      - link ".skillhub/" [ref=e46] [cursor=pointer]:
+        - /url: .skillhub/
+    - listitem [ref=e47]:
+      - link ".taskmaster/" [ref=e48] [cursor=pointer]:
+        - /url: .taskmaster/
+    - listitem [ref=e49]:
+      - link ".vscode/" [ref=e50] [cursor=pointer]:
+        - /url: .vscode/
+    - listitem [ref=e51]:
+      - link "5.3/" [ref=e52] [cursor=pointer]:
+        - /url: 5.3/
+    - listitem [ref=e53]:
+      - link "ansel/" [ref=e54] [cursor=pointer]:
+        - /url: ansel/
+    - listitem [ref=e55]:
+      - link "AppData/" [ref=e56] [cursor=pointer]:
+        - /url: AppData/
+    - listitem [ref=e57]:
+      - link "Apple/" [ref=e58] [cursor=pointer]:
+        - /url: Apple/
+    - listitem [ref=e59]:
+      - link "Application Data/" [ref=e60] [cursor=pointer]:
+        - /url: Application%20Data/
+    - listitem [ref=e61]:
+      - link "bin/" [ref=e62] [cursor=pointer]:
+        - /url: bin/
+    - listitem [ref=e63]:
+      - link "CLAUDE.md" [ref=e64] [cursor=pointer]:
+        - /url: CLAUDE.md
+    - listitem [ref=e65]:
+      - link "Contacts/" [ref=e66] [cursor=pointer]:
+        - /url: Contacts/
+    - listitem [ref=e67]:
+      - link "Cookies/" [ref=e68] [cursor=pointer]:
+        - /url: Cookies/
+    - listitem [ref=e69]:
+      - link "Desktop/" [ref=e70] [cursor=pointer]:
+        - /url: Desktop/
+    - listitem [ref=e71]:
+      - link "Documents/" [ref=e72] [cursor=pointer]:
+        - /url: Documents/
+    - listitem [ref=e73]:
+      - link "Downloads/" [ref=e74] [cursor=pointer]:
+        - /url: Downloads/
+    - listitem [ref=e75]:
+      - link "Favorites/" [ref=e76] [cursor=pointer]:
+        - /url: Favorites/
+    - listitem [ref=e77]:
+      - link "gen_metro.py" [ref=e78] [cursor=pointer]:
+        - /url: gen_metro.py
+    - listitem [ref=e79]:
+      - link "gen_word.py" [ref=e80] [cursor=pointer]:
+        - /url: gen_word.py
+    - listitem [ref=e81]:
+      - link "lines_count.txt" [ref=e82] [cursor=pointer]:
+        - /url: lines_count.txt
+    - listitem [ref=e83]:
+      - link "lines_data.js" [ref=e84] [cursor=pointer]:
+        - /url: lines_data.js
+    - listitem [ref=e85]:
+      - link "lines_temp.js" [ref=e86] [cursor=pointer]:
+        - /url: lines_temp.js
+    - listitem [ref=e87]:
+      - link "Links/" [ref=e88] [cursor=pointer]:
+        - /url: Links/
+    - listitem [ref=e89]:
+      - link "Local Settings/" [ref=e90] [cursor=pointer]:
+        - /url: Local%20Settings/
+    - listitem [ref=e91]:
+      - link "Logs/" [ref=e92] [cursor=pointer]:
+        - /url: Logs/
+    - listitem [ref=e93]:
+      - link "Music/" [ref=e94] [cursor=pointer]:
+        - /url: Music/
+    - listitem [ref=e95]:
+      - link "My Documents/" [ref=e96] [cursor=pointer]:
+        - /url: My%20Documents/
+    - listitem [ref=e97]:
+      - link "NetHood/" [ref=e98] [cursor=pointer]:
+        - /url: NetHood/
+    - listitem [ref=e99]:
+      - link "node_modules/" [ref=e100] [cursor=pointer]:
+        - /url: node_modules/
+    - listitem [ref=e101]:
+      - link "NTUSER.DAT" [ref=e102] [cursor=pointer]:
+        - /url: NTUSER.DAT
+    - listitem [ref=e103]:
+      - link "ntuser.dat.LOG1" [ref=e104] [cursor=pointer]:
+        - /url: ntuser.dat.LOG1
+    - listitem [ref=e105]:
+      - link "ntuser.dat.LOG2" [ref=e106] [cursor=pointer]:
+        - /url: ntuser.dat.LOG2
+    - listitem [ref=e107]:
+      - 'link "NTUSER.DAT{1de470c4-dd29-11ef-833e-683421d9e09e}.TM.blf" [ref=e108] [cursor=pointer]':
+        - /url: NTUSER.DAT%7B1de470c4-dd29-11ef-833e-683421d9e09e%7D.TM.blf
+    - listitem [ref=e109]:
+      - 'link "NTUSER.DAT{1de470c4-dd29-11ef-833e-683421d9e09e}.TMContainer00000000000000000001.regtrans-ms" [ref=e110] [cursor=pointer]':
+        - /url: NTUSER.DAT%7B1de470c4-dd29-11ef-833e-683421d9e09e%7D.TMContainer00000000000000000001.regtrans-ms
+    - listitem [ref=e111]:
+      - 'link "NTUSER.DAT{1de470c4-dd29-11ef-833e-683421d9e09e}.TMContainer00000000000000000002.regtrans-ms" [ref=e112] [cursor=pointer]':
+        - /url: NTUSER.DAT%7B1de470c4-dd29-11ef-833e-683421d9e09e%7D.TMContainer00000000000000000002.regtrans-ms
+    - listitem [ref=e113]:
+      - link "ntuser.ini" [ref=e114] [cursor=pointer]:
+        - /url: ntuser.ini
+    - listitem [ref=e115]:
+      - link "OneDrive/" [ref=e116] [cursor=pointer]:
+        - /url: OneDrive/
+    - listitem [ref=e117]:
+      - link "package-lock.json" [ref=e118] [cursor=pointer]:
+        - /url: package-lock.json
+    - listitem [ref=e119]:
+      - link "package.json" [ref=e120] [cursor=pointer]:
+        - /url: package.json
+    - listitem [ref=e121]:
+      - link "phone-explosion/" [ref=e122] [cursor=pointer]:
+        - /url: phone-explosion/
+    - listitem [ref=e123]:
+      - link "Pictures/" [ref=e124] [cursor=pointer]:
+        - /url: Pictures/
+    - listitem [ref=e125]:
+      - link "PrintHood/" [ref=e126] [cursor=pointer]:
+        - /url: PrintHood/
+    - listitem [ref=e127]:
+      - link "Recent/" [ref=e128] [cursor=pointer]:
+        - /url: Recent/
+    - listitem [ref=e129]:
+      - link "Saved Games/" [ref=e130] [cursor=pointer]:
+        - /url: Saved%20Games/
+    - listitem [ref=e131]:
+      - link "Searches/" [ref=e132] [cursor=pointer]:
+        - /url: Searches/
+    - listitem [ref=e133]:
+      - link "SendTo/" [ref=e134] [cursor=pointer]:
+        - /url: SendTo/
+    - listitem [ref=e135]:
+      - link "Templates/" [ref=e136] [cursor=pointer]:
+        - /url: Templates/
+    - listitem [ref=e137]:
+      - link "update_html.py" [ref=e138] [cursor=pointer]:
+        - /url: update_html.py
+    - listitem [ref=e139]:
+      - link "Videos/" [ref=e140] [cursor=pointer]:
+        - /url: Videos/
+    - listitem [ref=e141]:
+      - link "WPS Cloud Files/" [ref=e142] [cursor=pointer]:
+        - /url: WPS%20Cloud%20Files/
+    - listitem [ref=e143]:
+      - link "wuhan-metro-v3-screenshot.png" [ref=e144] [cursor=pointer]:
+        - /url: wuhan-metro-v3-screenshot.png
+    - listitem [ref=e145]:
+      - link "wuhan-metro.html" [ref=e146] [cursor=pointer]:
+        - /url: wuhan-metro.html
+    - listitem [ref=e147]:
+      - link "「开始」菜单/" [ref=e148] [cursor=pointer]:
+        - /url: "%E3%80%8C%E5%BC%80%E5%A7%8B%E3%80%8D%E8%8F%9C%E5%8D%95/"
+  - separator [ref=e149]

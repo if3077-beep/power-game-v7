@@ -1,0 +1,51 @@
+- generic [ref=e73]:
+  - generic [ref=e74]:
+    - button "← 返回" [ref=e75] [cursor=pointer]
+    - heading "校准参数" [level=2] [ref=e76]
+  - generic [ref=e78]: 💼 职业 · 跳槽
+  - generic [ref=e79]:
+    - generic [ref=e80]:
+      - generic [ref=e81]:
+        - generic [ref=e82]: 影响范围
+        - generic [ref=e83]: 身边几个人
+      - slider [ref=e84]: "2"
+      - generic [ref=e85]:
+        - generic [ref=e86]: 仅自己
+        - generic [ref=e87]: 全社会
+    - generic [ref=e88]:
+      - generic [ref=e89]:
+        - generic [ref=e90]: 情绪强度
+        - generic [ref=e91]: 中等
+      - slider [ref=e92]: "3"
+      - generic [ref=e93]:
+        - generic [ref=e94]: 平静
+        - generic [ref=e95]: 激烈
+    - generic [ref=e96]:
+      - generic [ref=e97]:
+        - generic [ref=e98]: 时间跨度
+        - generic [ref=e99]: 一周
+      - slider [ref=e100]: "2"
+      - generic [ref=e101]:
+        - generic [ref=e102]: 明天
+        - generic [ref=e103]: 一年
+    - generic [ref=e104]:
+      - generic [ref=e105]:
+        - generic [ref=e106]: 不确定性
+        - generic [ref=e107]: 中等
+      - slider [ref=e108]: "3"
+      - generic [ref=e109]:
+        - generic [ref=e110]: 确定
+        - generic [ref=e111]: 完全未知
+  - generic [ref=e112]:
+    - paragraph [ref=e113]: 还有哪些相关因素？
+    - generic [ref=e114]:
+      - button "📱 社交媒体放大" [ref=e115] [cursor=pointer]
+      - button "🏛️ 权威介入" [ref=e116] [cursor=pointer]
+      - button "👥 同辈压力" [ref=e117] [cursor=pointer]
+      - button "💰 经济因素" [ref=e118] [cursor=pointer]
+      - button "⏰ 时间紧迫" [ref=e119] [cursor=pointer]
+      - button "👤 面子/声誉" [ref=e120] [cursor=pointer]
+      - button "❤️ 健康相关" [ref=e121] [cursor=pointer]
+      - button "👨‍👩‍👧 家庭牵扯" [ref=e122] [cursor=pointer]
+  - button "🔮 开始推演" [ref=e124] [cursor=pointer]:
+    - generic [ref=e125]: 🔮 开始推演

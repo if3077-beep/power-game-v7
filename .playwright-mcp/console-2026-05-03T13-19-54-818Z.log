@@ -1,0 +1,2 @@
+[   10038ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap:0
+[   10108ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8765/favicon.ico:0

@@ -1,0 +1,49 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - button "🔊" [ref=e3] [cursor=pointer]
+    - slider [ref=e5]: "70"
+  - generic [ref=e6]:
+    - banner [ref=e7]:
+      - heading "MiroFish Predictor" [level=1] [ref=e12]
+      - paragraph [ref=e13]: 群体智能行为预测引擎 · Swarm Intelligence Prediction Engine
+    - main [ref=e14]:
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]: "1"
+          - generic [ref=e18]: 信息采集
+        - generic [ref=e20]:
+          - generic [ref=e21]: "2"
+          - generic [ref=e22]: 知识构建
+        - generic [ref=e24]:
+          - generic [ref=e25]: "3"
+          - generic [ref=e26]: 行为预测
+        - generic [ref=e28]:
+          - generic [ref=e29]: "4"
+          - generic [ref=e30]: 逻辑解析
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - heading "📡 信息采集" [level=2] [ref=e33]
+          - paragraph [ref=e34]: 输入文本或上传文件，提取关键信息和实体关系
+        - generic [ref=e35]:
+          - generic [ref=e36]:
+            - button "文本输入" [ref=e37] [cursor=pointer]
+            - button "文件上传" [ref=e38] [cursor=pointer]
+            - button "预设场景" [ref=e39] [cursor=pointer]
+          - generic [ref=e40]:
+            - textbox "在此输入新闻、政策、事件描述... 示例：某科技公司发布新一代AI芯片，性能提升300%，价格降低50%。分析师预测这将重塑整个半导体行业格局..." [ref=e41]:
+              - /placeholder: "在此输入新闻、政策、事件描述...\n\n示例：某科技公司发布新一代AI芯片，性能提升300%，价格降低50%。分析师预测这将重塑整个半导体行业格局..."
+            - generic [ref=e42]: 0 / 5000
+        - generic [ref=e43]:
+          - generic [ref=e44]: 预测需求
+          - textbox "描述你想要预测的内容，例如：预测未来30天的市场反应" [ref=e45]
+        - button "🔍 开始采集" [ref=e47] [cursor=pointer]:
+          - generic [ref=e48]: 🔍
+          - text: 开始采集
+    - contentinfo [ref=e49]:
+      - paragraph [ref=e50]:
+        - text: Powered by MiroFish Swarm Intelligence ·
+        - link "GitHub" [ref=e51] [cursor=pointer]:
+          - /url: https://github.com/666ghj/MiroFish
+  - generic:
+    - generic:
+      - paragraph: 正在处理...
