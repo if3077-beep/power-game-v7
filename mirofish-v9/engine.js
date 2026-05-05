@@ -1,6 +1,6 @@
 /**
- * MiroFish v9 - 推演引擎 + 分析引擎集成
- * 输入解析 + 免费API + 模板 + 框架驱动分析
+ * MiroFish v9 - 推演引擎
+ * 纯本地推演 + 心理画像分析 + 框架驱动分析
  */
 
 const EMOTION_MAP = {
@@ -44,6 +44,87 @@ function parseUserInput(text) {
   return result;
 }
 
+// ===== 心理画像生成器 =====
+function generateProfile(text, mood, factors) {
+  const t = text || '';
+  const m = mood || 'neutral';
+  const f = factors || [];
+  const len = t.length;
+  const hasQuestion = /[？?]/.test(t);
+  const hasExclaim = /[！!]/.test(t);
+  const hasNegation = /不|没|别|莫|勿|非|未/.test(t);
+  const hasCertainty = /一定|肯定|必须|绝对|当然|显然|必然/.test(t);
+  const hasFuture = /以后|未来|将来|会|将|打算|计划|准备/.test(t);
+  const hasSocial = /别人|大家|父母|朋友|同事|领导|对象|家人|社会/.test(t);
+  const hasEmotion = /焦虑|害怕|恐惧|愤怒|难过|开心|兴奋|崩溃|绝望|希望/.test(t);
+  const hasHedge = /可能|也许|大概|或许|应该|似乎|好像|不确定/.test(t);
+  const hasAction = /做|干|试|跑|投|学|换|辞|买|卖|找/.test(t);
+  const questionCount = (t.match(/[？?]/g) || []).length;
+  const wordCount = t.replace(/\s/g, '').length;
+
+  const moodInfo = EMOTION_MAP[m] || EMOTION_MAP.neutral;
+
+  // 风险承受：基于情绪效价 + 行动词 + 确定性词
+  let risk = 0.5 + moodInfo.valence * 0.3;
+  if (hasAction) risk += 0.1;
+  if (hasCertainty) risk += 0.1;
+  if (hasNegation) risk -= 0.1;
+  if (m === 'fearful' || m === 'anxious') risk -= 0.15;
+  if (m === 'excited' || m === 'hopeful') risk += 0.15;
+  if (f.includes('money') || f.includes('reputation')) risk -= 0.1;
+
+  // 行动倾向：基于行动词密度 + 情绪唤醒度
+  let action = 0.5 + moodInfo.arousal * 0.2;
+  if (hasAction) action += 0.15;
+  if (hasFuture) action += 0.1;
+  if (hasHedge) action -= 0.15;
+  if (questionCount > 2) action -= 0.1;
+  if (m === 'confused' || m === 'sad') action -= 0.1;
+  if (m === 'angry' || m === 'excited') action += 0.15;
+
+  // 情绪觉察：基于情绪词 + 感叹号 + 文本长度
+  let emotional = 0.5;
+  if (hasEmotion) emotional += 0.2;
+  if (hasExclaim) emotional += 0.1;
+  if (len > 100) emotional += 0.1;
+  if (hasCertainty) emotional -= 0.1;
+  if (m === 'neutral') emotional -= 0.15;
+  if (m === 'angry' || m === 'sad' || m === 'anxious') emotional += 0.1;
+
+  // 社交依赖：基于社交词 + 问句频率
+  let social = 0.5;
+  if (hasSocial) social += 0.2;
+  if (questionCount > 1) social += 0.1;
+  if (hasHedge) social += 0.05;
+  if (f.includes('peer') || f.includes('authority')) social += 0.1;
+  if (/自己|独立|一个人/.test(t)) social -= 0.15;
+
+  // 不确定容忍：基于模糊词 + 问句 + 对冲表达
+  let uncertainty = 0.5;
+  if (hasHedge) uncertainty += 0.2;
+  if (questionCount > 1) uncertainty += 0.1;
+  if (hasCertainty) uncertainty -= 0.2;
+  if (m === 'confused') uncertainty += 0.15;
+  if (m === 'neutral') uncertainty += 0.05;
+
+  // 时间视角：基于未来词 + 计划表达
+  let timeH = 0.5;
+  if (hasFuture) timeH += 0.2;
+  if (/计划|规划|长远|以后|退休|未来/.test(t)) timeH += 0.15;
+  if (/现在|今天|目前|马上|立刻|赶紧/.test(t)) timeH -= 0.15;
+  if (m === 'anxious' || m === 'fearful') timeH += 0.05;
+
+  const clamp = v => Math.max(0.05, Math.min(0.95, v));
+
+  return {
+    risk_tolerance: clamp(risk),
+    action_orientation: clamp(action),
+    emotional_awareness: clamp(emotional),
+    social_dependency: clamp(social),
+    uncertainty_tolerance: clamp(uncertainty),
+    time_horizon: clamp(timeH),
+  };
+}
 
 // ============================================================
 //  框架驱动分析引擎（内嵌精简版）
@@ -219,37 +300,27 @@ const AnalysisFrameworks = {
 
 
 // ============================================================
-//  推演引擎（保留 v8 的模板系统 + 集成分析引擎）
+//  推演引擎（纯本地 + 集成分析引擎）
 // ============================================================
 
 class PredictionEngine {
   constructor() {
-    this.apiKey = localStorage.getItem('mf_api_key') || '';
-    this.useAI = !!this.apiKey;
-    this.externalQuote = null;
     this.analysisEngine = new MiniAnalysisEngine();
-  }
-
-  setApiKey(key) {
-    this.apiKey = key;
-    this.useAI = !!key;
-    if (key) localStorage.setItem('mf_api_key', key);
-    else localStorage.removeItem('mf_api_key');
   }
 
   extractKeywords(text) {
     const keywords = [];
     const patterns = [
-      { regex: /跳槽|换工作|辞职|离职|求职|面试|升职|降薪|加班|职场|职业倦怠|副业|offer|简历/g, tag: '职业', icon: '💼' },
-      { regex: /对象|男友|女友|老公|老婆|分手|吵架|冷战|恋爱|结婚|离婚|暧昧|前任|复合/g, tag: '感情', icon: '💕' },
-      { regex: /公司|老板|同事|领导|团队|项目|裁员|失业|被裁|优化|述职|汇报/g, tag: '职场', icon: '🏢' },
-      { regex: /创业|开公司|合伙人|融资|生意|天使轮|孵化器|商业模式/g, tag: '创业', icon: '🚀' },
-      { regex: /孩子|高考|考试|学校|成绩|老师|同学|留学|考研|志愿|录取|补课|作业/g, tag: '教育', icon: '📚' },
-      { regex: /股票|基金|投资|理财|亏损|赚钱|房价|房贷|工资|消费|存钱|保险|信用卡|网贷|负债|借钱/g, tag: '财务', icon: '💰' },
-      { regex: /焦虑|抑郁|失眠|压力|崩溃|迷茫|害怕|内耗|情绪|心理咨询|自残|绝望|孤独/g, tag: '心理', icon: '🧠' },
-      { regex: /父母|家人|亲戚|家庭|养老|带娃|原生家庭|催生|逼婚|遗产|赡养/g, tag: '家庭', icon: '👨‍👩‍👧' },
-      { regex: /健康|生病|医院|体检|减肥|运动|疲劳|亚健康|癌症|慢性病|康复|住院/g, tag: '健康', icon: '❤️' },
-      { regex: /AI|人工智能|ChatGPT|技术|转型|学习|被取代|机器人|自动化|程序员/g, tag: '科技', icon: '🤖' },
+      { regex: /跳槽|换工作|辞职|离职|求职|面试|升职|降薪|加班|职场|职业倦怠|副业|offer|简历/g, tag: '职业', icon: 'C' },
+      { regex: /对象|男友|女友|老公|老婆|分手|吵架|冷战|恋爱|结婚|离婚|暧昧|前任|复合/g, tag: '感情', icon: 'H' },
+      { regex: /公司|老板|同事|领导|团队|项目|裁员|失业|被裁|优化|述职|汇报/g, tag: '职场', icon: 'B' },
+      { regex: /创业|开公司|合伙人|融资|生意|天使轮|孵化器|商业模式/g, tag: '创业', icon: 'R' },
+      { regex: /孩子|高考|考试|学校|成绩|老师|同学|留学|考研|志愿|录取|补课|作业/g, tag: '教育', icon: 'E' },
+      { regex: /股票|基金|投资|理财|亏损|赚钱|房价|房贷|工资|消费|存钱|保险|信用卡|网贷|负债|借钱/g, tag: '财务', icon: 'F' },
+      { regex: /焦虑|抑郁|失眠|压力|崩溃|迷茫|害怕|内耗|情绪|心理咨询|自残|绝望|孤独/g, tag: '心理', icon: 'M' },
+      { regex: /父母|家人|亲戚|家庭|养老|带娃|原生家庭|催生|逼婚|遗产|赡养/g, tag: '家庭', icon: 'A' },
+      { regex: /健康|生病|医院|体检|减肥|运动|疲劳|亚健康|癌症|慢性病|康复|住院/g, tag: '健康', icon: 'W' },
+      { regex: /AI|人工智能|ChatGPT|技术|转型|学习|被取代|机器人|自动化|程序员/g, tag: '科技', icon: 'T' },
     ];
 
     patterns.forEach(p => {
@@ -260,7 +331,7 @@ class PredictionEngine {
     });
 
     if (keywords.length === 0) {
-      keywords.push({ tag: '日常', icon: '📌', words: [text.substring(0, 6)] });
+      keywords.push({ tag: '日常', icon: 'D', words: [text.substring(0, 6)] });
     }
     return keywords;
   }
@@ -308,6 +379,9 @@ class PredictionEngine {
 
     const empathy = this.generateEmpathy(text, mood);
 
+    // 生成心理画像
+    const profile = generateProfile(text, mood, factors);
+
     const baseOptimistic = moodInfo.valence > 0.2 ? 40 : (moodInfo.valence < -0.2 ? 25 : 35);
     const basePessimistic = moodInfo.valence < -0.2 ? 30 : (moodInfo.valence > 0.2 ? 15 : 20);
 
@@ -332,12 +406,14 @@ class PredictionEngine {
     return {
       empathy,
       parsed,
+      profile,
       optimistic: { probability: optimistic, ...templates.optimistic(text, timeLabel, parsed) },
       neutral: { probability: Math.max(15, neutral), ...templates.neutral(text, timeLabel, parsed) },
       pessimistic: { probability: pessimistic, ...templates.pessimistic(text, timeLabel, parsed) },
       advice: this.generateAdvice(domain, mood),
       psychology: this.getPsychologyInsight(mood),
       domain,
+      keywords,
       readingCards: READING_CARDS[domain] || READING_CARDS.default,
       stats: STATS_DATA[domain] || STATS_DATA.default,
       twists: TWIST_REPLACEMENTS[domain] || TWIST_REPLACEMENTS.default,
@@ -348,28 +424,28 @@ class PredictionEngine {
   generateAdvice(domain, mood) {
     const advicePool = {
       财务: [
-        { text: '先列出所有收入支出，搞清楚钱到底去了哪里。很多人惊恐地发现"消失的钱"花在了外卖和订阅上。' },
-        { text: '投资前先存够3-6个月的应急金。没有安全垫就上赌桌，输不起的。' },
+        { text: '先列出所有收入支出，搞清楚钱到底去了哪里。很多人惊恐地发现"消失的钱"花在了外卖和订阅上。', icon: 'doc' },
+        { text: '投资前先存够3-6个月的应急金。没有安全垫就上赌桌，输不起的。', icon: 'shield' },
       ],
       职业: [
-        { text: '列出你真正在意的3件事（成长、收入、自由、意义），用它们做判断标准。' },
-        { text: '找一个做过类似决定的人聊聊，比搜100篇文章更有用。' },
+        { text: '列出你真正在意的3件事（成长、收入、自由、意义），用它们做判断标准。', icon: 'list' },
+        { text: '找一个做过类似决定的人聊聊，比搜100篇文章更有用。', icon: 'chat' },
       ],
       感情: [
-        { text: '先想清楚自己想要什么，再去看对方做了什么。' },
-        { text: '给彼此空间和时间，情绪过去后再沟通效果会好很多。' },
+        { text: '先想清楚自己想要什么，再去看对方做了什么。', icon: 'heart' },
+        { text: '给彼此空间和时间，情绪过去后再沟通效果会好很多。', icon: 'clock' },
       ],
       default: [
-        { text: '聚焦在你能控制的事情上，放下无法控制的。' },
-        { text: '把大问题拆成小步骤，每完成一步都是真实的进展。' },
+        { text: '聚焦在你能控制的事情上，放下无法控制的。', icon: 'target' },
+        { text: '把大问题拆成小步骤，每完成一步都是真实的进展。', icon: 'steps' },
       ],
     };
 
     const moodAdvice = {
-      anxious: { text: '先照顾好自己的情绪。深呼吸、运动、和信任的人聊聊，比做任何决定都重要。' },
-      angry: { text: '在做重大决定前，给自己至少24小时的冷静期。愤怒时做的决定90%会后悔。' },
-      fearful: { text: '接受不确定性本身。把注意力放在你能控制的事情上。' },
-      confused: { text: '把所有选项写在纸上，给每个选项打分。理性分析能减少50%的纠结。' },
+      anxious: { text: '先照顾好自己的情绪。深呼吸、运动、和信任的人聊聊，比做任何决定都重要。', icon: 'breathe' },
+      angry: { text: '在做重大决定前，给自己至少24小时的冷静期。愤怒时做的决定90%会后悔。', icon: 'pause' },
+      fearful: { text: '接受不确定性本身。把注意力放在你能控制的事情上。', icon: 'eye' },
+      confused: { text: '把所有选项写在纸上，给每个选项打分。理性分析能减少50%的纠结。', icon: 'chart' },
     };
 
     const pool = advicePool[domain] || advicePool.default;
@@ -395,29 +471,10 @@ class PredictionEngine {
 
   async run(text, mood, scope, intensity, timeScale, uncertainty, factors, onStep) {
     if (onStep) onStep('empathy', '正在理解你的处境...', 10);
-
-    if (this.useAI) {
-      try {
-        if (onStep) onStep('ai', '连接 AI 推演引擎...', 25);
-        const result = await this.callDeepSeek(text, mood, scope, intensity, timeScale, uncertainty, factors);
-        const keywords = this.extractKeywords(text);
-        const domain = keywords[0]?.tag || '日常';
-        result.domain = domain;
-        result.parsed = parseUserInput(text);
-        result.readingCards = result.readingCards || READING_CARDS[domain] || READING_CARDS.default;
-        result.stats = result.stats || STATS_DATA[domain] || STATS_DATA.default;
-        result.twists = result.twists || TWIST_REPLACEMENTS[domain] || TWIST_REPLACEMENTS.default;
-        if (onStep) onStep('complete', '推演完成', 100);
-        return result;
-      } catch (err) {
-        console.warn('AI 推演失败，降级到本地推演:', err.message);
-        if (onStep) onStep('fallback', 'AI 连接失败，启用本地推演...', 30);
-      }
-    }
-
-    if (onStep) onStep('local', '分析输入内容...', 30);
     await this.delay(400);
-    if (onStep) onStep('analyze', '识别领域与关键词...', 50);
+    if (onStep) onStep('analyze', '识别领域与关键词...', 30);
+    await this.delay(300);
+    if (onStep) onStep('profile', '生成心理画像...', 50);
     await this.delay(300);
     if (onStep) onStep('frameworks', '运行分析框架...', 65);
     await this.delay(300);
@@ -436,7 +493,7 @@ class PredictionEngine {
 
 
 // ============================================================
-//  精简版分析引擎（内嵌到 engine.js）
+//  精简版分析引擎
 // ============================================================
 
 class MiniAnalysisEngine {
@@ -448,7 +505,6 @@ class MiniAnalysisEngine {
     const { scenario, context = {}, options = [] } = input;
     const ctx = { ...context };
 
-    // 运行所有框架
     const frameworkResults = [];
     const allInsights = [];
 
@@ -459,7 +515,6 @@ class MiniAnalysisEngine {
       allInsights.push(...insights.map(i => ({ ...i, framework: fw.name })));
     }
 
-    // 对每个选项评分
     const scoredOptions = options.map(option => {
       const scores = [];
       for (const fwKey of this.frameworks) {
@@ -474,7 +529,6 @@ class MiniAnalysisEngine {
 
     scoredOptions.sort((a, b) => b.total - a.total);
 
-    // 生成推理链
     const chain = [
       { label: '观察事实', content: `情境核心：${scenario}` },
     ];
@@ -492,7 +546,6 @@ class MiniAnalysisEngine {
 
     chain.push({ label: '预测走向', content: '无论你选什么，记住：人的反应往往比你预期的更极端。好的结果不会像你想的那么好，坏的结果也不会像你想的那么坏。', sub: '情绪预测偏差' });
 
-    // 识别张力
     const tensions = [];
     tensions.push({ label: '策略张力', text: '短期利益与长期关系之间的矛盾——这是所有社会博弈的核心张力。' });
     tensions.push({ label: '行动张力', text: '做点什么的冲动 vs 什么都不做的安全。大部分决策焦虑来自这个根本矛盾。' });
@@ -508,7 +561,7 @@ class MiniAnalysisEngine {
 }
 
 
-// ===== 路径模板（保留 v8 核心模板） =====
+// ===== 路径模板 =====
 const PATH_TEMPLATES = {
   财务: {
     optimistic: (text, time, parsed) => ({
@@ -667,7 +720,6 @@ const PATH_TEMPLATES = {
     }),
   },
 
-  // 其他领域模板
   心理: {
     optimistic: (text, time) => ({
       title: '开始自我觉察，情绪管理能力明显提升',
@@ -905,6 +957,7 @@ const PATH_TEMPLATES = {
 
 window.PredictionEngine = PredictionEngine;
 window.parseUserInput = parseUserInput;
+window.generateProfile = generateProfile;
 window.EMOTION_MAP = EMOTION_MAP;
 window.SCOPE_LABELS = SCOPE_LABELS;
 window.TIME_LABELS = TIME_LABELS;

@@ -1,0 +1,3411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiroFish v9 - 未来推演</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23a855f7'/><circle cx='16' cy='16' r='6' fill='%230a0a0f'/></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+/* MiroFish v9 — 暗色主题 + 霓虹紫/青 + 滚动叙事 */
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --bg-input: #0e0e16;
+  --border: #1e1e2e;
+  --border-glow: #6c3baa33;
+  --text: #e0e0e8;
+  --text-dim: #8888a0;
+  --text-muted: #55556a;
+  --accent-purple: #a855f7;
+  --accent-cyan: #22d3ee;
+  --accent-pink: #ec4899;
+  --accent-green: #34d399;
+  --accent-orange: #f59e0b;
+  --accent-red: #ef4444;
+  --gradient-hero: linear-gradient(135deg, #a855f7 0%, #22d3ee 100%);
+  --gradient-card: linear-gradient(145deg, #12121a 0%, #1a1028 100%);
+  --shadow-glow: 0 0 30px rgba(168, 85, 247, 0.15);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #333350; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #444466; }
+
+/* ===== Typography ===== */
+h1, h2, h3, h4 { font-weight: 700; line-height: 1.3; }
+h1 { font-size: 2.2rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.2rem; }
+p { color: var(--text); }
+a { color: var(--accent-cyan); text-decoration: none; transition: var(--transition); }
+a:hover { opacity: 0.8; }
+
+/* ===== Layout ===== */
+.container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+/* ===== Scroll Narrative Section ===== */
+.section {
+  min-height: 100vh;
+  padding: 80px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.section-header h2 {
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.section-header .section-sub {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+/* ===== Hero Section ===== */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  opacity: 1;
+  transform: none;
+}
+
+#hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  max-width: 500px;
+}
+
+/* ===== Daily Quote ===== */
+.daily-quote {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin-bottom: 48px;
+  font-style: italic;
+  max-width: 460px;
+  line-height: 1.8;
+}
+
+.daily-quote .quote-author {
+  display: block;
+  margin-top: 8px;
+  font-style: normal;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ===== Input Area ===== */
+.input-area {
+  width: 100%;
+  max-width: 560px;
+}
+
+.input-area textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 16px 20px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  transition: var(--transition);
+  outline: none;
+}
+
+.input-area textarea:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+}
+
+.input-area textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ===== Controls Row ===== */
+.controls-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.controls-row select,
+.controls-row button {
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: var(--transition);
+  outline: none;
+}
+
+.controls-row select:hover,
+.controls-row button:hover {
+  border-color: var(--accent-purple);
+  background: var(--bg-card-hover);
+}
+
+.controls-row select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238888a0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+/* ===== Mood Selector ===== */
+.mood-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.mood-btn {
+  padding: 8px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+
+.mood-btn:hover {
+  border-color: var(--accent-purple);
+  color: var(--text);
+}
+
+.mood-btn.active {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: var(--accent-purple);
+  color: var(--accent-purple);
+}
+
+/* ===== Primary Button ===== */
+.btn-primary {
+  padding: 14px 32px;
+  background: var(--gradient-hero);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===== Random Dilemma Button ===== */
+.btn-random {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+
+.btn-random:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+/* ===== Factors Grid ===== */
+.factors-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.factor-chip {
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+  font-family: var(--font-sans);
+}
+
+.factor-chip:hover {
+  border-color: var(--accent-purple);
+}
+
+.factor-chip.active {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: var(--accent-purple);
+  color: var(--accent-purple);
+}
+
+/* ===== Loading ===== */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 15, 0.92);
+  z-index: 1000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-overlay.active {
+  display: flex;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent-purple);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.loading-insight {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  max-width: 400px;
+  text-align: center;
+  font-style: italic;
+  min-height: 2em;
+}
+
+.loading-progress {
+  width: 200px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.loading-progress-bar {
+  height: 100%;
+  background: var(--gradient-hero);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ===== Empathy Section ===== */
+.empathy-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.empathy-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-hero);
+}
+
+.empathy-text {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.domain-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(168, 85, 247, 0.12);
+  border-radius: 12px;
+  color: var(--accent-purple);
+  font-size: 0.8rem;
+  margin-top: 16px;
+}
+
+/* ===== River of Fate (Canvas) ===== */
+.river-container {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.river-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.river-labels {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.river-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.river-label .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* ===== Path Cards ===== */
+.paths-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .paths-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.path-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  position: relative;
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.path-card:hover {
+  border-color: var(--accent-purple);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.path-card.optimistic { border-top: 3px solid var(--accent-green); }
+.path-card.neutral { border-top: 3px solid var(--accent-orange); }
+.path-card.pessimistic { border-top: 3px solid var(--accent-red); }
+
+.path-card .path-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.path-card.optimistic .path-label { color: var(--accent-green); }
+.path-card.neutral .path-label { color: var(--accent-orange); }
+.path-card.pessimistic .path-label { color: var(--accent-red); }
+
+.path-card .path-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.path-card .probability {
+  font-size: 2.4rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  margin-bottom: 4px;
+}
+
+.path-card.optimistic .probability { color: var(--accent-green); }
+.path-card.neutral .probability { color: var(--accent-orange); }
+.path-card.pessimistic .probability { color: var(--accent-red); }
+
+.path-card .prob-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.path-card .factors-list {
+  list-style: none;
+  margin-bottom: 16px;
+}
+
+.path-card .factors-list li {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.path-card .factors-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.path-card .timeline {
+  border-left: 2px solid var(--border);
+  padding-left: 16px;
+  margin-bottom: 16px;
+}
+
+.path-card .timeline-item {
+  margin-bottom: 12px;
+}
+
+.path-card .timeline-item .period {
+  font-size: 0.75rem;
+  color: var(--accent-purple);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.path-card .timeline-item .event {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* Twist Button */
+.btn-twist {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 8px;
+  font-family: var(--font-sans);
+}
+
+.btn-twist:hover {
+  border-color: var(--accent-pink);
+  color: var(--accent-pink);
+}
+
+.twist-text {
+  display: none;
+  font-size: 0.85rem;
+  color: var(--accent-pink);
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(236, 72, 153, 0.08);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent-pink);
+  line-height: 1.6;
+}
+
+.twist-text.show {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Radar Chart ===== */
+.radar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .radar-container {
+    flex-direction: row;
+    justify-content: center;
+    gap: 48px;
+  }
+}
+
+.radar-canvas-wrap {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.radar-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.radar-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.radar-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.radar-legend-item .dim-label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  width: 80px;
+}
+
+.radar-legend-item .dim-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.radar-legend-item .dim-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent-purple);
+  transition: width 1s ease;
+}
+
+.radar-legend-item .dim-value {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+  width: 36px;
+  text-align: right;
+}
+
+.radar-legend-item .dim-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+/* ===== Stats Section ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+}
+
+.stat-value {
+  font-size: 2.8rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+  line-height: 1;
+}
+
+.stat-suffix {
+  font-size: 1.4rem;
+  color: var(--accent-cyan);
+  opacity: 0.7;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.stat-desc {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.stat-source {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* ===== Decision Matrix ===== */
+.matrix-container {
+  overflow-x: auto;
+}
+
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.matrix-table th,
+.matrix-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.matrix-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.matrix-table td {
+  color: var(--text-dim);
+}
+
+.matrix-table .option-name {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.matrix-table .score-cell {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.matrix-table .score-positive { color: var(--accent-green); }
+.matrix-table .score-negative { color: var(--accent-red); }
+.matrix-table .score-neutral { color: var(--accent-orange); }
+
+.matrix-table .total-score {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.matrix-table tr:hover {
+  background: rgba(168, 85, 247, 0.05);
+}
+
+/* ===== Chain / Insights ===== */
+.chain-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chain-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+}
+
+.chain-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent-purple);
+  border-radius: 2px;
+}
+
+.chain-item .chain-label {
+  font-size: 0.75rem;
+  color: var(--accent-purple);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.chain-item .chain-content {
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.chain-item .chain-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* ===== Reading Cards ===== */
+.reading-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.reading-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: var(--transition);
+}
+
+.reading-card:hover {
+  border-color: var(--accent-purple);
+  transform: translateY(-2px);
+}
+
+.reading-card .card-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.reading-card .card-type.quote { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); }
+.reading-card .card-type.history { background: rgba(34, 211, 238, 0.15); color: var(--accent-cyan); }
+.reading-card .card-type.psychology { background: rgba(236, 72, 153, 0.15); color: var(--accent-pink); }
+
+.reading-card .card-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.reading-card .card-content {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+.reading-card .card-source {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ===== Psychology Insight ===== */
+.psychology-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  position: relative;
+}
+
+.psychology-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple));
+}
+
+.psychology-card .psych-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-pink);
+  margin-bottom: 12px;
+}
+
+.psychology-card .psych-content {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+/* ===== Advice Section ===== */
+.advice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.advice-item {
+  display: flex;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  transition: var(--transition);
+}
+
+.advice-item:hover {
+  border-color: var(--accent-cyan);
+}
+
+.advice-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(34, 211, 238, 0.1);
+  color: var(--accent-cyan);
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.advice-text {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ===== Actions Bar ===== */
+.actions-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.btn-outline {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent-purple);
+  color: var(--accent-purple);
+}
+
+/* ===== Vote Popup ===== */
+.vote-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 15, 0.85);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.vote-popup.active {
+  display: flex;
+}
+
+.vote-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+}
+
+.vote-card h3 {
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.vote-card .vote-subtitle {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+
+.vote-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vote-option {
+  padding: 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+
+.vote-option:hover {
+  border-color: var(--accent-purple);
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.vote-option.selected {
+  border-color: var(--accent-purple);
+  background: rgba(168, 85, 247, 0.15);
+  color: var(--accent-purple);
+}
+
+.vote-close {
+  margin-top: 16px;
+  padding: 8px 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+
+.vote-close:hover {
+  border-color: var(--text-dim);
+  color: var(--text-dim);
+}
+
+/* ===== Disclaimer ===== */
+.disclaimer {
+  text-align: center;
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+
+.disclaimer p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ===== Tensions ===== */
+.tensions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.tension-item {
+  background: rgba(168, 85, 247, 0.06);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+
+.tension-item .tension-label {
+  font-size: 0.75rem;
+  color: var(--accent-purple);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.tension-item .tension-text {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .hero-title { font-size: 2rem; }
+  h2 { font-size: 1.3rem; }
+  .section { padding: 60px 0; }
+  .container { padding: 0 16px; }
+  .path-card { padding: 20px; }
+  .path-card .probability { font-size: 1.8rem; }
+  .stat-value { font-size: 2rem; }
+  .controls-row { flex-direction: column; align-items: stretch; }
+  .controls-row select,
+  .controls-row button { width: 100%; }
+}
+
+/* ===== Utility ===== */
+.hidden { display: none !important; }
+.fade-in { animation: fadeIn 0.6s ease; }
+.text-center { text-align: center; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mt-40 { margin-top: 40px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+
+  </style>
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">正在分析...</div>
+    <div class="loading-insight" id="loadingInsightText"></div>
+    <div class="loading-progress">
+      <div class="loading-progress-bar" id="loadingProgress"></div>
+    </div>
+  </div>
+
+  <!-- ===== Hero Section ===== -->
+  <section id="hero" class="section">
+    <div class="container">
+      <h1 class="hero-title">MiroFish</h1>
+      <p class="hero-subtitle">告诉我你的处境，用三条路径推演你的未来</p>
+
+      <div class="daily-quote" id="dailyQuote"></div>
+
+      <div class="input-area">
+        <textarea id="userInput" placeholder="试着这样写：我在考虑要不要接手家族生意，但怕做不好；或者：最近总失眠，工作压力大到喘不过气..."></textarea>
+
+        <div class="mood-selector">
+          <button class="mood-btn" data-mood="anxious">焦虑</button>
+          <button class="mood-btn" data-mood="angry">愤怒</button>
+          <button class="mood-btn" data-mood="sad">难过</button>
+          <button class="mood-btn" data-mood="confused">迷茫</button>
+          <button class="mood-btn" data-mood="hopeful">期待</button>
+          <button class="mood-btn" data-mood="fearful">恐惧</button>
+          <button class="mood-btn" data-mood="neutral">平静</button>
+          <button class="mood-btn" data-mood="excited">兴奋</button>
+        </div>
+
+        <div class="controls-row">
+          <select id="slScope">
+            <option value="1">仅自己</option>
+            <option value="2" selected>身边几个人</option>
+            <option value="3">一个群体</option>
+            <option value="4">大范围</option>
+            <option value="5">全社会</option>
+          </select>
+          <select id="slIntensity">
+            <option value="1">微弱</option>
+            <option value="2">轻微</option>
+            <option value="3" selected>中等</option>
+            <option value="4">强烈</option>
+            <option value="5">剧烈</option>
+          </select>
+          <select id="slTime">
+            <option value="1">一周</option>
+            <option value="2">两周</option>
+            <option value="3" selected>一个月</option>
+            <option value="4">三个月</option>
+            <option value="5">一年</option>
+          </select>
+          <select id="slUncertainty">
+            <option value="1">几乎确定</option>
+            <option value="2">比较确定</option>
+            <option value="3" selected>中等</option>
+            <option value="4">不确定</option>
+            <option value="5">完全未知</option>
+          </select>
+        </div>
+
+        <div class="factors-grid">
+          <button class="factor-chip" data-factor="media">社交媒体</button>
+          <button class="factor-chip" data-factor="authority">权威介入</button>
+          <button class="factor-chip" data-factor="peer">同辈压力</button>
+          <button class="factor-chip" data-factor="money">经济因素</button>
+          <button class="factor-chip" data-factor="time">时间紧迫</button>
+          <button class="factor-chip" data-factor="reputation">面子/声誉</button>
+          <button class="factor-chip" data-factor="health">健康相关</button>
+          <button class="factor-chip" data-factor="family">家庭牵扯</button>
+        </div>
+
+        <div class="controls-row mt-16">
+          <button class="btn-random" id="btnRandom">随机困境</button>
+          <button class="btn-primary" id="btnAnalyze" disabled>推演未来</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Results (hidden until analysis) ===== -->
+  <div id="results" class="hidden">
+
+    <!-- Empathy -->
+    <section class="section visible" style="min-height:auto;padding:60px 0">
+      <div class="container">
+        <div class="empathy-card">
+          <div class="empathy-text" id="empathyText"></div>
+          <div class="domain-tag" id="domainTag"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- River of Fate -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>命运河流</h2>
+          <p class="section-sub">三条支流，三种可能</p>
+        </div>
+        <div class="river-container">
+          <canvas class="river-canvas" id="riverCanvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Three Path Cards -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>三条推演路径</h2>
+          <p class="section-sub">基于你的处境，以下是三种可能的走向</p>
+        </div>
+        <div class="paths-grid">
+          <div class="path-card optimistic" id="path-optimistic"></div>
+          <div class="path-card neutral" id="path-neutral"></div>
+          <div class="path-card pessimistic" id="path-pessimistic"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Radar Chart -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>心理画像</h2>
+          <p class="section-sub">基于你的文字分析生成</p>
+        </div>
+        <div class="radar-container">
+          <div class="radar-canvas-wrap">
+            <canvas class="radar-canvas" id="radarCanvas"></canvas>
+          </div>
+          <div class="radar-legend" id="radarLegend"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Animated Stats -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>真实数据</h2>
+          <p class="section-sub">来自行为心理学和统计研究</p>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+      </div>
+    </section>
+
+    <!-- Decision Matrix -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>决策矩阵</h2>
+          <p class="section-sub">多维度评估你的选项</p>
+        </div>
+        <div class="matrix-container" id="decisionMatrix"></div>
+      </div>
+    </section>
+
+    <!-- Reading Cards -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>延伸阅读</h2>
+          <p class="section-sub">名言、历史类比与心理学概念</p>
+        </div>
+        <div class="reading-grid" id="readingCards"></div>
+      </div>
+    </section>
+
+    <!-- Psychology Insight -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>心理学洞察</h2>
+          <p class="section-sub">理解你此刻的心理机制</p>
+        </div>
+        <div class="psychology-card" id="psychologyCard"></div>
+      </div>
+    </section>
+
+    <!-- Advice -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>行动建议</h2>
+          <p class="section-sub">基于分析给出的可执行步骤</p>
+        </div>
+        <div class="advice-list" id="adviceList"></div>
+      </div>
+    </section>
+
+    <!-- Analysis Chain -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>分析推理</h2>
+          <p class="section-sub">多框架驱动的深度分析</p>
+        </div>
+        <div id="analysisContent"></div>
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="section" style="min-height:auto;padding:40px 0">
+      <div class="container">
+        <div class="actions-bar">
+          <button class="btn-outline" id="btnAgain">重新推演</button>
+          <button class="btn-outline" id="btnShare">复制分享</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+      <div class="container">
+        <p>推演基于你的输入生成，不构成现实建议。所有数据来自公开研究，仅供参考。MiroFish v9 - 社会学驱动的叙事引擎。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Vote Popup -->
+  <div class="vote-popup" id="votePopup">
+    <div class="vote-card">
+      <h3>你觉得最可能发生的是哪条？</h3>
+      <p class="vote-subtitle">你的选择会帮助我们改进推演模型</p>
+      <div class="vote-options">
+        <button class="vote-option" data-path="optimistic">乐观路径</button>
+        <button class="vote-option" data-path="neutral">中性路径</button>
+        <button class="vote-option" data-path="pessimistic">悲观路径</button>
+      </div>
+      <button class="vote-close">跳过</button>
+    </div>
+  </div>
+
+  
+  
+  
+<script>
+/**
+ * MiroFish v9 - 数据层
+ * 滚动叙事 / 心理画像 / 决策矩阵 — 无 Emoji
+ */
+
+const DAILY_QUOTES = [
+  { text: '你无法控制风的方向，但你可以调整帆的角度。', author: '克里斯蒂安·博宾' },
+  { text: '预测未来的最好方式就是创造它。', author: '彼得·德鲁克' },
+  { text: '每一次危机都孕育着机遇。', author: '丘吉尔' },
+  { text: '焦虑不会消除明天的悲伤，只会消耗今天的力量。', author: '马可·奥勒留' },
+  { text: '改变能改变的，接受不能改变的。', author: '莱茵霍尔德·尼布尔' },
+  { text: '人生没有白走的路，每一步都算数。', author: '史铁生' },
+  { text: '种一棵树最好的时间是十年前，其次是现在。', author: '中国谚语' },
+  { text: '没有一个冬天不可逾越，没有一个春天不会来临。', author: '毕淑敏' },
+  { text: '所谓无底深渊，下去也是前程万里。', author: '木心' },
+  { text: '真正的平静不是避开车马喧嚣，而是在心中修篱种菊。', author: '林清玄' },
+  { text: '勇敢不是不害怕，而是害怕了还能坚持去做。', author: '纳尔逊·曼德拉' },
+  { text: '所有的失去，都会以另一种方式归来。', author: '耿帅' },
+  { text: '当你凝视深渊时，深渊也在凝视你。', author: '尼采' },
+  { text: '未经审视的人生不值得过。', author: '苏格拉底' },
+  { text: '世上只有一种英雄主义，就是在认清生活真相之后依然热爱生活。', author: '罗曼·罗兰' },
+  { text: '人的一切痛苦，本质上都是对自己无能的愤怒。', author: '王小波' },
+  { text: '天行健，君子以自强不息。', author: '《周易》' },
+  { text: '千里之行，始于足下。', author: '老子' },
+];
+
+const RANDOM_DILEMMAS = [
+  '想辞职但怕找不到更好的工作，现在至少稳定',
+  '对象冷战三天了，不知道要不要先开口',
+  '信用卡欠了好几万，每个月都在拆东墙补西墙',
+  '想创业但不确定时机对不对，怕把积蓄全赔进去',
+  '公司要裁员，不知道自己安不安全',
+  '孩子成绩不好，要不要给他报补习班',
+  '体检指标异常，很担心但又不敢去复查',
+  '想和暧昧对象表白，怕被拒绝连朋友都做不成',
+  '父母催婚催得紧，但我不想随便找个人凑合',
+  '投资亏了30%，不知道该割肉还是继续持有',
+  '想换城市发展，但舍不得这边的社交圈',
+  '副业做了半年没什么起色，要不要继续',
+  '考研二战还是直接工作，家里经济压力很大',
+  'AI 要取代我的工作了，现在转行来得及吗',
+];
+
+const TWIST_REPLACEMENTS = {
+  default: [
+    '当然，以上都是理想情况。现实往往更喜欢给人惊喜——或者惊吓。',
+    '但说实话，你也可能第三天就放弃了。',
+    '前提是你的执行力配得上你的想象力。',
+    '不过别忘了，人类是唯一会在同一个坑里摔两次的动物。',
+    '以上分析假设你是理性的——但你我都知道，人不是。',
+    '说到底，改变需要的不是方法，是痛够了。',
+  ],
+  财务: ['当然，前提是你的消费欲望能跟着一起降级。','但如果你管不住手，这些数字只是屏幕上的像素。','不过以你的消费习惯，可能需要先卸载淘宝和小红书。','前提是别再相信"这次不一样"。'],
+  职业: ['前提是你的简历能撑起你的野心。','不过跳槽解决不了能力问题，只是换了个地方焦虑。','当然，也有可能新公司比现在这家还烂。','说到底，你缺的不是机会，是敢不敢迈出那一步。'],
+  感情: ['前提是对方也有同样的意愿——但你没法控制别人。','不过感情这种事，努力不一定有用，不努力一定没用。','说到底，你值得更好的——但更好的人凭什么选你？'],
+  教育: ['前提是别再用"学习方法不对"来掩盖"不够努力"。','当然，学历不能决定一切——但它决定了别人愿不愿意给你机会。','说到底，你不是学不会，是还没被逼到那份上。'],
+  心理: ['当然，如果这些都能轻松做到，你也不会搜这个问题了。','不过道理你都懂，做不到才是问题所在。','说到底，你不是不知道怎么办，是不想面对。'],
+  健康: ['前提是别等到身体发出最后通牒才行动。','但"明天开始"是最长的明天。','说到底，你的身体正在为你的每一个坏习惯记账。'],
+  创业: ['前提是别用"创业"来逃避"打工"的不爽。','不过90%的创业者在第一年就后悔了——但没人会在朋友圈说。','说到底，创业不是勇气问题，是算账问题。'],
+  家庭: ['前提是别指望一次谈话就能改变几十年的相处模式。','不过血缘是最牢固的枷锁——也是最温柔的。','说到底，家人就是让你又爱又恨的存在。'],
+};
+
+// 统计数据：数值 + 后缀，支持动画计数
+const STATS_DATA = {
+  财务: [
+    { value: 76, suffix: '%', label: '冲动投资亏损率', desc: '因情绪波动做出的投资决定中，76%在三个月内出现亏损', source: '行为金融学研究' },
+    { value: 56, suffix: '%', label: '应急金缺口', desc: '56%的人无法应对突发的1000元支出', source: 'Bankrate' },
+    { value: 78, suffix: '%', label: '月光族占比', desc: '78%的人靠工资过日子，没有储蓄缓冲', source: 'CareerBuilder' },
+  ],
+  职业: [
+    { value: 43, suffix: '%', label: '裸辞后悔率', desc: '裸辞者中有43%在三个月内后悔', source: '智联招聘' },
+    { value: 12, suffix: '次', label: '一生换工作次数', desc: '平均一个人一生会换12-15份工作', source: '美国劳工统计局' },
+    { value: 4.1, suffix: '年', label: '平均任职时长', desc: '当前平均一份工作的任期只有4.1年', source: 'BLS' },
+  ],
+  感情: [
+    { value: 6, suffix: '个月', label: '分手恢复期', desc: '平均需要6个月才能从一段认真的感情中恢复', source: 'J. of Positive Psychology' },
+    { value: 72, suffix: '小时', label: '冷战临界点', desc: '冷战超过72小时，关系破裂概率翻倍', source: 'Gottman研究所' },
+    { value: 49, suffix: '%', label: '复合再分率', desc: '分手后复合的情侣中，49%会再次分手', source: 'Social Psychology Quarterly' },
+  ],
+  教育: [
+    { value: 78, suffix: '%', label: '志愿错配率', desc: '78%的大学生表示如果重新选会选不同专业', source: '麦可思' },
+    { value: 52, suffix: '%', label: '考研弃考率', desc: '报名考研的人中约52%最终弃考或裸考', source: '教育部' },
+    { value: 25, suffix: '岁', label: '决策高峰起点', desc: '重大人生决策集中在25-35岁之间', source: '发展心理学' },
+  ],
+  心理: [
+    { value: 3.5, suffix: '亿', label: '全球抑郁患者', desc: '全球约3.5亿人受抑郁症困扰', source: 'WHO' },
+    { value: 70, suffix: '%', label: '心身疾病占比', desc: '约70%的躯体疾病与心理压力有关', source: '柳叶刀' },
+    { value: 21, suffix: '天', label: '习惯养成周期', desc: '形成一个新习惯平均需要21天', source: 'European J. of Social Psychology' },
+  ],
+  健康: [
+    { value: 7, suffix: '小时', label: '最佳睡眠时长', desc: '每天7小时睡眠的人群死亡率最低', source: 'Nature' },
+    { value: 150, suffix: '分钟', label: '周运动推荐量', desc: 'WHO建议每周至少150分钟中等强度运动', source: 'WHO' },
+    { value: 80, suffix: '%', label: '亚健康占比', desc: '中国白领中约80%处于亚健康状态', source: '中国医师协会' },
+  ],
+  创业: [
+    { value: 90, suffix: '%', label: '初创失败率', desc: '90%的初创企业会在前5年内倒闭', source: 'CB Insights' },
+    { value: 18, suffix: '个月', label: '平均生存期', desc: '中国小微企业平均生存周期约18个月', source: '工商总局' },
+    { value: 2.5, suffix: '次', label: '失败次数', desc: '成功创业者平均经历过2.5次失败', source: 'HBR' },
+  ],
+  家庭: [
+    { value: 2.4, suffix: '亿', label: '独居人口', desc: '中国独居人口已超过2.4亿', source: '国家统计局' },
+    { value: 67, suffix: '%', label: '代际冲突率', desc: '67%的年轻人与父母存在观念冲突', source: '中国青年报' },
+    { value: 30, suffix: '分钟', label: '日均亲子时间', desc: '中国父母平均每天陪伴孩子仅30分钟', source: '全国妇联' },
+  ],
+  default: [
+    { value: 23, suffix: '天', label: '决策平均周期', desc: '重大决策从纠结到决定平均需要23天', source: '行为心理学' },
+    { value: 62, suffix: '%', label: '事后满意度', desc: '62%的人在做出重大决定后一年内感到满意', source: 'J. of Consumer Psychology' },
+    { value: 12, suffix: '次', label: '一生换工作次数', desc: '平均一个人一生会换12-15份工作', source: 'BLS' },
+  ],
+};
+
+const READING_CARDS = {
+  财务: [
+    { type: 'quote', icon: 'Q', title: '名言', content: '在别人恐惧时贪婪，在别人贪婪时恐惧。', source: '沃伦·巴菲特' },
+    { type: 'history', icon: 'H', title: '历史类比', content: '1637年荷兰郁金香泡沫：一株球茎价格涨到能买一栋房子。泡沫破裂后，无数投机者血本无归。', source: '' },
+    { type: 'psychology', icon: 'P', title: '心理账户', content: '人们会把钱分成不同的"心理账户"——工资是辛苦钱要省着花，意外之财则大方挥霍。', source: '理查德·塞勒' },
+  ],
+  职业: [
+    { type: 'quote', icon: 'Q', title: '名言', content: '选择比努力更重要，但选择本身就是一种需要努力培养的能力。', source: '查理·芒格' },
+    { type: 'history', icon: 'H', title: '历史类比', content: 'J.K.罗琳写《哈利·波特》时是单亲妈妈、靠救济金生活，手稿被12家出版社拒绝。', source: '' },
+    { type: 'psychology', icon: 'P', title: '沉没成本谬误', content: '已经在一份工作上投入了太多时间，所以不舍得离开——这是典型的沉没成本谬误。', source: '丹尼尔·卡尼曼' },
+  ],
+  感情: [
+    { type: 'quote', icon: 'Q', title: '名言', content: '爱一个人，就是在他身上看到上帝希望你成为的样子。', source: '雨果' },
+    { type: 'history', icon: 'H', title: '历史类比', content: '钱钟书和杨绛初见时，钱钟书说"我没有订婚"，杨绛答"我也没有男朋友"。', source: '' },
+    { type: 'psychology', icon: 'P', title: '依恋理论', content: '童年形成的依恋模式会深刻影响成年后的亲密关系。焦虑型害怕被抛弃，回避型害怕亲密。', source: '约翰·鲍比' },
+  ],
+  教育: [
+    { type: 'quote', icon: 'Q', title: '名言', content: '教育的本质不是把篮子装满，而是把灯点亮。', source: '叶芝' },
+    { type: 'history', icon: 'H', title: '历史类比', content: '爱因斯坦小时候被老师认为"反应迟钝"，高考复读一年才考上大学。', source: '' },
+    { type: 'psychology', icon: 'P', title: '成长型思维', content: '相信能力可以通过努力提升的人，比认为能力是固定的人更容易取得成功。', source: '卡罗尔·德韦克' },
+  ],
+  心理: [
+    { type: 'quote', icon: 'Q', title: '名言', content: '人的一切痛苦，本质上都是对自己无能的愤怒。', source: '王小波' },
+    { type: 'history', icon: 'H', title: '历史类比', content: '弗兰克尔在纳粹集中营里失去了几乎全部亲人，却在极端苦难中找到了生命的意义。', source: '' },
+    { type: 'psychology', icon: 'P', title: '认知重评', content: '情绪不是由事件本身引起的，而是由你对事件的解读引起的。改变看法，就能改变情绪。', source: '阿尔伯特·埃利斯' },
+  ],
+  健康: [
+    { type: 'quote', icon: 'Q', title: '名言', content: '保持健康的唯一方法就是吃你不想吃的，喝你不想喝的，做你不想做的。', source: '马克·吐温' },
+    { type: 'history', icon: 'H', title: '历史类比', content: '19世纪伦敦霍乱大爆发时，约翰·斯诺通过绘制疫情地图发现污染水源是罪魁祸首。', source: '' },
+    { type: 'psychology', icon: 'P', title: '安慰剂效应', content: '即使是无药效的糖丸，只要患者相信它有效，症状也能改善。', source: '亨利·比彻' },
+  ],
+  创业: [
+    { type: 'quote', icon: 'Q', title: '名言', content: '最好的创业时机是你还有日常工作的时候。', source: '保罗·格雷厄姆' },
+    { type: 'history', icon: 'H', title: '历史类比', content: 'Airbnb创始人最初只是为了付房租，把气垫床租给陌生人。被所有投资人拒绝后，靠卖麦片盒撑过了最难的时期。', source: '' },
+    { type: 'psychology', icon: 'P', title: '幸存者偏差', content: '我们只看到成功的创业者，却看不到无数失败者。决策时要考虑看不见的"沉默数据"。', source: '亚伯拉罕·瓦尔德' },
+  ],
+  家庭: [
+    { type: 'quote', icon: 'Q', title: '名言', content: '家是世界上唯一隐藏人类缺点与失败的地方，它同时也蕴藏着甜蜜的爱。', source: '萧伯纳' },
+    { type: 'history', icon: 'H', title: '历史类比', content: '曾国藩年轻时与父亲关系紧张，后来在日记中写道"家和则福自生"。', source: '' },
+    { type: 'psychology', icon: 'P', title: '分化理论', content: '健康的家庭关系需要"分化"——在保持情感连接的同时，建立独立的自我。', source: '默里·鲍文' },
+  ],
+  default: [
+    { type: 'quote', icon: 'Q', title: '名言', content: '你不能控制发生在你身上的事，但你可以控制你的态度。', source: '查理·芒格' },
+    { type: 'history', icon: 'H', title: '历史类比', content: '司马迁遭受宫刑后忍辱完成《史记》。人生低谷往往是伟大作品的起点。', source: '' },
+    { type: 'psychology', icon: 'P', title: '自我效能感', content: '对自己完成任务能力的信念，比实际能力更能预测成功。', source: '阿尔伯特·班杜拉' },
+  ],
+};
+
+const LOADING_INSIGHTS = [
+  '写下焦虑本身就能降低焦虑水平约30%。表达即疗愈。',
+  '人在下午2-4点做出的决定质量最低。',
+  '大脑每天做35000个决定，但真正重要的不超过5个。',
+  '大脑处理"做不做"比"怎么做"消耗更多能量。先决定方向，再想方法。',
+  '运动后2小时内大脑执行功能提升约20%。',
+  '沉没成本谬误让我们在错误的道路上越走越远。',
+  '承认不确定性，反而能做出更好的决策。',
+  '每天进步1%，一年后你将比现在强37倍。',
+  '环境设计比意志力更可靠。',
+  '规划谬误：人类系统性地低估完成任务所需的时间。',
+  'OODA循环：观察、判断、决策、行动。快速迭代比完美计划更有效。',
+];
+
+const DOMAIN_EMPATHY = {
+  财务: {
+    anxious: ['钱的焦虑最容易让人失眠。你不是一个人——78%的人靠工资过日子，没有储蓄缓冲。'],
+    angry: ['亏钱的愤怒是真实的。但愤怒时做的交易决定，往往会让亏损扩大。'],
+    sad: ['看着数字缩水确实难受。但周期是市场的本质，没有只跌不涨的市场。'],
+    fearful: ['恐惧让很多人在最低点割肉，在最高点追涨。'],
+    confused: ['理财信息太多，互相矛盾。但有一个原则永远不会错：不懂的不碰。'],
+    hopeful: ['期待是好的，但别让期待变成赌博。分散投资，控制仓位。'],
+    neutral: ['以平静的心态审视自己的财务状况，这本身就是一种勇气。'],
+    excited: ['市场疯狂的时候，冷静的人才能赚到钱。'],
+  },
+  教育: {
+    anxious: ['升学压力确实很大，但一次考试决定不了一生。'],
+    sad: ['成绩不理想很难受，但它不代表你这个人的价值。'],
+    hopeful: ['你的努力不会白费。学习的回报有时会迟到，但不会缺席。'],
+    confused: ['没有绝对正确的选择，只有你把它变成正确的。'],
+    neutral: ['以平和的心态看待学业，给自己一个合理的预期。'],
+    fearful: ['害怕考砸是正常的。但恐惧往往比实际结果更具破坏力。'],
+  },
+  心理: {
+    anxious: ['焦虑是一种信号，它在提醒你某些事情需要被关注。'],
+    angry: ['愤怒的背后往往是受伤。允许自己生气，但也要找到愤怒下面更深的情绪。'],
+    sad: ['悲伤不是需要被"修好"的故障。它是人类情感的自然组成部分。'],
+    confused: ['迷茫说明你在思考，这比浑浑噩噩地活着强多了。'],
+    fearful: ['恐惧是大脑在保护你。但有时候保护过度了。'],
+    hopeful: ['对未来抱有希望是心理韧性的重要组成部分。'],
+    neutral: ['内心的平静是最珍贵的状态。'],
+  },
+  健康: {
+    anxious: ['身体不适时的焦虑会放大症状。先做个全面检查，用数据代替想象。'],
+    fearful: ['对健康的恐惧有时比疾病本身更伤人。'],
+    neutral: ['以平常心对待健康，不忽视也不过度关注。'],
+    hopeful: ['积极的心态对康复有真实的影响。'],
+  },
+  创业: {
+    anxious: ['创业焦虑是所有创业者的常态。不确定性是创业的一部分。'],
+    fearful: ['害怕失败很正常。但不尝试的结果是确定的——什么都改变不了。'],
+    excited: ['创业的兴奋感很宝贵，但别让兴奋冲昏头脑。'],
+    confused: ['信息太多、方向不明时，回到最本质的问题：你要为谁解决什么问题？'],
+    hopeful: ['希望和信心是创业最需要的燃料。但也要做好最坏的打算。'],
+  },
+  default: {},
+};
+
+// 心理画像维度 — 用于雷达图
+const PROFILE_DIMENSIONS = {
+  risk_tolerance: { label: '风险承受', low: '规避风险', high: '拥抱风险' },
+  action_orientation: { label: '行动倾向', low: '深思熟虑', high: '快速行动' },
+  emotional_awareness: { label: '情绪觉察', low: '理性主导', high: '感性主导' },
+  social_dependency: { label: '社交依赖', low: '独立决策', high: '依赖他人' },
+  uncertainty_tolerance: { label: '不确定容忍', low: '追求确定', high: '接受未知' },
+  time_horizon: { label: '时间视角', low: '关注当下', high: '放眼长远' },
+};
+
+window.DAILY_QUOTES = DAILY_QUOTES;
+window.RANDOM_DILEMMAS = RANDOM_DILEMMAS;
+window.TWIST_REPLACEMENTS = TWIST_REPLACEMENTS;
+window.STATS_DATA = STATS_DATA;
+window.READING_CARDS = READING_CARDS;
+window.LOADING_INSIGHTS = LOADING_INSIGHTS;
+window.DOMAIN_EMPATHY = DOMAIN_EMPATHY;
+window.PROFILE_DIMENSIONS = PROFILE_DIMENSIONS;
+
+</script>
+<script>
+/**
+ * MiroFish v9 - 推演引擎
+ * 纯本地推演 + 心理画像分析 + 框架驱动分析
+ */
+
+const EMOTION_MAP = {
+  anxious:   { valence: -0.6, arousal:  0.7, primary: 'fear',       label: '焦虑' },
+  angry:     { valence: -0.7, arousal:  0.9, primary: 'anger',      label: '愤怒' },
+  sad:       { valence: -0.8, arousal: -0.5, primary: 'sadness',    label: '难过' },
+  confused:  { valence: -0.3, arousal:  0.2, primary: 'surprise',   label: '迷茫' },
+  hopeful:   { valence:  0.5, arousal:  0.3, primary: 'anticipation', label: '期待' },
+  fearful:   { valence: -0.7, arousal:  0.8, primary: 'fear',       label: '恐惧' },
+  neutral:   { valence:  0.0, arousal:  0.0, primary: 'trust',      label: '平静' },
+  excited:   { valence:  0.8, arousal:  0.9, primary: 'joy',        label: '兴奋' },
+};
+
+const SCOPE_LABELS = ['', '仅自己', '身边几个人', '一个群体', '大范围', '全社会'];
+const TIME_LABELS = ['', '一周', '两周', '一个月', '三个月', '一年'];
+const INTENSITY_LABELS = ['', '微弱', '轻微', '中等', '强烈', '剧烈'];
+const UNCERTAINTY_LABELS = ['', '几乎确定', '比较确定', '中等', '不确定', '完全未知'];
+
+const FACTOR_LABELS = {
+  media: '社交媒体放大', authority: '权威介入', peer: '同辈压力',
+  money: '经济因素', time: '时间紧迫', reputation: '面子/声誉',
+  health: '健康相关', family: '家庭牵扯',
+};
+
+// ===== 输入解析器 =====
+function parseUserInput(text) {
+  const result = { problem: '', fear: '', hope: '', contradiction: '' };
+
+  const fearMatch = text.match(/(?:怕|担心|害怕|焦虑|恐惧|担忧|顾虑|不安|慌|怕的是|担心的是)(.{2,30}?)(?:[，。,.]|$|但是|可是|不过|而且|同时|另外)/);
+  if (fearMatch) result.fear = fearMatch[1].trim();
+
+  const hopeMatch = text.match(/(?:想|希望|想要|期望|盼|要是能|最好|渴望|追求|目标是|打算)(.{2,30}?)(?:[，。,.]|$|但是|可是|不过|但是怕|可是怕)/);
+  if (hopeMatch) result.hope = hopeMatch[1].trim();
+
+  const contraMatch = text.match(/(?:但是|可是|不过|但|矛盾的是|纠结的是|两难的是|问题是|难的是|麻烦的是)(.{2,30}?)(?:[，。,.]|$)/);
+  if (contraMatch) result.contradiction = contraMatch[1].trim();
+
+  const firstSentence = text.split(/[。.！!？?\n]/)[0];
+  result.problem = firstSentence.length > 40 ? firstSentence.substring(0, 40) + '...' : firstSentence;
+
+  return result;
+}
+
+// ===== 心理画像生成器 =====
+function generateProfile(text, mood, factors) {
+  const t = text || '';
+  const m = mood || 'neutral';
+  const f = factors || [];
+  const len = t.length;
+  const hasQuestion = /[？?]/.test(t);
+  const hasExclaim = /[！!]/.test(t);
+  const hasNegation = /不|没|别|莫|勿|非|未/.test(t);
+  const hasCertainty = /一定|肯定|必须|绝对|当然|显然|必然/.test(t);
+  const hasFuture = /以后|未来|将来|会|将|打算|计划|准备/.test(t);
+  const hasSocial = /别人|大家|父母|朋友|同事|领导|对象|家人|社会/.test(t);
+  const hasEmotion = /焦虑|害怕|恐惧|愤怒|难过|开心|兴奋|崩溃|绝望|希望/.test(t);
+  const hasHedge = /可能|也许|大概|或许|应该|似乎|好像|不确定/.test(t);
+  const hasAction = /做|干|试|跑|投|学|换|辞|买|卖|找/.test(t);
+  const questionCount = (t.match(/[？?]/g) || []).length;
+  const wordCount = t.replace(/\s/g, '').length;
+
+  const moodInfo = EMOTION_MAP[m] || EMOTION_MAP.neutral;
+
+  // 风险承受：基于情绪效价 + 行动词 + 确定性词
+  let risk = 0.5 + moodInfo.valence * 0.3;
+  if (hasAction) risk += 0.1;
+  if (hasCertainty) risk += 0.1;
+  if (hasNegation) risk -= 0.1;
+  if (m === 'fearful' || m === 'anxious') risk -= 0.15;
+  if (m === 'excited' || m === 'hopeful') risk += 0.15;
+  if (f.includes('money') || f.includes('reputation')) risk -= 0.1;
+
+  // 行动倾向：基于行动词密度 + 情绪唤醒度
+  let action = 0.5 + moodInfo.arousal * 0.2;
+  if (hasAction) action += 0.15;
+  if (hasFuture) action += 0.1;
+  if (hasHedge) action -= 0.15;
+  if (questionCount > 2) action -= 0.1;
+  if (m === 'confused' || m === 'sad') action -= 0.1;
+  if (m === 'angry' || m === 'excited') action += 0.15;
+
+  // 情绪觉察：基于情绪词 + 感叹号 + 文本长度
+  let emotional = 0.5;
+  if (hasEmotion) emotional += 0.2;
+  if (hasExclaim) emotional += 0.1;
+  if (len > 100) emotional += 0.1;
+  if (hasCertainty) emotional -= 0.1;
+  if (m === 'neutral') emotional -= 0.15;
+  if (m === 'angry' || m === 'sad' || m === 'anxious') emotional += 0.1;
+
+  // 社交依赖：基于社交词 + 问句频率
+  let social = 0.5;
+  if (hasSocial) social += 0.2;
+  if (questionCount > 1) social += 0.1;
+  if (hasHedge) social += 0.05;
+  if (f.includes('peer') || f.includes('authority')) social += 0.1;
+  if (/自己|独立|一个人/.test(t)) social -= 0.15;
+
+  // 不确定容忍：基于模糊词 + 问句 + 对冲表达
+  let uncertainty = 0.5;
+  if (hasHedge) uncertainty += 0.2;
+  if (questionCount > 1) uncertainty += 0.1;
+  if (hasCertainty) uncertainty -= 0.2;
+  if (m === 'confused') uncertainty += 0.15;
+  if (m === 'neutral') uncertainty += 0.05;
+
+  // 时间视角：基于未来词 + 计划表达
+  let timeH = 0.5;
+  if (hasFuture) timeH += 0.2;
+  if (/计划|规划|长远|以后|退休|未来/.test(t)) timeH += 0.15;
+  if (/现在|今天|目前|马上|立刻|赶紧/.test(t)) timeH -= 0.15;
+  if (m === 'anxious' || m === 'fearful') timeH += 0.05;
+
+  const clamp = v => Math.max(0.05, Math.min(0.95, v));
+
+  return {
+    risk_tolerance: clamp(risk),
+    action_orientation: clamp(action),
+    emotional_awareness: clamp(emotional),
+    social_dependency: clamp(social),
+    uncertainty_tolerance: clamp(uncertainty),
+    time_horizon: clamp(timeH),
+  };
+}
+
+// ============================================================
+//  框架驱动分析引擎（内嵌精简版）
+// ============================================================
+
+const AnalysisFrameworks = {
+
+  powerDynamics: {
+    name: '权力动力学',
+    analyze(ctx) {
+      const insights = [];
+      if (ctx.stakes === '高' || ctx.stakes === '极高') {
+        insights.push({ severity: 'high', text: '高利益情境下，权力弱势方的每一步都被放大审视。表面上的"选择自由"往往是假象——选项本身已经被权力结构预筛选了。' });
+      }
+      insights.push({ severity: 'medium', text: '注意谁掌握"叙事权"——不是谁说得大声，而是谁的版本会被当作"事实"。掌握叙事权的人不需要直接施压，只需要定义框架。' });
+      if (ctx.role && (ctx.role.includes('新人') || ctx.role.includes('下属'))) {
+        insights.push({ severity: 'high', text: '当退出成本极高时，"忍"不是懦弱而是理性。但长期来看，必须想办法降低退出成本——这才是真正的权力来源。' });
+      }
+      return insights;
+    },
+    score(option, ctx) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('direct') || t.includes('confrontational')) s += 2;
+      if (t.includes('passive') || t.includes('avoidant')) s -= 1;
+      if (t.includes('coalition') || t.includes('alliance')) s += 3;
+      if (t.includes('information') || t.includes('leverage')) s += 2;
+      if ((ctx.stakes === '高' || ctx.stakes === '极高') && s > 2) s = 1;
+      return { dim: '权力', score: Math.max(-3, Math.min(5, s)) };
+    },
+  },
+
+  groupPsychology: {
+    name: '群体心理',
+    analyze(ctx) {
+      const insights = [];
+      insights.push({ severity: 'medium', text: '人在群体中的行为，往往不是"真实的自己"，而是"群体需要自己成为的样子"。区分这两者，是做出清醒决策的前提。' });
+      if (ctx.observers && ctx.observers > 2) {
+        insights.push({ severity: 'high', text: `当在场人数超过${ctx.observers}人时，每个人的责任感都会被稀释。如果你想推动行动，必须打破这种分散——指定具体的人做具体的事。` });
+      }
+      return insights;
+    },
+    score(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('public') || t.includes('visible')) s += 1;
+      if (t.includes('whistle') || t.includes('dissent')) s -= 2;
+      if (t.includes('coalition')) s += 2;
+      return { dim: '社会成本', score: Math.max(-3, Math.min(5, s)) };
+    },
+  },
+
+  moralDilemma: {
+    name: '道德困境',
+    analyze() {
+      return [
+        { severity: 'high', text: '大多数道德困境之所以"困"，不是因为没有好选项，而是因为你在用不同的道德框架评判同一个选择。先搞清楚你最在意的是结果、规则、品格还是关系。' },
+        { severity: 'high', text: '真实世界的道德选择很少是"干净"的。有时候你必须在两个都"不够好"的选项中选一个。承认这一点不是犬儒，是成熟。' },
+      ];
+    },
+    score(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('ethical') || t.includes('principled')) s += 2;
+      if (t.includes('selfish') || t.includes('exploitative')) s -= 2;
+      if (t.includes('deceptive') || t.includes('manipulative')) s -= 1;
+      return { dim: '道德', score: Math.max(-3, Math.min(5, s)) };
+    },
+  },
+
+  gameTheory: {
+    name: '博弈论',
+    analyze(ctx) {
+      const insights = [];
+      if (ctx.standoff || ctx.stakes === '高') {
+        insights.push({ severity: 'high', text: '这是一个胆小鬼博弈结构：最理性的做法是让对方相信你绝对不会退让——但如果你真的不退让，两败俱伤。高手的做法是"制造可控的不可预测性"。' });
+      } else {
+        insights.push({ severity: 'high', text: '这是一个囚徒困境结构：双方合作的总收益最大，但对每个个体来说，背叛都是更安全的策略。这就是为什么信任这么难建立——不是因为人们坏，而是因为理性计算指向背叛。' });
+      }
+      return insights;
+    },
+    score(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('cooperate') || t.includes('collaborate')) s += 2;
+      if (t.includes('defect') || t.includes('betray')) s -= 2;
+      if (t.includes('negotiate') || t.includes('mediate')) s += 2;
+      return { dim: '博弈', score: Math.max(-3, Math.min(5, s)) };
+    },
+  },
+
+  informationAsymmetry: {
+    name: '信息不对称',
+    analyze() {
+      return [
+        { severity: 'high', text: '信息不对称是权力的隐形来源。在任何博弈中，先问三个问题：我知道什么对方不知道的？对方知道什么我不知道的？谁能更早获得新信息？' },
+        { severity: 'medium', text: '在信息不对称的世界里，行动比语言更有说服力。花大代价做的承诺比口头承诺可信得多——因为代价本身就是信号。' },
+      ];
+    },
+    score(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('information') || t.includes('research')) s += 2;
+      if (t.includes('signal') || t.includes('demonstrate')) s += 2;
+      if (t.includes('conceal') || t.includes('secret')) s -= 1;
+      return { dim: '信息', score: Math.max(-3, Math.min(5, s)) };
+    },
+  },
+
+  emotionalManipulation: {
+    name: '情感操控',
+    analyze(ctx) {
+      const insights = [
+        { severity: 'high', text: '操控之所以有效，是因为操控者利用了你的情感需求（被爱、被认可、不被抛弃）。识别操控的第一步不是"对抗"，而是意识到自己的哪些需求正在被利用。' },
+      ];
+      if (ctx.relationship && ctx.relationship.includes('亲密')) {
+        insights.push({ severity: 'high', text: '亲密关系中的操控最难识别，因为它和"关心"长得很像。区分标准：关心让你更自由，操控让你更受限。' });
+      }
+      return insights;
+    },
+    score(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('boundary') || t.includes('assertive')) s += 3;
+      if (t.includes('comply') || t.includes('submit')) s -= 2;
+      if (t.includes('document') || t.includes('evidence')) s += 2;
+      return { dim: '反操控', score: Math.max(-3, Math.min(5, s)) };
+    },
+  },
+
+  socialExchange: {
+    name: '社会交换',
+    analyze() {
+      return [
+        { severity: 'medium', text: '互惠是人类社会最强的规范之一。收到好处会产生"人情债"，这种债务感比金钱债务更难摆脱——因为你没法明确说"我不欠你的"。' },
+        { severity: 'high', text: '关系中最危险的不是冲突，而是"不公平感"的积累。当一方觉得自己付出远多于回报时，怨恨会像复利一样增长，直到爆发。' },
+      ];
+    },
+    score(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('invest') || t.includes('build_trust')) s += 2;
+      if (t.includes('exploit')) s -= 2;
+      if (t.includes('negotiate') || t.includes('clarify')) s += 2;
+      return { dim: '关系', score: Math.max(-3, Math.min(5, s)) };
+    },
+  },
+
+  cognitiveBias: {
+    name: '认知偏差',
+    analyze(ctx) {
+      const biases = [];
+      if (ctx.history_length > 3) biases.push('沉没成本谬误');
+      if (ctx.conviction_level === 'high') biases.push('确认偏误');
+      if (ctx.risk_averse) biases.push('损失厌恶');
+      if (ctx.judging_others) biases.push('基本归因错误');
+
+      if (biases.length > 0) {
+        return [{ severity: 'high', text: `你可能正在经历：${biases.join('、')}。暂停一下，问自己"如果我之前的判断是错的呢？"` }];
+      }
+      return [{ severity: 'medium', text: '在做重要决策时，问自己一个问题："如果我对这件事一无所知，只看证据，我会怎么判断？"这个思想实验能帮你绕过大部分认知偏差。' }];
+    },
+    score(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('evidence') || t.includes('reflect')) s += 2;
+      if (t.includes('impulsive') || t.includes('emotional')) s -= 2;
+      if (t.includes('consult') || t.includes('outside_view')) s += 2;
+      return { dim: '认知', score: Math.max(-3, Math.min(5, s)) };
+    },
+  },
+};
+
+
+// ============================================================
+//  推演引擎（纯本地 + 集成分析引擎）
+// ============================================================
+
+class PredictionEngine {
+  constructor() {
+    this.analysisEngine = new MiniAnalysisEngine();
+  }
+
+  extractKeywords(text) {
+    const keywords = [];
+    const patterns = [
+      { regex: /跳槽|换工作|辞职|离职|求职|面试|升职|降薪|加班|职场|职业倦怠|副业|offer|简历/g, tag: '职业', icon: 'C' },
+      { regex: /对象|男友|女友|老公|老婆|分手|吵架|冷战|恋爱|结婚|离婚|暧昧|前任|复合/g, tag: '感情', icon: 'H' },
+      { regex: /公司|老板|同事|领导|团队|项目|裁员|失业|被裁|优化|述职|汇报/g, tag: '职场', icon: 'B' },
+      { regex: /创业|开公司|合伙人|融资|生意|天使轮|孵化器|商业模式/g, tag: '创业', icon: 'R' },
+      { regex: /孩子|高考|考试|学校|成绩|老师|同学|留学|考研|志愿|录取|补课|作业/g, tag: '教育', icon: 'E' },
+      { regex: /股票|基金|投资|理财|亏损|赚钱|房价|房贷|工资|消费|存钱|保险|信用卡|网贷|负债|借钱/g, tag: '财务', icon: 'F' },
+      { regex: /焦虑|抑郁|失眠|压力|崩溃|迷茫|害怕|内耗|情绪|心理咨询|自残|绝望|孤独/g, tag: '心理', icon: 'M' },
+      { regex: /父母|家人|亲戚|家庭|养老|带娃|原生家庭|催生|逼婚|遗产|赡养/g, tag: '家庭', icon: 'A' },
+      { regex: /健康|生病|医院|体检|减肥|运动|疲劳|亚健康|癌症|慢性病|康复|住院/g, tag: '健康', icon: 'W' },
+      { regex: /AI|人工智能|ChatGPT|技术|转型|学习|被取代|机器人|自动化|程序员/g, tag: '科技', icon: 'T' },
+    ];
+
+    patterns.forEach(p => {
+      const matches = text.match(p.regex);
+      if (matches) {
+        keywords.push({ tag: p.tag, icon: p.icon, words: [...new Set(matches)].slice(0, 3) });
+      }
+    });
+
+    if (keywords.length === 0) {
+      keywords.push({ tag: '日常', icon: 'D', words: [text.substring(0, 6)] });
+    }
+    return keywords;
+  }
+
+  generateEmpathy(text, mood) {
+    const keywords = this.extractKeywords(text);
+    const domain = keywords[0]?.tag || '日常';
+    const domainPool = DOMAIN_EMPATHY[domain];
+    const parsed = parseUserInput(text);
+
+    if (parsed.fear && parsed.hope) {
+      const templates = [
+        `你想的是${parsed.hope}，但心里真正怕的是${parsed.fear}。这种拉扯感我懂。`,
+        `一边是"${parsed.hope}"的期待，一边是"${parsed.fear}"的恐惧。你卡在中间，确实难受。`,
+      ];
+      return templates[Math.floor(Math.random() * templates.length)];
+    }
+
+    if (domainPool && domainPool[mood]) {
+      const pool = domainPool[mood];
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    const empathyTemplates = {
+      anxious: ['我能感受到你内心的不安。面对不确定性时，焦虑是很正常的反应——这说明你在认真对待这件事。'],
+      angry: ['你的愤怒是可以理解的。当我们的付出没有得到应有的回报时，生气是人之常情。'],
+      sad: ['我能感受到你的难过。有些事情确实让人心里不好受，允许自己悲伤是很重要的。'],
+      confused: ['迷茫的时候最难熬，因为连方向都看不清。但很多时候，迷茫恰恰是成长的前奏。'],
+      hopeful: ['你的期待让我感到振奋。有目标、有动力，这本身就是一种很宝贵的状态。'],
+      fearful: ['恐惧是人类最原始的保护机制。你感到害怕，说明你意识到了某种真实的风险。'],
+      neutral: ['你看起来比较平静，这种状态其实很适合做理性分析。让我们来看看各种可能的走向。'],
+      excited: ['你的兴奋很有感染力！这种能量是推动事情发展的重要动力。'],
+    };
+
+    const templates = empathyTemplates[mood] || empathyTemplates.neutral;
+    return templates[Math.floor(Math.random() * templates.length)];
+  }
+
+  generateLocal(text, mood, scope, intensity, timeScale, uncertainty, factors) {
+    const moodInfo = EMOTION_MAP[mood] || EMOTION_MAP.neutral;
+    const keywords = this.extractKeywords(text);
+    const domain = keywords[0]?.tag || '日常';
+    const timeLabel = TIME_LABELS[timeScale] || '一个月';
+    const parsed = parseUserInput(text);
+
+    const empathy = this.generateEmpathy(text, mood);
+
+    // 生成心理画像
+    const profile = generateProfile(text, mood, factors);
+
+    const baseOptimistic = moodInfo.valence > 0.2 ? 40 : (moodInfo.valence < -0.2 ? 25 : 35);
+    const basePessimistic = moodInfo.valence < -0.2 ? 30 : (moodInfo.valence > 0.2 ? 15 : 20);
+
+    const uncFactor = uncertainty / 5;
+    const optimistic = Math.max(10, Math.min(60, baseOptimistic + Math.round((Math.random() - 0.5) * uncFactor * 20)));
+    const pessimistic = Math.max(10, Math.min(50, basePessimistic + Math.round((Math.random() - 0.5) * uncFactor * 15)));
+    const neutral = 100 - optimistic - pessimistic;
+
+    const templates = PATH_TEMPLATES[domain] || PATH_TEMPLATES.default;
+
+    // 运行分析引擎
+    const analysis = this.analysisEngine.analyze({
+      scenario: text,
+      context: { role: '', stakes: scope >= 4 ? '高' : '中等', relationship: domain, trust_level: 'low' },
+      options: [
+        { id: 'a', text: '主动出击', tags: ['direct', 'confrontational'] },
+        { id: 'b', text: '隐忍观察', tags: ['passive', 'strategic'] },
+        { id: 'c', text: '寻求帮助', tags: ['coalition', 'seek_help'] },
+      ],
+    });
+
+    return {
+      empathy,
+      parsed,
+      profile,
+      optimistic: { probability: optimistic, ...templates.optimistic(text, timeLabel, parsed) },
+      neutral: { probability: Math.max(15, neutral), ...templates.neutral(text, timeLabel, parsed) },
+      pessimistic: { probability: pessimistic, ...templates.pessimistic(text, timeLabel, parsed) },
+      advice: this.generateAdvice(domain, mood),
+      psychology: this.getPsychologyInsight(mood),
+      domain,
+      keywords,
+      readingCards: READING_CARDS[domain] || READING_CARDS.default,
+      stats: STATS_DATA[domain] || STATS_DATA.default,
+      twists: TWIST_REPLACEMENTS[domain] || TWIST_REPLACEMENTS.default,
+      analysis,
+    };
+  }
+
+  generateAdvice(domain, mood) {
+    const advicePool = {
+      财务: [
+        { text: '先列出所有收入支出，搞清楚钱到底去了哪里。很多人惊恐地发现"消失的钱"花在了外卖和订阅上。', icon: 'doc' },
+        { text: '投资前先存够3-6个月的应急金。没有安全垫就上赌桌，输不起的。', icon: 'shield' },
+      ],
+      职业: [
+        { text: '列出你真正在意的3件事（成长、收入、自由、意义），用它们做判断标准。', icon: 'list' },
+        { text: '找一个做过类似决定的人聊聊，比搜100篇文章更有用。', icon: 'chat' },
+      ],
+      感情: [
+        { text: '先想清楚自己想要什么，再去看对方做了什么。', icon: 'heart' },
+        { text: '给彼此空间和时间，情绪过去后再沟通效果会好很多。', icon: 'clock' },
+      ],
+      default: [
+        { text: '聚焦在你能控制的事情上，放下无法控制的。', icon: 'target' },
+        { text: '把大问题拆成小步骤，每完成一步都是真实的进展。', icon: 'steps' },
+      ],
+    };
+
+    const moodAdvice = {
+      anxious: { text: '先照顾好自己的情绪。深呼吸、运动、和信任的人聊聊，比做任何决定都重要。', icon: 'breathe' },
+      angry: { text: '在做重大决定前，给自己至少24小时的冷静期。愤怒时做的决定90%会后悔。', icon: 'pause' },
+      fearful: { text: '接受不确定性本身。把注意力放在你能控制的事情上。', icon: 'eye' },
+      confused: { text: '把所有选项写在纸上，给每个选项打分。理性分析能减少50%的纠结。', icon: 'chart' },
+    };
+
+    const pool = advicePool[domain] || advicePool.default;
+    const result = [];
+    if (moodAdvice[mood]) result.push(moodAdvice[mood]);
+    result.push(...pool);
+    return result.slice(0, 3);
+  }
+
+  getPsychologyInsight(mood) {
+    const insights = {
+      anxious: { title: '情绪预测偏差 (Impact Bias)', content: '人们倾向于高估未来事件对自己情绪的影响强度。无论好事还是坏事，实际带来的情绪变化通常没有想象中那么剧烈，恢复也比预期快。' },
+      angry: { title: '确认偏误 (Confirmation Bias)', content: '愤怒时我们倾向于寻找支持自己已有信念的信息，而忽略相反证据。在做重要决定时，主动寻找反对意见是明智的。' },
+      sad: { title: '峰终定律 (Peak-End Rule)', content: '人们对经历的评价主要取决于情绪最强烈的峰值和结束时的感受。结尾的质量比过程的长度更重要。' },
+      confused: { title: '选择悖论 (Paradox of Choice)', content: '选项越多反而越难做出决定，做出决定后的满意度也越低。减少选项反而能提升幸福感。' },
+      fearful: { title: '习得性无助 (Learned Helplessness)', content: '当人反复经历无法控制的负面事件后，即使环境改变了也会放弃尝试。意识到这一点是打破循环的第一步。' },
+      hopeful: { title: '心理韧性 (Psychological Resilience)', content: '韧性不是不受伤，而是受伤后能恢复。经历过适度逆境的人比从未经历挫折的人具有更强的心理韧性。' },
+      neutral: { title: '自我服务偏差 (Self-Serving Bias)', content: '人们倾向于把成功归因于自己的能力，把失败归因于外部因素。这种偏差保护了自尊，但也阻碍了成长。' },
+      excited: { title: '情绪传染 (Emotional Contagion)', content: '情绪像病毒一样在人群中传播。与积极的人在一起会让你也变得积极，反之亦然。选择你的社交圈就是选择你的情绪状态。' },
+    };
+    return insights[mood] || insights.neutral;
+  }
+
+  async run(text, mood, scope, intensity, timeScale, uncertainty, factors, onStep) {
+    if (onStep) onStep('empathy', '正在理解你的处境...', 10);
+    await this.delay(400);
+    if (onStep) onStep('analyze', '识别领域与关键词...', 30);
+    await this.delay(300);
+    if (onStep) onStep('profile', '生成心理画像...', 50);
+    await this.delay(300);
+    if (onStep) onStep('frameworks', '运行分析框架...', 65);
+    await this.delay(300);
+    if (onStep) onStep('paths', '生成三条推演路径...', 80);
+    await this.delay(400);
+    if (onStep) onStep('insights', '整合数据与洞察...', 90);
+    await this.delay(300);
+
+    const result = this.generateLocal(text, mood, scope, intensity, timeScale, uncertainty, factors);
+    if (onStep) onStep('complete', '推演完成', 100);
+    return result;
+  }
+
+  delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+}
+
+
+// ============================================================
+//  精简版分析引擎
+// ============================================================
+
+class MiniAnalysisEngine {
+  constructor() {
+    this.frameworks = Object.keys(AnalysisFrameworks);
+  }
+
+  analyze(input) {
+    const { scenario, context = {}, options = [] } = input;
+    const ctx = { ...context };
+
+    const frameworkResults = [];
+    const allInsights = [];
+
+    for (const fwKey of this.frameworks) {
+      const fw = AnalysisFrameworks[fwKey];
+      const insights = fw.analyze(ctx);
+      frameworkResults.push({ name: fw.name, key: fwKey, insights });
+      allInsights.push(...insights.map(i => ({ ...i, framework: fw.name })));
+    }
+
+    const scoredOptions = options.map(option => {
+      const scores = [];
+      for (const fwKey of this.frameworks) {
+        const fw = AnalysisFrameworks[fwKey];
+        if (fw.score) scores.push(fw.score(option, ctx));
+      }
+      const total = scores.length > 0
+        ? scores.reduce((a, b) => a + b.score, 0) / scores.length
+        : 0;
+      return { ...option, scores, total: Math.round(total * 10) / 10 };
+    });
+
+    scoredOptions.sort((a, b) => b.total - a.total);
+
+    const chain = [
+      { label: '观察事实', content: `情境核心：${scenario}` },
+    ];
+
+    const highInsights = allInsights.filter(i => i.severity === 'high');
+    if (highInsights.length > 0) {
+      chain.push({ label: '识别模式', content: highInsights[0].text, sub: highInsights[0].framework });
+    }
+
+    chain.push({ label: '归因动机', content: '先区分三个层次：对方做了什么（事实）、对方为什么这么做（假设）、你为什么这么解读（投射）。大部分冲突源于把第3层当成了第1层。' });
+
+    if (scoredOptions.length > 0) {
+      chain.push({ label: '评估选项', content: `综合评分最高的选项："${scoredOptions[0].text}"（${scoredOptions[0].total}分）` });
+    }
+
+    chain.push({ label: '预测走向', content: '无论你选什么，记住：人的反应往往比你预期的更极端。好的结果不会像你想的那么好，坏的结果也不会像你想的那么坏。', sub: '情绪预测偏差' });
+
+    const tensions = [];
+    tensions.push({ label: '策略张力', text: '短期利益与长期关系之间的矛盾——这是所有社会博弈的核心张力。' });
+    tensions.push({ label: '行动张力', text: '做点什么的冲动 vs 什么都不做的安全。大部分决策焦虑来自这个根本矛盾。' });
+
+    return {
+      frameworks: frameworkResults,
+      options: scoredOptions,
+      chain,
+      tensions,
+      insights: allInsights,
+    };
+  }
+}
+
+
+// ===== 路径模板 =====
+const PATH_TEMPLATES = {
+  财务: {
+    optimistic: (text, time, parsed) => ({
+      title: '开源节流，财务状况逐步改善',
+      driving_factors: ['你开始正视财务问题，这是改变的第一步', '调整消费习惯能释放出意想不到的现金流'],
+      timeline: [
+        { period: '第1周', event: '梳理所有收入支出，发现至少2-3个可以立刻砍掉的"隐形消费"' },
+        { period: '第2-3周', event: '制定了还债/储蓄计划，开始严格执行' },
+        { period: `第1个月`, event: '消费习惯明显改善，月底发现比预期多存了一笔' },
+      ],
+      chain_effects: ['财务压力减轻带来睡眠质量改善', '有钱傍底让你做其他决定时更有底气'],
+      opportunities: ['养成的理财习惯会持续产生复利效应'],
+      risks: ['过度节省可能影响生活质量和社交'],
+      stakeholders: [{ role: '你自己', view: '从焦虑转为掌控，金钱不再是噩梦' }],
+    }),
+    neutral: (text, time) => ({
+      title: '收入和支出基本持平，原地踏步',
+      driving_factors: ['缺乏明确的理财目标和计划', '收入增长赶不上消费欲望的增长'],
+      timeline: [
+        { period: '第1-2周', event: '想过要改变，但迟迟没有行动' },
+        { period: '第3-4周', event: '偶尔记账，但坚持不下来' },
+      ],
+      chain_effects: ['财务焦虑周期性发作'],
+      opportunities: ['现状至少没有恶化，还有调整的空间'],
+      risks: ['通货膨胀在悄悄侵蚀你的购买力'],
+      stakeholders: [{ role: '你自己', view: '知道该管钱了，但总是缺乏执行力' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '消费失控，债务雪球越滚越大',
+      driving_factors: ['情绪化消费成为应对压力的方式', '以贷养贷的恶性循环开始形成'],
+      timeline: [
+        { period: '第1-2周', event: '继续用消费缓解焦虑，信用卡账单又创新高' },
+        { period: '第3-4周', event: '开始拆东墙补西墙，多张信用卡轮转还款' },
+      ],
+      chain_effects: ['长期的财务压力导致焦虑和失眠'],
+      opportunities: ['危机也可能成为彻底改变消费习惯的契机'],
+      risks: ['债务危机可能引发更严重的心理问题'],
+      stakeholders: [{ role: '你自己', view: '被数字压得喘不过气' }],
+    }),
+  },
+
+  职业: {
+    optimistic: (text, time) => ({
+      title: '破局而出，找到新的职业赛道',
+      driving_factors: ['主动出击带来的信息差优势'],
+      timeline: [
+        { period: '第1-2周', event: '更新简历，拓展人脉，获得几个面试机会' },
+        { period: '第3-4周', event: '面试过程中更清晰了自己的定位，收到1-2个offer' },
+      ],
+      chain_effects: ['收入提升带来生活质量改善'],
+      opportunities: ['新行业可能带来意想不到的发展方向'],
+      risks: ['新环境的文化适应需要时间'],
+      stakeholders: [{ role: '你自己', view: '虽然紧张但充满期待' }],
+    }),
+    neutral: (text, time) => ({
+      title: '原地调整，在现有位置上寻找突破',
+      driving_factors: ['现有平台的稳定性价值'],
+      timeline: [
+        { period: '第1-2周', event: '和领导谈了一次，表达了想尝试新方向的想法' },
+        { period: '第3-4周', event: '被安排参与一个新项目，工作内容有了变化' },
+      ],
+      chain_effects: ['暂时缓解了焦虑，但根本矛盾未解决'],
+      opportunities: ['内部转岗的成本远低于外部跳槽'],
+      risks: ['如果新项目也不满意，可能陷入反复纠结'],
+      stakeholders: [{ role: '你自己', view: '选择观望，但内心仍在权衡' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '继续消耗，职业倦怠逐渐加深',
+      driving_factors: ['缺乏改变的勇气或外部条件不支持'],
+      timeline: [
+        { period: '第1-2周', event: '投了几份简历，但回复寥寥' },
+        { period: '第3-4周', event: '面试了几家但都不太合适，开始怀疑自己' },
+      ],
+      chain_effects: ['持续的不满影响工作表现'],
+      opportunities: ['这段经历让你更清楚自己不想要什么'],
+      risks: ['长期职业倦怠可能导致更严重的职业危机'],
+      stakeholders: [{ role: '你自己', view: '感到无力和挫败' }],
+    }),
+  },
+
+  感情: {
+    optimistic: (text, time) => ({
+      title: '坦诚沟通后，关系进入新的阶段',
+      driving_factors: ['真诚的表达打开了对方的心防'],
+      timeline: [
+        { period: '第1周', event: '鼓起勇气表达了自己的真实感受' },
+        { period: '第2-3周', event: '开始更频繁地沟通，发现之前的很多矛盾其实是误解' },
+      ],
+      chain_effects: ['关系的改善提升了整体生活满意度'],
+      opportunities: ['经历过波折的感情往往更牢固'],
+      risks: ['不要因为和好就忽视之前的根本问题'],
+      stakeholders: [{ role: '你自己', view: '从纠结变成释然' }, { role: '对方', view: '感受到你的真诚' }],
+    }),
+    neutral: (text, time) => ({
+      title: '冷淡期持续，关系进入不确定状态',
+      driving_factors: ['双方都不愿意先低头'],
+      timeline: [
+        { period: '第1-2周', event: '冷战继续，偶尔的交流也很表面' },
+        { period: '第3-4周', event: '开始习惯这种疏远的状态' },
+      ],
+      chain_effects: ['长期冷淡会让感情慢慢消磨殆尽'],
+      opportunities: ['冷静期也可以让双方更清楚自己想要什么'],
+      risks: ['拖得越久，和好的难度越大'],
+      stakeholders: [{ role: '你自己', view: '不知道该坚持还是放弃' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '矛盾加深，关系走向破裂边缘',
+      driving_factors: ['核心矛盾始终未被正视'],
+      timeline: [
+        { period: '第1-2周', event: '一次小争吵可能引爆积压已久的情绪' },
+        { period: '第3-4周', event: '开始认真考虑是否还要继续' },
+      ],
+      chain_effects: ['关系的破裂会影响双方的信任感'],
+      opportunities: ['即使分手，也是一种解脱和新的开始'],
+      risks: ['在情绪最激烈的时候做决定往往会后悔'],
+      stakeholders: [{ role: '你自己', view: '疲惫又心痛' }],
+    }),
+  },
+
+  default: {
+    optimistic: (text, time) => ({
+      title: '积极变化正在发生，事情向好的方向发展',
+      driving_factors: ['你的主动应对创造了有利条件'],
+      timeline: [
+        { period: '第1-2周', event: '开始采取行动，心态逐渐从被动转为主动' },
+        { period: '第3-4周', event: '看到一些积极的反馈，信心增强' },
+      ],
+      chain_effects: ['积极的心态带来更多机会'],
+      opportunities: ['这段经历可能成为人生的转折点'],
+      risks: ['不要因为顺利而掉以轻心'],
+      stakeholders: [{ role: '你自己', view: '从焦虑转为自信' }],
+    }),
+    neutral: (text, time) => ({
+      title: '缓慢调整，找到一个中间状态',
+      driving_factors: ['时间带来的自然缓冲'],
+      timeline: [
+        { period: '第1-2周', event: '情绪波动较大' },
+        { period: '第3-4周', event: '开始接受现状，减少内耗' },
+      ],
+      chain_effects: ['心态趋于平稳'],
+      opportunities: ['稳定期是为下一次突破积蓄力量的好时机'],
+      risks: ['可能陷入舒适区'],
+      stakeholders: [{ role: '你自己', view: '不再那么痛苦，但也没有特别满意' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '压力持续，需要做好长期应对准备',
+      driving_factors: ['外部环境没有明显改善'],
+      timeline: [
+        { period: '第1-2周', event: '尝试了一些方法但效果不明显' },
+        { period: '第3-4周', event: '感到疲惫和无力' },
+      ],
+      chain_effects: ['长期压力可能影响身心健康'],
+      opportunities: ['逆境中的成长往往最深刻'],
+      risks: ['需要警惕长期压力带来的健康问题'],
+      stakeholders: [{ role: '你自己', view: '虽然艰难，但没有放弃' }],
+    }),
+  },
+
+  心理: {
+    optimistic: (text, time) => ({
+      title: '开始自我觉察，情绪管理能力明显提升',
+      driving_factors: ['你愿意面对自己的情绪而不是压抑它'],
+      timeline: [
+        { period: '第1周', event: '尝试写情绪日记，开始觉察自己的情绪触发点' },
+        { period: '第2-3周', event: '发现运动或冥想对情绪有明显改善' },
+      ],
+      chain_effects: ['情绪稳定带来决策质量的提升'],
+      opportunities: ['这段自我探索的经历会让你终身受益'],
+      risks: ['不要期望线性进步，情绪的波动是正常的'],
+      stakeholders: [{ role: '你自己', view: '开始和自己和解' }],
+    }),
+    neutral: (text, time) => ({
+      title: '时好时坏，情绪在波动中缓慢调整',
+      driving_factors: ['情绪问题不是一天形成的，也不会一天解决'],
+      timeline: [
+        { period: '第1-2周', event: '好的日子和坏的日子交替出现' },
+        { period: '第3-4周', event: '偶尔尝试一些调节方法，但没有坚持' },
+      ],
+      chain_effects: ['长期的情绪波动会消耗大量心理能量'],
+      opportunities: ['波动本身也说明你还有感受力'],
+      risks: ['如果持续超过三个月没有改善，建议寻求专业帮助'],
+      stakeholders: [{ role: '你自己', view: '有点累了，但还在撑着' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '情绪问题加重，开始影响日常生活',
+      driving_factors: ['问题的根源没有被触及'],
+      timeline: [
+        { period: '第1-2周', event: '情绪低落的时间越来越长' },
+        { period: '第3-4周', event: '开始影响工作效率、社交和睡眠' },
+      ],
+      chain_effects: ['情绪问题影响工作/学业，反过来加重情绪问题'],
+      opportunities: ['危机可能是促使你真正寻求帮助的契机'],
+      risks: ['长期的情绪问题可能导致抑郁症等临床问题'],
+      stakeholders: [{ role: '你自己', view: '感觉被困住了' }],
+    }),
+  },
+
+  家庭: {
+    optimistic: (text, time) => ({
+      title: '找到边界感，家庭关系趋于健康',
+      driving_factors: ['你开始学会在爱和自我之间找到平衡'],
+      timeline: [
+        { period: '第1-2周', event: '尝试温和但坚定地表达自己的边界' },
+        { period: '第3-4周', event: '虽然有摩擦，但家人开始慢慢尊重你的选择' },
+      ],
+      chain_effects: ['健康的家庭关系提升了整体幸福感'],
+      opportunities: ['你的改变可能会带动整个家庭系统的改善'],
+      risks: ['改变的过程中会有反复，需要耐心'],
+      stakeholders: [{ role: '你自己', view: '从"忍"变成"沟通"' }],
+    }),
+    neutral: (text, time) => ({
+      title: '维持表面和平，核心问题悬而未决',
+      driving_factors: ['改变家庭关系需要勇气和时机'],
+      timeline: [
+        { period: '第1-2周', event: '想改变但不知道怎么开口' },
+        { period: '第3-4周', event: '偶尔尝试表达，但很快被旧模式淹没' },
+      ],
+      chain_effects: ['压抑的情绪会以其他方式表现出来'],
+      opportunities: ['稳定至少意味着没有恶化'],
+      risks: ['长期压抑可能导致情绪爆发'],
+      stakeholders: [{ role: '你自己', view: '习惯了，但偶尔还是会觉得委屈' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '矛盾升级，家庭关系陷入僵局',
+      driving_factors: ['长期积累的矛盾到了临界点'],
+      timeline: [
+        { period: '第1-2周', event: '一次冲突可能引爆所有积怨' },
+        { period: '第3-4周', event: '互相不理解，沟通变成争吵' },
+      ],
+      chain_effects: ['家庭矛盾会影响工作和社交'],
+      opportunities: ['危机也可能打破僵局'],
+      risks: ['家庭关系的破裂对所有成员都是巨大的伤害'],
+      stakeholders: [{ role: '你自己', view: '心累又无奈' }],
+    }),
+  },
+
+  创业: {
+    optimistic: (text, time) => ({
+      title: '验证需求，找到可行的商业模式',
+      driving_factors: ['你发现了一个真实存在的市场需求'],
+      timeline: [
+        { period: '第1-2周', event: '用MVP测试市场反应，收到真实用户反馈' },
+        { period: '第3-4周', event: '根据反馈快速迭代，产品方向开始清晰' },
+      ],
+      chain_effects: ['早期用户成为口碑传播的种子'],
+      opportunities: ['这段经历培养的创业思维终身受用'],
+      risks: ['初期的成功可能是幸存者偏差'],
+      stakeholders: [{ role: '你自己', view: '从"想做"变成"在做"' }],
+    }),
+    neutral: (text, time) => ({
+      title: '想法很多但缺乏执行，原地踏步',
+      driving_factors: ['完美主义让你迟迟不肯开始'],
+      timeline: [
+        { period: '第1-2周', event: '看了大量创业课程和文章，但没有动手' },
+        { period: '第3-4周', event: '写了几版商业计划书，但总觉得不够完善' },
+      ],
+      chain_effects: ['准备的时间越长，启动的阻力越大'],
+      opportunities: ['充分的准备也可以减少试错成本'],
+      risks: ['市场窗口可能在你准备的过程中关闭'],
+      stakeholders: [{ role: '你自己', view: '脑子里在创业，现实中在准备' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '投入过多但市场不买账',
+      driving_factors: ['对市场需求的判断出现偏差'],
+      timeline: [
+        { period: '第1-2周', event: '产品上线但反响冷淡' },
+        { period: '第3-4周', event: '尝试了几种获客方式，成本都太高' },
+      ],
+      chain_effects: ['财务压力影响判断'],
+      opportunities: ['及时止损也是成功'],
+      risks: ['不甘心导致持续投入，亏损扩大'],
+      stakeholders: [{ role: '你自己', view: '不甘心但也疲惫了' }],
+    }),
+  },
+
+  教育: {
+    optimistic: (text, time) => ({
+      title: '找到适合自己的节奏，成绩稳步提升',
+      driving_factors: ['调整学习方法后效率明显提高'],
+      timeline: [
+        { period: '第1周', event: '分析了自己的薄弱环节，制定了针对性计划' },
+        { period: '第2-3周', event: '开始用费曼学习法，发现很多以为懂的知识其实没懂' },
+      ],
+      chain_effects: ['成绩提升带来的正反馈让学习动力更强'],
+      opportunities: ['好的学习习惯一旦形成，后续学习会越来越轻松'],
+      risks: ['不要因为进步就松懈'],
+      stakeholders: [{ role: '你自己', view: '从"我不行"变成"我可以试试"' }],
+    }),
+    neutral: (text, time) => ({
+      title: '不上不下，维持现状',
+      driving_factors: ['缺乏足够的动力或压力去改变'],
+      timeline: [
+        { period: '第1-2周', event: '按部就班地上课、写作业' },
+        { period: '第3-4周', event: '偶尔焦虑一下，但很快被日常节奏冲淡' },
+      ],
+      chain_effects: ['稳定但没有突破，时间在不知不觉中流逝'],
+      opportunities: ['稳定期也是积蓄力量的时期'],
+      risks: ['如果不主动寻求突破，可能错过关键的提升窗口期'],
+      stakeholders: [{ role: '你自己', view: '说不上满意也说不上不满意' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '学习动力持续下降，陷入恶性循环',
+      driving_factors: ['越学越没信心，越没信心越不想学'],
+      timeline: [
+        { period: '第1-2周', event: '上课走神、作业拖延的情况加重' },
+        { period: '第3-4周', event: '开始逃避学习相关的讨论' },
+      ],
+      chain_effects: ['成绩下滑导致自我评价降低'],
+      opportunities: ['低谷也可能是重新审视"为什么学"的契机'],
+      risks: ['固定型思维一旦形成，需要专业干预才能打破'],
+      stakeholders: [{ role: '你自己', view: '对学习彻底失去了兴趣和信心' }],
+    }),
+  },
+
+  健康: {
+    optimistic: (text, time) => ({
+      title: '问题发现及时，积极干预效果明显',
+      driving_factors: ['早期发现是治疗成功的关键'],
+      timeline: [
+        { period: '第1周', event: '做了全面检查，医生给出了明确的改善方案' },
+        { period: '第2-4周', event: '开始执行改善方案：规律作息、调整饮食、适度运动' },
+      ],
+      chain_effects: ['身体改善带来情绪改善'],
+      opportunities: ['这次健康警报可能成为生活方式的转折点'],
+      risks: ['改善后容易松懈'],
+      stakeholders: [{ role: '你自己', view: '从害怕变成积极' }],
+    }),
+    neutral: (text, time) => ({
+      title: '问题存在但没有明显恶化',
+      driving_factors: ['有些健康问题确实需要时间观察'],
+      timeline: [
+        { period: '第1-2周', event: '做了基本检查，医生说观察即可' },
+        { period: '第3-4周', event: '偶尔会担心，但日常基本不受影响' },
+      ],
+      chain_effects: ['定期检查的习惯建立起来了'],
+      opportunities: ['观察期也是了解自己身体的好机会'],
+      risks: ['如果忽视定期复查，可能错过最佳干预窗口'],
+      stakeholders: [{ role: '你自己', view: '不再那么紧张了，但也没有完全放心' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '忽视身体信号，小问题可能发展为大问题',
+      driving_factors: ['工作生活太忙，总是把健康排在最后'],
+      timeline: [
+        { period: '第1-2周', event: '觉得"应该没什么大事"，拖延就医' },
+        { period: '第3-4周', event: '症状时好时坏，用止痛药凑合' },
+      ],
+      chain_effects: ['拖延就医导致治疗难度和成本增加'],
+      opportunities: ['现在行动还不晚，越早越好'],
+      risks: ['小病拖成大病的案例比比皆是'],
+      stakeholders: [{ role: '你自己', view: '心里知道该管了，但总是有借口' }],
+    }),
+  },
+
+  科技: {
+    optimistic: (text, time) => ({
+      title: '主动学习新技术，反而获得了竞争优势',
+      driving_factors: ['恐惧转化为学习动力'],
+      timeline: [
+        { period: '第1-2周', event: '开始系统学习AI相关技能' },
+        { period: '第3-4周', event: '在工作中尝试用AI工具提效，效果显著' },
+      ],
+      chain_effects: ['技能提升带来职业安全感'],
+      opportunities: ['掌握AI工具的人会比被取代的人更有价值'],
+      risks: ['技术变化快，需要持续学习'],
+      stakeholders: [{ role: '你自己', view: '从恐惧变成好奇' }],
+    }),
+    neutral: (text, time) => ({
+      title: '观望中，不确定该不该投入时间学习',
+      driving_factors: ['信息过载导致选择困难'],
+      timeline: [
+        { period: '第1-2周', event: '看了很多关于AI的新闻，越看越焦虑' },
+        { period: '第3-4周', event: '偶尔尝试了一些AI工具，但没有深入' },
+      ],
+      chain_effects: ['焦虑在持续，但行动跟不上'],
+      opportunities: ['至少你开始关注这个领域了'],
+      risks: ['等到"必须学"的时候再学，可能已经晚了'],
+      stakeholders: [{ role: '你自己', view: '知道重要，但总是拖' }],
+    }),
+    pessimistic: (text, time) => ({
+      title: '持续焦虑但没有行动，被时代甩开',
+      driving_factors: ['恐惧让人瘫痪而不是行动'],
+      timeline: [
+        { period: '第1-2周', event: '继续刷焦虑新闻，但没有开始学习' },
+        { period: '第3-4周', event: '看到同行开始用AI提效，更加焦虑' },
+      ],
+      chain_effects: ['焦虑-逃避-更焦虑的恶性循环'],
+      opportunities: ['任何时候开始都不算晚'],
+      risks: ['技术替代是不可逆的趋势'],
+      stakeholders: [{ role: '你自己', view: '被困在焦虑里' }],
+    }),
+  },
+};
+
+window.PredictionEngine = PredictionEngine;
+window.parseUserInput = parseUserInput;
+window.generateProfile = generateProfile;
+window.EMOTION_MAP = EMOTION_MAP;
+window.SCOPE_LABELS = SCOPE_LABELS;
+window.TIME_LABELS = TIME_LABELS;
+window.INTENSITY_LABELS = INTENSITY_LABELS;
+window.UNCERTAINTY_LABELS = UNCERTAINTY_LABELS;
+window.AnalysisFrameworks = AnalysisFrameworks;
+window.MiniAnalysisEngine = MiniAnalysisEngine;
+
+</script>
+<script>
+/**
+ * MiroFish v9 — 滚动叙事主应用
+ * IntersectionObserver 触发 / 命运河流 Canvas / 心理画像雷达图
+ * 动画计数器 / 决策矩阵 / 毒舌转折 / 投票弹窗
+ */
+
+class App {
+  constructor() {
+    this.engine = new PredictionEngine();
+    this.selectedMood = null;
+    this.selectedFactors = new Set();
+    this.lastResult = null;
+    this.twistState = {};
+    this.animCounters = new Set();
+
+    this.init();
+  }
+
+  init() {
+    this.setupDailyQuote();
+    this.setupInput();
+    this.setupMoodSelector();
+    this.setupFactors();
+    this.setupControls();
+    this.setupRandomDilemma();
+    this.setupScrollObserver();
+    this.setupActions();
+  }
+
+  // ===== Daily Quote =====
+  setupDailyQuote() {
+    const el = document.getElementById('dailyQuote');
+    if (!el) return;
+    const today = new Date();
+    const idx = (today.getFullYear() * 366 + today.getMonth() * 31 + today.getDate()) % DAILY_QUOTES.length;
+    const q = DAILY_QUOTES[idx];
+    el.innerHTML = `"${q.text}"<span class="quote-author">-- ${q.author}</span>`;
+  }
+
+  // ===== Input =====
+  setupInput() {
+    const textarea = document.getElementById('userInput');
+    const btn = document.getElementById('btnAnalyze');
+    if (!textarea || !btn) return;
+
+    textarea.addEventListener('input', () => {
+      btn.disabled = textarea.value.trim().length === 0;
+    });
+
+    btn.addEventListener('click', () => {
+      if (textarea.value.trim()) this.startAnalysis();
+    });
+  }
+
+  // ===== Mood Selector =====
+  setupMoodSelector() {
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.selectedMood = btn.dataset.mood;
+      });
+    });
+  }
+
+  // ===== Factors =====
+  setupFactors() {
+    document.querySelectorAll('.factor-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const f = chip.dataset.factor;
+        if (this.selectedFactors.has(f)) {
+          this.selectedFactors.delete(f);
+          chip.classList.remove('active');
+        } else {
+          this.selectedFactors.add(f);
+          chip.classList.add('active');
+        }
+      });
+    });
+  }
+
+  // ===== Controls =====
+  setupControls() {
+    const sliders = [
+      { id: 'slScope', valId: 'valScope', labels: SCOPE_LABELS },
+      { id: 'slIntensity', valId: 'valIntensity', labels: INTENSITY_LABELS },
+      { id: 'slTime', valId: 'valTime', labels: TIME_LABELS },
+      { id: 'slUncertainty', valId: 'valUncertainty', labels: UNCERTAINTY_LABELS },
+    ];
+    sliders.forEach(s => {
+      const el = document.getElementById(s.id);
+      const val = document.getElementById(s.valId);
+      if (el && val) {
+        el.addEventListener('input', () => { val.textContent = s.labels[el.value]; });
+      }
+    });
+  }
+
+  // ===== Random Dilemma =====
+  setupRandomDilemma() {
+    const btn = document.getElementById('btnRandom');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const dilemma = RANDOM_DILEMMAS[Math.floor(Math.random() * RANDOM_DILEMMAS.length)];
+      const textarea = document.getElementById('userInput');
+      textarea.value = dilemma;
+      textarea.dispatchEvent(new Event('input'));
+    });
+  }
+
+  // ===== Scroll Observer =====
+  setupScrollObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+
+          // Trigger animated counters
+          if (entry.target.querySelector('.stat-value[data-target]')) {
+            this.animateCounters(entry.target);
+          }
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.section').forEach(s => observer.observe(s));
+  }
+
+  // ===== Animated Counters =====
+  animateCounters(container) {
+    container.querySelectorAll('.stat-value[data-target]').forEach(el => {
+      if (this.animCounters.has(el)) return;
+      this.animCounters.add(el);
+
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1500;
+      const start = performance.now();
+
+      const animate = (now) => {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = target * eased;
+
+        if (Number.isInteger(target)) {
+          el.textContent = Math.round(current);
+        } else {
+          el.textContent = current.toFixed(1);
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          el.textContent = Number.isInteger(target) ? target : target.toFixed(1);
+          const suffixEl = el.nextElementSibling;
+          if (suffixEl && suffixEl.classList.contains('stat-suffix')) {
+            suffixEl.textContent = suffix;
+          }
+        }
+      };
+
+      requestAnimationFrame(animate);
+    });
+  }
+
+  // ===== Start Analysis =====
+  async startAnalysis() {
+    const text = document.getElementById('userInput').value;
+    const mood = this.selectedMood || 'neutral';
+    const scope = parseInt(document.getElementById('slScope')?.value || 3);
+    const intensity = parseInt(document.getElementById('slIntensity')?.value || 3);
+    const timeScale = parseInt(document.getElementById('slTime')?.value || 3);
+    const uncertainty = parseInt(document.getElementById('slUncertainty')?.value || 3);
+    const factors = [...this.selectedFactors];
+
+    // Show loading
+    const loading = document.getElementById('loadingOverlay');
+    const progressEl = document.getElementById('loadingProgress');
+    const textEl = document.getElementById('loadingText');
+    const insightEl = document.getElementById('loadingInsightText');
+    loading.classList.add('active');
+
+    const insights = LOADING_INSIGHTS;
+    let insightIdx = Math.floor(Math.random() * insights.length);
+    const insightTimer = setInterval(() => {
+      insightEl.textContent = insights[insightIdx % insights.length];
+      insightIdx++;
+    }, 3000);
+    insightEl.textContent = insights[insightIdx % insights.length];
+
+    try {
+      const result = await this.engine.run(text, mood, scope, intensity, timeScale, uncertainty, factors,
+        (step, msg, progress) => {
+          textEl.textContent = msg;
+          progressEl.style.width = progress + '%';
+        }
+      );
+
+      this.lastResult = result;
+      this.twistState = {};
+
+      clearInterval(insightTimer);
+      loading.classList.remove('active');
+
+      this.renderResults(result);
+      this.showResultsSection();
+
+    } catch (err) {
+      console.error('Analysis failed:', err);
+      clearInterval(insightTimer);
+      loading.classList.remove('active');
+      alert('分析出错，请重试');
+    }
+  }
+
+  // ===== Show Results Section =====
+  showResultsSection() {
+    const results = document.getElementById('results');
+    if (results) {
+      results.classList.remove('hidden');
+      // Re-observe all sections now that they're visible
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            if (entry.target.querySelector('.stat-value[data-target]')) {
+              this.animateCounters(entry.target);
+            }
+          }
+        });
+      }, { threshold: 0.15 });
+      results.querySelectorAll('.section').forEach(s => observer.observe(s));
+      results.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // ===== Render All Results =====
+  renderResults(result) {
+    this.renderEmpathy(result);
+    this.renderRiver(result);
+    this.renderPaths(result);
+    this.renderRadar(result);
+    this.renderStats(result);
+    this.renderDecisionMatrix(result);
+    this.renderReadingCards(result);
+    this.renderPsychology(result);
+    this.renderAdvice(result);
+    this.renderAnalysis(result);
+    this.setupTwistButtons(result);
+    this.setupVotePopup(result);
+  }
+
+  // ===== Empathy =====
+  renderEmpathy(result) {
+    const el = document.getElementById('empathyText');
+    if (el) el.textContent = result.empathy || '';
+    const tag = document.getElementById('domainTag');
+    if (tag) tag.textContent = result.domain || '日常';
+  }
+
+  // ===== River of Fate Canvas =====
+  renderRiver(result) {
+    const canvas = document.getElementById('riverCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+
+    const W = rect.width;
+    const H = rect.height;
+    const opt = result.optimistic.probability / 100;
+    const neu = result.neutral.probability / 100;
+    const pess = result.pessimistic.probability / 100;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Background gradient
+    const bgGrad = ctx.createLinearGradient(0, 0, W, 0);
+    bgGrad.addColorStop(0, 'rgba(168, 85, 247, 0.03)');
+    bgGrad.addColorStop(1, 'rgba(34, 211, 238, 0.03)');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw three flowing streams
+    const streams = [
+      { prob: opt, color: '#34d399', label: '乐观', yBase: H * 0.25 },
+      { prob: neu, color: '#f59e0b', label: '中性', yBase: H * 0.5 },
+      { prob: pess, color: '#ef4444', label: '悲观', yBase: H * 0.75 },
+    ];
+
+    const time = performance.now() / 1000;
+
+    streams.forEach(stream => {
+      const width = Math.max(8, stream.prob * 60);
+
+      // Draw flowing stream
+      ctx.beginPath();
+      ctx.moveTo(0, stream.yBase);
+
+      for (let x = 0; x <= W; x += 2) {
+        const wave1 = Math.sin(x * 0.015 + time * 1.5) * 8;
+        const wave2 = Math.sin(x * 0.008 + time * 0.8 + 1) * 5;
+        const y = stream.yBase + wave1 + wave2;
+        ctx.lineTo(x, y);
+      }
+
+      ctx.strokeStyle = stream.color;
+      ctx.lineWidth = width;
+      ctx.globalAlpha = 0.3;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Glow effect
+      ctx.strokeStyle = stream.color;
+      ctx.lineWidth = width * 0.4;
+      ctx.globalAlpha = 0.6;
+      ctx.stroke();
+
+      ctx.globalAlpha = 1;
+
+      // Draw particles along stream
+      for (let i = 0; i < 6; i++) {
+        const px = ((time * 40 + i * W / 6) % (W + 20)) - 10;
+        const wave1 = Math.sin(px * 0.015 + time * 1.5) * 8;
+        const wave2 = Math.sin(px * 0.008 + time * 0.8 + 1) * 5;
+        const py = stream.yBase + wave1 + wave2;
+
+        ctx.beginPath();
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.fillStyle = stream.color;
+        ctx.globalAlpha = 0.8;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      // Label
+      ctx.fillStyle = stream.color;
+      ctx.globalAlpha = 0.7;
+      ctx.font = '12px "Noto Sans SC", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`${stream.label} ${Math.round(stream.prob * 100)}%`, 12, stream.yBase - width / 2 - 8);
+      ctx.globalAlpha = 1;
+    });
+
+    // Animate
+    if (!this._riverAnimating) {
+      this._riverAnimating = true;
+      const animateRiver = () => {
+        if (this.lastResult) this.renderRiver(this.lastResult);
+        this._riverRAF = requestAnimationFrame(animateRiver);
+      };
+      animateRiver();
+    }
+  }
+
+  // ===== Path Cards =====
+  renderPaths(result) {
+    const paths = [
+      { key: 'optimistic', data: result.optimistic, label: '乐观路径', color: 'optimistic' },
+      { key: 'neutral', data: result.neutral, label: '中性路径', color: 'neutral' },
+      { key: 'pessimistic', data: result.pessimistic, label: '悲观路径', color: 'pessimistic' },
+    ];
+
+    paths.forEach(p => {
+      const card = document.getElementById(`path-${p.key}`);
+      if (!card) return;
+
+      let html = `
+        <div class="path-label">${p.label}</div>
+        <div class="path-title">${p.data.title}</div>
+        <div class="probability" data-target="${p.data.probability}" data-suffix="%">0</div>
+        <div class="prob-label">概率</div>
+      `;
+
+      if (p.data.driving_factors?.length) {
+        html += `<ul class="factors-list">${p.data.driving_factors.map(f => `<li>${f}</li>`).join('')}</ul>`;
+      }
+
+      if (p.data.timeline?.length) {
+        html += `<div class="timeline">${p.data.timeline.map(t => `
+          <div class="timeline-item">
+            <div class="period">${t.period}</div>
+            <div class="event">${t.event}</div>
+          </div>
+        `).join('')}</div>`;
+      }
+
+      if (p.data.chain_effects?.length) {
+        html += `<div style="margin-bottom:12px"><div style="font-size:0.75rem;color:var(--accent-cyan);font-weight:600;margin-bottom:6px">连锁效应</div><ul class="factors-list">${p.data.chain_effects.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
+      }
+
+      if (p.data.risks?.length) {
+        html += `<div style="margin-bottom:12px"><div style="font-size:0.75rem;color:var(--accent-red);font-weight:600;margin-bottom:6px">风险</div><ul class="factors-list">${p.data.risks.map(r => `<li>${r}</li>`).join('')}</ul></div>`;
+      }
+
+      html += `<button class="btn-twist" id="twist-${p.key}">毒舌一下</button>`;
+      html += `<div class="twist-text" id="twist-text-${p.key}"></div>`;
+
+      card.innerHTML = html;
+
+      // Animate probability counter
+      setTimeout(() => {
+        const probEl = card.querySelector('.probability');
+        if (probEl) this.animateSingleCounter(probEl);
+      }, 300);
+    });
+  }
+
+  animateSingleCounter(el) {
+    const target = parseFloat(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const duration = 1200;
+    const start = performance.now();
+
+    const animate = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if (progress < 1) requestAnimationFrame(animate);
+      else el.textContent = target + suffix;
+    };
+
+    requestAnimationFrame(animate);
+  }
+
+  // ===== Radar Chart Canvas =====
+  renderRadar(result) {
+    if (!result.profile) return;
+    const canvas = document.getElementById('radarCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const size = 300;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    ctx.scale(dpr, dpr);
+
+    const cx = size / 2;
+    const cy = size / 2;
+    const radius = 110;
+    const dims = Object.keys(PROFILE_DIMENSIONS);
+    const n = dims.length;
+    const angleStep = (Math.PI * 2) / n;
+
+    ctx.clearRect(0, 0, size, size);
+
+    // Draw grid rings
+    for (let ring = 1; ring <= 4; ring++) {
+      const r = (radius * ring) / 4;
+      ctx.beginPath();
+      for (let i = 0; i <= n; i++) {
+        const angle = i * angleStep - Math.PI / 2;
+        const x = cx + r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(168, 85, 247, 0.08)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Draw axes
+    for (let i = 0; i < n; i++) {
+      const angle = i * angleStep - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle));
+      ctx.strokeStyle = 'rgba(168, 85, 247, 0.1)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Draw labels
+    ctx.fillStyle = '#8888a0';
+    ctx.font = '11px "Noto Sans SC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    dims.forEach((key, i) => {
+      const angle = i * angleStep - Math.PI / 2;
+      const labelR = radius + 20;
+      const x = cx + labelR * Math.cos(angle);
+      const y = cy + labelR * Math.sin(angle);
+      ctx.fillText(PROFILE_DIMENSIONS[key].label, x, y);
+    });
+
+    // Draw data polygon
+    const values = dims.map(key => result.profile[key] || 0.5);
+
+    ctx.beginPath();
+    values.forEach((v, i) => {
+      const angle = i * angleStep - Math.PI / 2;
+      const r = radius * v;
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+
+    // Fill
+    const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+    gradient.addColorStop(0, 'rgba(168, 85, 247, 0.3)');
+    gradient.addColorStop(1, 'rgba(34, 211, 238, 0.1)');
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Stroke
+    ctx.strokeStyle = 'rgba(168, 85, 247, 0.8)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Draw dots
+    values.forEach((v, i) => {
+      const angle = i * angleStep - Math.PI / 2;
+      const r = radius * v;
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#a855f7';
+      ctx.fill();
+      ctx.strokeStyle = '#0a0a0f';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    // Render legend
+    const legend = document.getElementById('radarLegend');
+    if (legend) {
+      legend.innerHTML = dims.map(key => {
+        const dim = PROFILE_DIMENSIONS[key];
+        const val = Math.round((result.profile[key] || 0.5) * 100);
+        const desc = val > 60 ? dim.high : (val < 40 ? dim.low : '居中');
+        return `
+          <div class="radar-legend-item">
+            <span class="dim-label">${dim.label}</span>
+            <div class="dim-bar"><div class="dim-bar-fill" style="width:${val}%"></div></div>
+            <span class="dim-value">${val}%</span>
+            <span class="dim-desc">${desc}</span>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // ===== Stats =====
+  renderStats(result) {
+    const grid = document.getElementById('statsGrid');
+    if (!grid || !result.stats) return;
+
+    grid.innerHTML = result.stats.map(s => `
+      <div class="stat-card">
+        <div>
+          <span class="stat-value" data-target="${s.value}" data-suffix="${s.suffix}">0</span>
+          <span class="stat-suffix"></span>
+        </div>
+        <div class="stat-label">${s.label}</div>
+        <div class="stat-desc">${s.desc}</div>
+        <div class="stat-source">${s.source}</div>
+      </div>
+    `).join('');
+
+    // Trigger counter animation directly (IntersectionObserver may miss already-visible elements)
+    const statsSection = grid.closest('.section');
+    if (statsSection) {
+      setTimeout(() => this.animateCounters(statsSection), 500);
+    }
+  }
+
+  // ===== Decision Matrix =====
+  renderDecisionMatrix(result) {
+    const container = document.getElementById('decisionMatrix');
+    if (!container || !result.analysis?.options) return;
+
+    const options = result.analysis.options;
+    if (options.length === 0) return;
+
+    const dims = options[0]?.scores?.map(s => s.dim) || [];
+
+    let html = `<table class="matrix-table">
+      <thead><tr>
+        <th>选项</th>
+        ${dims.map(d => `<th>${d}</th>`).join('')}
+        <th>总分</th>
+      </tr></thead><tbody>`;
+
+    options.forEach(opt => {
+      html += `<tr>
+        <td class="option-name">${opt.text}</td>
+        ${opt.scores.map(s => {
+          const cls = s.score > 1 ? 'score-positive' : s.score < -1 ? 'score-negative' : 'score-neutral';
+          return `<td class="score-cell ${cls}">${s.score > 0 ? '+' : ''}${s.score}</td>`;
+        }).join('')}
+        <td class="total-score" style="color:${opt.total > 0 ? 'var(--accent-green)' : opt.total < 0 ? 'var(--accent-red)' : 'var(--accent-orange)'}">${opt.total > 0 ? '+' : ''}${opt.total}</td>
+      </tr>`;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }
+
+  // ===== Reading Cards =====
+  renderReadingCards(result) {
+    const grid = document.getElementById('readingCards');
+    if (!grid || !result.readingCards) return;
+
+    grid.innerHTML = result.readingCards.map(c => `
+      <div class="reading-card">
+        <div class="card-type ${c.type}">${c.icon}</div>
+        <div class="card-title">${c.title}</div>
+        <div class="card-content">${c.content}</div>
+        ${c.source ? `<div class="card-source">${c.source}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  // ===== Psychology =====
+  renderPsychology(result) {
+    const card = document.getElementById('psychologyCard');
+    if (!card || !result.psychology) return;
+
+    card.innerHTML = `
+      <div class="psych-title">${result.psychology.title}</div>
+      <div class="psych-content">${result.psychology.content}</div>
+    `;
+  }
+
+  // ===== Advice =====
+  renderAdvice(result) {
+    const list = document.getElementById('adviceList');
+    if (!list || !result.advice) return;
+
+    list.innerHTML = result.advice.map(a => `
+      <div class="advice-item">
+        <div class="advice-icon">${(a.icon || 'tip').substring(0, 2).toUpperCase()}</div>
+        <div class="advice-text">${a.text}</div>
+      </div>
+    `).join('');
+  }
+
+  // ===== Analysis =====
+  renderAnalysis(result) {
+    const container = document.getElementById('analysisContent');
+    if (!container || !result.analysis) return;
+
+    const analysis = result.analysis;
+    let html = '';
+
+    // Chain
+    if (analysis.chain?.length) {
+      html += `<div class="chain-list">${analysis.chain.map((step, i) => `
+        <div class="chain-item">
+          <div class="chain-label">${step.label}</div>
+          <div class="chain-content">${step.content}</div>
+          ${step.sub ? `<div class="chain-sub">${step.sub}</div>` : ''}
+        </div>
+      `).join('')}</div>`;
+    }
+
+    // Tensions
+    if (analysis.tensions?.length) {
+      html += `<div class="tensions-list">${analysis.tensions.map(t => `
+        <div class="tension-item">
+          <div class="tension-label">${t.label}</div>
+          <div class="tension-text">${t.text}</div>
+        </div>
+      `).join('')}</div>`;
+    }
+
+    container.innerHTML = html;
+  }
+
+  // ===== Twist Buttons =====
+  setupTwistButtons(result) {
+    ['optimistic', 'neutral', 'pessimistic'].forEach(key => {
+      const btn = document.getElementById(`twist-${key}`);
+      const textEl = document.getElementById(`twist-text-${key}`);
+      if (!btn || !textEl) return;
+
+      btn.addEventListener('click', () => {
+        const twists = result.twists || TWIST_REPLACEMENTS.default;
+        if (!this.twistState[key]) {
+          const twist = twists[Math.floor(Math.random() * twists.length)];
+          textEl.textContent = twist;
+          textEl.classList.add('show');
+          this.twistState[key] = true;
+        } else {
+          textEl.classList.remove('show');
+          this.twistState[key] = false;
+        }
+      });
+    });
+  }
+
+  // ===== Vote Popup =====
+  setupVotePopup(result) {
+    setTimeout(() => {
+      const popup = document.getElementById('votePopup');
+      if (!popup) return;
+
+      popup.classList.add('active');
+
+      const options = popup.querySelectorAll('.vote-option');
+      options.forEach(opt => {
+        opt.addEventListener('click', () => {
+          options.forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+
+          setTimeout(() => {
+            popup.classList.remove('active');
+          }, 1500);
+        });
+      });
+
+      const closeBtn = popup.querySelector('.vote-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => popup.classList.remove('active'));
+      }
+    }, 2000);
+  }
+
+  // ===== Actions =====
+  setupActions() {
+    const btnAgain = document.getElementById('btnAgain');
+    if (btnAgain) {
+      btnAgain.addEventListener('click', () => {
+        document.getElementById('results')?.classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    const btnShare = document.getElementById('btnShare');
+    if (btnShare) {
+      btnShare.addEventListener('click', () => {
+        if (!this.lastResult) return;
+        const r = this.lastResult;
+        const text = `MiroFish 未来推演\n\n${r.empathy}\n\n乐观 ${r.optimistic.probability}%：${r.optimistic.title}\n中性 ${r.neutral.probability}%：${r.neutral.title}\n悲观 ${r.pessimistic.probability}%：${r.pessimistic.title}`;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板'));
+        }
+      });
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.app = new App();
+});
+
+</script>
+</body>
+</html>
