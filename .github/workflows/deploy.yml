@@ -5,26 +5,16 @@ on:
     branches: [master]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            index.html
-            narrative-core.js
-            demo.html
-          sparse-checkout-cone-mode: false
-      - name: Prepare site
-        run: |
-          mkdir -p _site
-          cp index.html _site/
-          cp narrative-core.js _site/
-          cp demo.html _site/
-          touch _site/.nojekyll
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
+          publish_dir: .
           force_orphan: true
