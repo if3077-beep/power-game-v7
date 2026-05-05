@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>权力的游戏 — 人情世故闯关</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+  --bg: #0a0a0a;
+  --text: #e8e4de;
+  --muted: #6b6560;
+  --accent-w: #c9a96e;
+  --accent-m: #8b4513;
+  --card-bg: rgba(255,255,255,0.03);
+  --card-border: rgba(255,255,255,0.06);
+  --danger: #c45c4a;
+  --success: #6b8f71;
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Serif SC', sans-serif;
+  overflow-x: hidden;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content:'';
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9999;
+}
+
+#particles { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+#cursorGlow { position:fixed; width:300px; height:300px; border-radius:50%; pointer-events:none; z-index:1; background:radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 70%); transform:translate(-50%,-50%); transition:opacity 0.3s; }
+
+.screen { display:none; min-height:100vh; position:relative; z-index:2; }
+.screen.active { display:flex; flex-direction:column; }
+
+/* ====== LANDING ====== */
+#landing { align-items:center; justify-content:center; text-align:center; padding:2rem; }
+
+#landing h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight:900; letter-spacing:0.1em; margin-bottom:0.5rem;
+  background: linear-gradient(135deg, var(--text), var(--accent-w));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  animation: fadeUp 1.2s ease-out;
+}
+
+#landing .subtitle {
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  color: var(--muted); margin-bottom:2rem;
+  animation: fadeUp 1.2s ease-out 0.3s both; font-style:italic;
+}
+
+#landing .book-tags {
+  display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:center;
+  margin-bottom:3rem; animation: fadeUp 1.2s ease-out 0.5s both;
+}
+.book-tag {
+  padding:0.3rem 0.8rem; font-size:0.65rem; letter-spacing:0.1em;
+  border:1px solid var(--glass-border); color:var(--muted);
+  background:var(--glass); border-radius:2px;
+}
+
+.divider-line { width:60px; height:1px; background:var(--muted); margin:0 auto 3rem; animation: fadeUp 1.2s ease-out 0.6s both; }
+
+.choice-cards { display:flex; gap:2rem; flex-wrap:wrap; justify-content:center; animation: fadeUp 1.2s ease-out 0.7s both; }
+
+.choice-card {
+  width:360px; padding:3rem 2rem;
+  background: var(--card-bg); border:1px solid var(--card-border);
+  cursor:pointer; transition: all 0.5s cubic-bezier(0.23,1,0.32,1);
+  position:relative; overflow:hidden;
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+}
+.choice-card::before {
+  content:''; position:absolute; top:0; left:0; width:100%; height:2px;
+  background: linear-gradient(90deg, transparent, var(--accent-w), transparent);
+  transform:scaleX(0); transition:transform 0.5s ease;
+}
+.choice-card:hover::before { transform:scaleX(1); }
+.choice-card:hover { background: rgba(255,255,255,0.06); transform:translateY(-4px); border-color: rgba(255,255,255,0.12); }
+
+.choice-card .card-era { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.3em; color:var(--accent-w); margin-bottom:1.5rem; }
+.choice-card h2 { font-family:'Noto Serif SC', serif; font-size:1.6rem; font-weight:700; margin-bottom:1rem; line-height:1.4; }
+.choice-card p { font-size:0.85rem; color:var(--muted); line-height:1.7; }
+.choice-card .card-icon { font-size:2.5rem; margin-bottom:1rem; display:block; }
+.choice-card .card-stats { margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--glass-border); }
+.choice-card .card-stat { display:flex; justify-content:space-between; font-size:0.7rem; color:var(--muted); margin-bottom:0.3rem; }
+
+/* save/load bar */
+.save-bar {
+  position:fixed; bottom:1.5rem; right:1.5rem; z-index:100;
+  display:flex; gap:0.5rem; opacity:0; animation: fadeUp 1s ease-out 1s both;
+}
+.save-btn {
+  padding:0.5rem 1rem; background:var(--glass); border:1px solid var(--glass-border);
+  color:var(--muted); font-size:0.7rem; letter-spacing:0.1em; cursor:pointer;
+  transition:all 0.3s ease; font-family:'Inter',sans-serif;
+}
+.save-btn:hover { color:var(--text); border-color:var(--accent-w); }
+
+/* ====== GAME SCREEN ====== */
+#game-screen { padding:0; }
+
+.game-header {
+  position:fixed; top:0; left:0; width:100%;
+  padding:1.5rem 2rem; display:flex; justify-content:space-between; align-items:center;
+  z-index:100; background: linear-gradient(180deg, var(--bg) 60%, transparent);
+}
+.game-header .scenario-label { font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-w); }
+.game-header .level-indicator { font-size:0.75rem; color:var(--muted); letter-spacing:0.15em; }
+.game-header .back-btn {
+  position:absolute; top:1.5rem; right:2rem; padding:0.4rem 1rem;
+  background:transparent; border:1px solid var(--glass-border); color:var(--muted);
+  font-size:0.7rem; cursor:pointer; transition:all 0.3s; font-family:'Inter',sans-serif;
+}
+.game-header .back-btn:hover { color:var(--text); border-color:var(--accent-w); }
+
+.stats-bar {
+  position:fixed; top:60px; left:0; width:100%;
+  padding:0.8rem 2rem; display:flex; gap:2rem; justify-content:center;
+  z-index:100; background: linear-gradient(180deg, rgba(10,10,10,0.95) 60%, transparent);
+  opacity:0; transition:opacity 0.5s;
+}
+.stats-bar.visible { opacity:1; }
+
+.stat-item { display:flex; align-items:center; gap:0.5rem; font-size:0.65rem; letter-spacing:0.08em; }
+.stat-label { color:var(--muted); }
+.stat-value { font-weight:700; min-width:20px; text-align:center; transition: color 0.3s; font-size:0.7rem; }
+.stat-bar { width:50px; height:2px; background: rgba(255,255,255,0.1); position:relative; overflow:hidden; }
+.stat-bar-fill { position:absolute; top:0; left:0; height:100%; transition: width 0.8s cubic-bezier(0.23,1,0.32,1); }
+
+.scene-container {
+  flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;
+  padding:8rem 2rem 4rem; max-width:720px; margin:0 auto; min-height:100vh;
+}
+
+.scene-chapter {
+  font-size:0.65rem; letter-spacing:0.4em; text-transform:uppercase;
+  color:var(--accent-w); margin-bottom:2rem;
+  opacity:0; transform:translateY(20px);
+}
+
+.scene-text {
+  font-family:'Noto Serif SC', serif;
+  font-size: clamp(1rem, 2.5vw, 1.2rem); line-height:2.2;
+  color:var(--text); margin-bottom:2.5rem;
+  opacity:0; transform:translateY(20px);
+}
+.scene-text .highlight { color:var(--accent-w); border-bottom:1px solid rgba(201,169,110,0.3); }
+.scene-text .danger { color:var(--danger); }
+
+.scene-narrator {
+  font-size:0.8rem; color:var(--muted); font-style:italic;
+  margin-bottom:2rem; opacity:0; transform:translateY(20px);
+  padding:1rem 1.5rem; border-left:2px solid var(--glass-border);
+  background:var(--glass); position:relative;
+}
+
+.choices-container { width:100%; opacity:0; transform:translateY(30px); }
+
+.choice-btn {
+  width:100%; padding:1.2rem 1.5rem; margin-bottom:0.6rem;
+  background: var(--card-bg); border:1px solid var(--card-border);
+  color:var(--text); font-family:'Noto Serif SC', serif;
+  font-size:0.95rem; text-align:left; cursor:pointer;
+  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
+  position:relative; overflow:hidden; display:block;
+  backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px);
+}
+.choice-btn::after {
+  content:''; position:absolute; top:0; left:0; width:3px; height:100%;
+  background:var(--accent-w); transform:scaleY(0); transition:transform 0.3s ease;
+}
+.choice-btn:hover::after { transform:scaleY(1); }
+.choice-btn:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); transform:translateX(8px); }
+.choice-btn:active { transform:translateX(8px) scale(0.98); }
+
+.choice-btn .choice-hint {
+  display:block; font-family:'Inter', sans-serif;
+  font-size:0.7rem; color:var(--muted); margin-top:0.5rem; font-style:italic;
+  max-height:0; overflow:hidden; transition:max-height 0.5s ease;
+}
+.choice-btn:hover .choice-hint { max-height:100px; }
+
+/* long press tooltip */
+.choice-btn .deep-analysis {
+  display:none; position:absolute; bottom:100%; left:0; width:100%;
+  padding:1rem; background:rgba(10,10,10,0.95); border:1px solid var(--accent-w);
+  font-family:'Inter',sans-serif; font-size:0.75rem; color:var(--accent-w);
+  line-height:1.6; z-index:10; pointer-events:none;
+}
+.choice-btn .deep-analysis.show { display:block; animation: fadeUp 0.3s ease; }
+
+/* consequence display */
+.consequence-box {
+  margin-top:2rem; padding:1.5rem; background:var(--glass);
+  border:1px solid var(--glass-border); border-left:3px solid var(--accent-w);
+  opacity:0; transform:translateY(20px);
+}
+.consequence-box .consequence-label {
+  font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase;
+  color:var(--accent-w); margin-bottom:0.8rem;
+}
+.consequence-box .consequence-text {
+  font-family:'Noto Serif SC',serif; font-size:0.9rem; line-height:1.8; color:var(--text);
+}
+
+/* stat change popup */
+.stat-change-popup {
+  position:fixed; top:50%; right:2rem; transform:translateY(-50%);
+  z-index:200; display:flex; flex-direction:column; gap:0.3rem;
+}
+.stat-change-item {
+  padding:0.3rem 0.8rem; font-size:0.7rem; letter-spacing:0.05em;
+  background:rgba(10,10,10,0.9); border:1px solid var(--glass-border);
+  opacity:0; transform:translateX(20px);
+  animation: statPopIn 0.5s ease forwards;
+}
+.stat-change-item.positive { color:var(--success); border-color:rgba(107,143,113,0.3); }
+.stat-change-item.negative { color:var(--danger); border-color:rgba(196,92,74,0.3); }
+
+@keyframes statPopIn {
+  to { opacity:1; transform:translateX(0); }
+}
+
+/* result flash */
+.result-flash {
+  position:fixed; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Noto Serif SC', serif; font-size:1.3rem;
+  color:var(--accent-w); pointer-events:none; z-index:200; opacity:0;
+  text-align:center; max-width:500px; padding:2rem;
+  background:rgba(10,10,10,0.9); border:1px solid var(--glass-border);
+}
+
+/* ====== ENDING SCREEN ====== */
+#ending-screen { align-items:center; justify-content:center; text-align:center; padding:4rem 2rem; }
+
+.ending-badge {
+  width:80px; height:80px; border-radius:50%; margin:0 auto 2rem;
+  display:flex; align-items:center; justify-content:center;
+  font-size:2rem; border:2px solid var(--accent-w);
+  animation: fadeUp 0.8s ease-out 0.2s both;
+}
+
+.ending-title {
+  font-family:'Noto Serif SC', serif;
+  font-size:clamp(2rem, 5vw, 3.5rem); font-weight:900; margin-bottom:0.5rem;
+  background: linear-gradient(135deg, var(--text), var(--accent-w));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  opacity:0; animation: fadeUp 1s ease-out 0.4s both;
+}
+
+.ending-subtitle {
+  font-size:1rem; color:var(--muted); margin-bottom:2.5rem;
+  opacity:0; animation: fadeUp 1s ease-out 0.6s both;
+}
+
+.ending-stats {
+  display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
+  margin-bottom:2.5rem; opacity:0; animation: fadeUp 1s ease-out 0.8s both;
+}
+.ending-stat { text-align:center; min-width:80px; }
+.ending-stat .val { font-size:2rem; font-weight:700; font-family:'Noto Serif SC', serif; }
+.ending-stat .lbl { font-size:0.65rem; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; }
+
+.ending-verdict {
+  max-width:600px; font-family:'Noto Serif SC', serif;
+  font-size:1rem; line-height:2; margin:0 auto 2rem;
+  opacity:0; animation: fadeUp 1s ease-out 1s both;
+  text-align:left; padding:1.5rem; background:var(--glass); border:1px solid var(--glass-border);
+}
+
+.ending-analysis {
+  max-width:600px; font-size:0.8rem; color:var(--muted); line-height:1.8;
+  margin:0 auto 2rem; text-align:left; padding:1.5rem;
+  background:var(--glass); border:1px solid var(--glass-border);
+  opacity:0; animation: fadeUp 1s ease-out 1.2s both;
+}
+.ending-analysis h4 { color:var(--accent-w); font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:0.8rem; }
+.ending-analysis .book-ref { color:var(--accent-w); font-style:italic; }
+
+.ending-quote {
+  font-style:italic; color:var(--muted); font-size:0.85rem;
+  margin-bottom:3rem; opacity:0; animation: fadeUp 1s ease-out 1.4s both;
+}
+
+.ending-btns {
+  display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;
+  opacity:0; animation: fadeUp 1s ease-out 1.6s both;
+}
+.ending-btn {
+  padding:0.8rem 2rem; background:transparent; border:1px solid var(--card-border);
+  color:var(--text); font-family:'Noto Serif SC', serif; font-size:0.9rem;
+  cursor:pointer; transition:all 0.4s ease;
+}
+.ending-btn:hover { background:rgba(255,255,255,0.06); border-color:var(--accent-w); }
+.ending-btn.primary { border-color:var(--accent-w); }
+
+/* ====== ENDING GALLERY ====== */
+#gallery-screen { align-items:center; padding:4rem 2rem; }
+.gallery-header {
+  text-align:center; margin-bottom:3rem;
+}
+.gallery-header h2 {
+  font-family:'Noto Serif SC',serif; font-size:2rem; font-weight:700; margin-bottom:0.5rem;
+  background: linear-gradient(135deg, var(--text), var(--accent-w));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.gallery-header p { color:var(--muted); font-size:0.85rem; }
+
+.gallery-tabs { display:flex; gap:1rem; margin-bottom:2rem; }
+.gallery-tab {
+  padding:0.5rem 1.5rem; background:transparent; border:1px solid var(--glass-border);
+  color:var(--muted); font-size:0.8rem; cursor:pointer; transition:all 0.3s;
+  font-family:'Inter',sans-serif;
+}
+.gallery-tab.active { color:var(--accent-w); border-color:var(--accent-w); }
+
+.gallery-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1.5rem; width:100%; max-width:900px; }
+.gallery-card {
+  padding:1.5rem; background:var(--glass); border:1px solid var(--glass-border);
+  transition:all 0.3s ease; cursor:default;
+}
+.gallery-card.locked { opacity:0.3; }
+.gallery-card.unlocked { border-color:var(--accent-w); }
+.gallery-card:hover { transform:translateY(-2px); }
+.gallery-card .gc-icon { font-size:1.5rem; margin-bottom:0.8rem; }
+.gallery-card .gc-title { font-family:'Noto Serif SC',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.3rem; }
+.gallery-card .gc-subtitle { font-size:0.75rem; color:var(--muted); margin-bottom:0.8rem; }
+.gallery-card .gc-quote { font-size:0.7rem; color:var(--muted); font-style:italic; }
+
+.gallery-back {
+  margin-top:3rem; padding:0.8rem 2rem; background:transparent;
+  border:1px solid var(--card-border); color:var(--text);
+  font-family:'Noto Serif SC',serif; font-size:0.9rem; cursor:pointer; transition:all 0.4s;
+}
+.gallery-back:hover { border-color:var(--accent-w); }
+
+/* ====== ANIMATIONS ====== */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(30px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes blink { 50% { opacity:0; } }
+@keyframes glitch {
+  0% { transform:translate(0); }
+  20% { transform:translate(-2px, 2px); }
+  40% { transform:translate(2px, -2px); }
+  60% { transform:translate(-1px, -1px); }
+  80% { transform:translate(1px, 1px); }
+  100% { transform:translate(0); }
+}
+@keyframes pulse { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
+@keyframes scanline { 0% { top:-100%; } 100% { top:100%; } }
+
+.typewriter-cursor {
+  display:inline-block; width:2px; height:1em;
+  background:var(--accent-w); margin-left:2px;
+  animation: blink 1s step-end infinite; vertical-align:text-bottom;
+}
+
+.transition-overlay {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:var(--bg); z-index:500; opacity:0; pointer-events:none;
+  transition:opacity 0.4s ease;
+}
+.transition-overlay.active { opacity:1; pointer-events:all; }
+
+.scanline-effect {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  pointer-events:none; z-index:50; opacity:0; transition:opacity 0.5s;
+}
+.scanline-effect.active { opacity:1; }
+.scanline-effect::before {
+  content:''; position:absolute; left:0; width:100%; height:4px;
+  background:rgba(139,69,19,0.08); animation: scanline 4s linear infinite;
+}
+
+.vignette {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+  pointer-events:none; z-index:3; opacity:0; transition:opacity 1s;
+}
+.vignette.active { opacity:1; }
+
+.ink-splash {
+  position:fixed; width:200px; height:200px; border-radius:50%;
+  background:radial-gradient(circle, rgba(139,69,19,0.15), transparent 70%);
+  pointer-events:none; z-index:2; animation: inkSpread 2s ease-out forwards;
+}
+@keyframes inkSpread {
+  0% { transform:scale(0); opacity:1; }
+  100% { transform:scale(4); opacity:0; }
+}
+
+.glitch-text { position:relative; }
+.glitch-text::before, .glitch-text::after {
+  content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%;
+}
+.glitch-text::before {
+  color:var(--danger); clip-path:polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  animation:glitch 0.3s ease-in-out;
+}
+.glitch-text::after {
+  color:var(--accent-w); clip-path:polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  animation:glitch 0.3s ease-in-out 0.05s;
+}
+
+/* confetti */
+.confetti-container { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:300; overflow:hidden; }
+.confetti {
+  position:absolute; width:8px; height:8px; top:-10px;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0% { transform:translateY(0) rotate(0deg); opacity:1; }
+  100% { transform:translateY(100vh) rotate(720deg); opacity:0; }
+}
+
+/* dark atmosphere for bad endings */
+.atmosphere-dark {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:radial-gradient(ellipse at center, rgba(80,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
+  pointer-events:none; z-index:300; animation: fadeIn 2s ease;
+}
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+/* ====== RESPONSIVE ====== */
+@media (max-width:768px) {
+  .choice-cards { flex-direction:column; align-items:center; }
+  .choice-card { width:100%; max-width:360px; }
+  .stats-bar { gap:0.8rem; flex-wrap:wrap; padding:0.6rem 1rem; }
+  .stat-label { display:none; }
+  .ending-stats { gap:1.2rem; }
+  .game-header { padding:1rem; }
+  .scene-container { padding:6rem 1.5rem 3rem; }
+  .stat-change-popup { right:1rem; }
+  .save-bar { bottom:1rem; right:1rem; }
+  .gallery-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="cursorGlow"></div>
+<div class="transition-overlay" id="transitionOverlay"></div>
+<div class="vignette" id="vignette"></div>
+<div class="scanline-effect" id="scanline"></div>
+<div class="result-flash" id="resultFlash"></div>
+
+<!-- ====== LANDING ====== -->
+<div class="screen active" id="landing">
+  <h1>权 力 的 游 戏</h1>
+  <p class="subtitle">"所有命运赠送的礼物，早已在暗中标好了价格"</p>
+  <div class="book-tags">
+    <span class="book-tag">《沧浪之水》</span>
+    <span class="book-tag">《白宫幕僚》</span>
+    <span class="book-tag">《权力的道路》</span>
+    <span class="book-tag">《乡土中国》</span>
+    <span class="book-tag">《置身事内》</span>
+  </div>
+  <div class="divider-line"></div>
+  <div class="choice-cards">
+    <div class="choice-card" onclick="startGame('whitehouse')">
+      <span class="card-icon">🏛️</span>
+      <div class="card-era">Chapter I — 当代</div>
+      <h2>特朗普的一日政坛</h2>
+      <p>从清晨简报到深夜博弈，八个关卡，每个决定都是一场交易。<br>幕僚忠诚、民意支持、派系平衡——你能撑到第几关？</p>
+      <div class="card-stats">
+        <div class="card-stat"><span>关卡数</span><span>8 关</span></div>
+        <div class="card-stat"><span>结局数</span><span>6 种</span></div>
+        <div class="card-stat"><span>核心挑战</span><span>派系博弈·舆论操控·利益交换</span></div>
+      </div>
+    </div>
+    <div class="choice-card" onclick="startGame('ming')">
+      <span class="card-icon">🏯</span>
+      <div class="card-era">Chapter II — 穿越</div>
+      <h2>特朗普穿越明朝官场</h2>
+      <p>穿越到万历年间，从七品知县做起。<br>两本账、人情债、派系站队——<br>你能在大明官场活几集？</p>
+      <div class="card-stats">
+        <div class="card-stat"><span>关卡数</span><span>8 关</span></div>
+        <div class="card-stat"><span>结局数</span><span>6 种</span></div>
+        <div class="card-stat"><span>核心挑战</span><span>人情世故·圈子站队·理想妥协</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="save-bar">
+    <button class="save-btn" onclick="showGallery()">图鉴</button>
+  </div>
+</div>
+
+<!-- ====== GAME SCREEN ====== -->
+<div class="screen" id="game-screen">
+  <div class="game-header">
+    <span class="scenario-label" id="scenarioLabel"></span>
+    <span class="level-indicator" id="levelIndicator"></span>
+    <button class="back-btn" onclick="confirmExit()">返回首页</button>
+  </div>
+  <div class="stats-bar" id="statsBar"></div>
+  <div class="scene-container" id="sceneContainer"></div>
+</div>
+
+<!-- ====== ENDING ====== -->
+<div class="screen" id="ending-screen"></div>
+
+<!-- ====== GALLERY ====== -->
+<div class="screen" id="gallery-screen"></div>
+
+<script>
+// ====== PARTICLE SYSTEM ======
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + 0.3;
+    this.speedY = -(Math.random() * 0.3 + 0.05);
+    this.speedX = (Math.random() - 0.5) * 0.2;
+    this.opacity = Math.random() * 0.4 + 0.1;
+    this.life = Math.random() * 200 + 100;
+    this.maxLife = this.life;
+  }
+  update() {
+    this.x += this.speedX; this.y += this.speedY; this.life--;
+    if (this.life <= 0 || this.y < -10) this.reset();
+  }
+  draw() {
+    const alpha = this.opacity * (this.life / this.maxLife);
+    ctx.fillStyle = `rgba(201,169,110,${alpha})`;
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+  }
+}
+for (let i = 0; i < 60; i++) particles.push(new Particle());
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ====== CURSOR GLOW ======
+const glow = document.getElementById('cursorGlow');
+document.addEventListener('mousemove', e => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top = e.clientY + 'px';
+});
+
+// ====== GAME STATE ======
+let state = { scenario:null, currentScene:0, stats:{}, choices:[], history:[] };
+let unlockedEndings = JSON.parse(localStorage.getItem('unlockedEndings') || '{}');
+let longPressTimer = null;
+
+// ====== CHAPTER DATA ======
+const scenarios = {
+
+whitehouse: {
+  label: '特朗普的一日政坛',
+  badge: '🏛️',
+  stats: [
+    { key:'influence', label:'政治影响力', value:50, color:'#c9a96e' },
+    { key:'pressure', label:'精神压力', value:30, color:'#c45c4a' },
+    { key:'faction', label:'圈层好感', value:45, color:'#6b8f71' },
+    { key:'public_op', label:'口碑舆论', value:50, color:'#7a8ba0' },
+    { key:'trust', label:'幕僚信任', value:55, color:'#9b8ec4' }
+  ],
+  scenes: [
+    {
+      chapter: '第一章 · 清晨',
+      title: '总统每日简报',
+      text: '清晨6:15，你被叫醒。CIA局长亲自送来每日简报：一份关于对手阵营正在秘密接触军方高层的情报，另一份是昨晚推文引发的外交风波。\n\n你的幕僚长站在门口，欲言又止。桌上咖啡已经凉了。',
+      narrator: '「权力的本质不是发号施令，而是让别人心甘情愿地替你挡子弹。」——《白宫幕僚》',
+      choices: [
+        {
+          text: '先处理推文风波——民意是根基',
+          hint: '「乡土中国」说：面子是社会交往中最微妙的武器。在西方，面子叫 approval rating。',
+          analysis: '选择民意优先意味着你把短期舆论放在长期安全之上。《权力的道路》指出：真正危险的政客是那些不在乎民调的人——但完全被民调绑架的政客同样脆弱。',
+          effects: { public_op:12, pressure:10, influence:-5, trust:-3 },
+          consequence: '你发了一条澄清推文，支持率回升。但情报被搁置，军方接触对手的消息在下午才被你看到——已经晚了三小时。幕僚长在走廊里叹了口气。'
+        },
+        {
+          text: '优先处理军方情报——危机要扼杀在摇篮',
+          hint: '「权力的道路」：真正的权力博弈发生在公众视线之外。',
+          analysis: '《白宫幕僚》记录过类似场景：克林顿时期的幕僚长每天花70%的时间处理"公众看不到的事"。情报优先是老派政客的选择——风险是舆论失控。',
+          effects: { influence:15, pressure:15, public_op:-8, trust:5 },
+          consequence: '你迅速介入，军方高层被约谈。但推文风波发酵成热搜，#总统失言# 阅读量破十亿。你的支持率跌了三个点。新闻发言人在直播间被追问到满头大汗。'
+        },
+        {
+          text: '告诉幕僚长：「两件事你都处理，给我一个完美方案」',
+          hint: '「置身事内」：领导者最重要的能力不是决策，是让制度运转。',
+          analysis: '授权是领导力的核心，但《沧浪之水》提醒：把所有难题都推给下属，你最终会失去对局面的感知力。幕僚长不是永动机。',
+          effects: { trust:10, pressure:5, influence:5, faction:3 },
+          consequence: '幕僚长眼底闪过一丝疲惫，但还是转身去安排了。你知道这不是最后一次让他替你扛。下午他交来两份方案——都算不上完美，但至少没有出大乱子。'
+        }
+      ]
+    },
+    {
+      chapter: '第二章 · 上午',
+      title: '内阁会议',
+      text: '国防部长和财政部长在会议上吵起来了。国防部长要求增加军费，财政部长说赤字已经到红线。\n\n两个人都在等你表态。更微妙的是——国防部长是你的铁杆盟友，财政部长背后站着华尔街。',
+      narrator: '「沧浪之水」：在体制内，最难的不是做事，是摆平做事的人。',
+      choices: [
+        {
+          text: '支持国防部长——忠诚是政治的第一货币',
+          hint: '但华尔街的钱是竞选的血液。今天你赢了朋友，明天可能输掉选举。',
+          analysis: '《权力的道路》：在权力结构中，忠诚比能力重要。但单边押注会让你失去回旋余地。最聪明的政客永远在两边都留一扇门。',
+          effects: { trust:15, influence:5, public_op:-5, pressure:10, faction:-8 },
+          consequence: '国防部长感激涕零。但当晚，三家投行下调了美国信用展望。财政部长开始私下接触你的对手。华尔街的电话打到了你的竞选经理那里。'
+        },
+        {
+          text: '支持财政部长——经济才是连任的关键',
+          hint: '选民不在乎航母有几艘，在乎菜价涨没涨。',
+          analysis: '《置身事内》：经济议题是所有政治博弈的底层逻辑。但《白宫幕僚》警告：失去军方信任的总统，就像失去枪的将军——看起来还在位，实际上已经出局了。',
+          effects: { public_op:10, trust:-15, influence:5, pressure:5, faction:8 },
+          consequence: '华尔街很满意，股市应声上涨。但国防部长在记者会上意味深长地说："总统有总统的考量。"幕僚忠诚度断崖下跌。你的安全简报开始"迟到"。'
+        },
+        {
+          text: '「你们两个都别吵了，下周给我一份联合方案」',
+          hint: '拖延是一种被严重低估的政治智慧。很多问题，拖着拖着就不是问题了。',
+          analysis: '拖延是《沧浪之水》里池大为最常用的策略。但拖延也是有成本的——每次拖延，你都在消耗自己的权威。下属会开始觉得：这个人做不了决定。',
+          effects: { pressure:8, influence:-3, trust:-5 },
+          consequence: '两个人都不满意，但也没撕破脸。你知道这只是把炸弹的引信往后拨了三天。果然，下周的联合方案是一纸空文——两个部门各写各的。'
+        },
+        {
+          text: '沉默十秒，然后说：「我听完了。下一个议题。」',
+          hint: '「权力的道路」：不表态本身就是最强的表态。让所有人猜，你就永远掌握主动。',
+          analysis: '这是最高段位的政治操作。《白宫幕僚》里基辛格最爱用这招——沉默比任何话都更有力量。风险是：如果你沉默太多次，人们会觉得你根本不懂。',
+          effects: { influence:10, pressure:12, trust:-3, faction:5 },
+          consequence: '整个会议室陷入诡异的安静。两个人都在会后疯狂打听你的立场。你的不确定性成了最大的筹码。当晚，两边都派人来"汇报工作"——实际上是在试探你。'
+        }
+      ]
+    },
+    {
+      chapter: '第三章 · 午后',
+      title: '媒体风暴',
+      text: 'CNN爆出一段你三年前私下谈话的录音。你说了一句"那些选民根本不知道什么对他们好"。\n\n这段话在断章取义后，变成了"总统蔑视选民"。你的新闻发言人在直播间被追问到满头大汗。\n\n你的手机响了——是你的女儿。',
+      narrator: '「权力的道路」：公众人物的每一句话都是武器，包括你说过的和别人说你说过的。',
+      choices: [
+        {
+          text: '亲自开发布会：「我说的是实话，但我理解你们的愤怒」',
+          hint: '真诚是危险的。但有时候，危险本身就是最好的策略。',
+          analysis: '《沧浪之水》：真话的代价很高，但谎言的代价更高。选择真诚需要极强的心理承受力——你准备好接受两极化的反应了吗？',
+          effects: { public_op:15, pressure:20, influence:-5, trust:5 },
+          consequence: '你的坦诚引发两极化讨论。支持者更支持，反对者更反对。但"敢说真话"成了你的新标签。压力值爆表——你开始失眠，凌晨三点还在看民调数据。'
+        },
+        {
+          text: '让发言人否认：「录音经过剪辑，不代表原意」',
+          hint: '「沧浪之水」：谎言说一千遍就是真相。但真相只需要一次曝光就能让你万劫不复。',
+          analysis: '否认是最常见的危机公关策略，但也是风险最大的——如果完整录音被放出，你将同时失去"诚实"和"能力"两个标签。《白宫幕僚》：永远不要在可以被证伪的事情上撒谎。',
+          effects: { public_op:-10, pressure:5, trust:-10, influence:-5 },
+          consequence: '声明发出去了。但第二天，完整录音被放出。你失去了最后一个"诚实"的标签。幕僚们开始在走廊里低声议论。三名高级幕僚提交了辞呈。'
+        },
+        {
+          text: '不回应，让时间冲淡一切',
+          hint: '「置身事内」：体制的运转有惯性，公众的记忆有半衰期。',
+          analysis: '冷处理是《乡土中国》里乡土社会最常见的冲突应对方式——"等等看"。但在24小时新闻周期里，沉默往往被解读为默认。你的不回应本身就是一条新闻。',
+          effects: { public_op:-8, pressure:-5, influence:-3, trust:-3 },
+          consequence: '三天后，另一个政客出了更大的丑闻。你的录音风波被冲淡了。但你的支持者觉得你"怂了"。一条评论被转发了十万次："总统连回应的勇气都没有。"'
+        },
+        {
+          text: '接女儿的电话——家人比新闻重要',
+          hint: '有时候，最政治的决定是做一个不政治的人。',
+          analysis: '《权力的道路》：在危机中展现人性，是最被低估的政治策略。但也有风险——对手会说你在"逃避"。关键在于：你接完电话后怎么做。',
+          effects: { pressure:-15, trust:5, public_op:3, influence:3 },
+          consequence: '女儿说："爸，你还好吗？"你突然意识到，你已经很久没和家人吃过一顿安静的晚饭了。幕僚们发现你下午关了手机——他们反而更紧张了。但当晚你重新出现时，眼神比之前更坚定了。'
+        }
+      ]
+    },
+    {
+      chapter: '第四章 · 傍晚',
+      title: '国会交易',
+      text: '一项关键法案需要国会通过。反对党领袖私下找你：他可以帮你拉票，条件是在一个你反对的条款上让步。\n\n这个条款关乎三千万人的医疗保障。但没有这个法案，你的整个任期成果将化为泡影。',
+      narrator: '「沧浪之水」：池大为最终明白，清高不能当饭吃，妥协才是活下去的代价。',
+      choices: [
+        {
+          text: '接受交易——政治是可能的艺术',
+          hint: '三千万人会受到影响。但你的 legacy 保住了。',
+          analysis: '《置身事内》：所有的政策背后都是利益交换。接受交易不代表你没有底线——它代表你理解了权力的运作方式。但历史会记住这笔交易。',
+          effects: { influence:20, public_op:-15, pressure:15, trust:-5, faction:10 },
+          consequence: '法案通过了。你在签署仪式上微笑，但手指微微发抖。当晚，#出卖人民#成为热搜第一。你知道，历史会记住这笔交易。但你的幕僚们松了一口气——至少任期有了一个"成果"。'
+        },
+        {
+          text: '拒绝——有些底线不能碰',
+          hint: '但你的 legacy 怎么办？四年任期，一无所获。',
+          analysis: '「沧浪之水」：坚守原则的代价是什么？池大为的答案是——被边缘化。但《权力的道路》也说：有底线的政客，往往能在逆境中获得意想不到的支持。',
+          effects: { public_op:10, influence:-20, pressure:20, trust:10, faction:-5 },
+          consequence: '法案流产了。反对党领袖在电视上说你"不懂政治"。但你的核心团队对你更加忠诚——他们说"终于做了一次对的事"。只是，你的任期还剩两年，手里已经没有牌了。'
+        },
+        {
+          text: '提出折中方案：让步一半，但增加监督条款',
+          hint: '「置身事内」：好的制度设计比道德表态更重要。',
+          analysis: '折中是《沧浪之水》里最现实的选择。没有人满意，但也没有人翻桌。问题是：折中方案往往两边不讨好——你需要极强的游说能力才能让它通过。',
+          effects: { influence:5, public_op:3, pressure:10, trust:3, faction:3 },
+          consequence: '反对党领袖犹豫了。谈判进入深夜。最终双方各退一步。法案通过了，但条款被稀释得面目全非——没有人满意，但也没有人翻桌。你累得在办公室沙发上睡着了。'
+        }
+      ]
+    },
+    {
+      chapter: '第五章 · 夜晚',
+      title: '幕僚背叛',
+      text: '你的首席战略顾问被拍到和对手阵营的人共进晚餐。照片在社交媒体上疯传。\n\n他跟了你七年。你知道他不是叛徒——但他确实在为自己留后路。\n\n其他幕僚都在看你怎么做。',
+      narrator: '「白宫幕僚」：在华盛顿，忠诚是稀缺品。每个人都在为自己打算——包括那些说"我永远支持你"的人。',
+      choices: [
+        {
+          text: '当面质问——「我需要一个解释」',
+          hint: '摊牌可能让他收手，也可能让他加速。',
+          analysis: '《白宫幕僚》：直接对抗是最危险的策略——如果他决定反击，他知道你所有的秘密。但不表态会让其他幕僚觉得：背叛没有代价。',
+          effects: { influence:10, trust:-10, pressure:15, faction:-5 },
+          consequence: '他沉默了很久，然后说："我只是在做准备。政治没有永远的朋友。"你们都知道，这层窗户纸捅破了就再也糊不回去。其他幕僚开始在你面前表现得格外忠诚——但你知道那只是表演。'
+        },
+        {
+          text: '装不知道——用他到最后一刻',
+          hint: '「沧浪之水」：知道别人的秘密是权力，假装不知道是更大的权力。',
+          analysis: '隐忍是《沧浪之水》的核心生存法则。但隐忍也是有成本的——你需要在他面前表演"一切如常"，这对精神消耗极大。',
+          effects: { influence:5, pressure:20, trust:3, faction:3 },
+          consequence: '你开始在关键决策中绕过他。他感觉到了，但不敢声张。你们维持着一种诡异的默契——直到任期结束。但你知道，你已经不再信任任何人了。'
+        },
+        {
+          text: '提拔他——给他更大的舞台，让他离不开你',
+          hint: '最高明的控制不是打压，是让对方觉得跟着你比单干更好。',
+          analysis: '「权力的道路」：用利益绑定比用威胁控制更持久。但提拔一个已经在动摇的人，风险是——他可能用你给的资源来对付你。',
+          effects: { influence:15, trust:10, pressure:10, public_op:5 },
+          consequence: '你让他负责一个重量级项目。他受宠若惊，和对手的接触暂停了。你知道这只是缓兵之计，但缓兵之计也是计。三个月后，项目成功了——他也彻底回到了你的阵营。'
+        },
+        {
+          text: '什么都不做。今天太累了。',
+          hint: '有时候，疲惫本身就是一种答案。',
+          analysis: '不作为也是一种选择。《置身事内》：体制有自我修复的能力。有时候，问题会自己解决——或者自己恶化。你选择赌一把。',
+          effects: { pressure:-10, influence:-5, trust:-5 },
+          consequence: '你关了灯，走出白宫。深夜的空气很冷。你想起了当总统之前的日子——那时候你只需要对自己负责。照片风波三天后自然平息了。但你知道，这只是暂时的平静。'
+        }
+      ]
+    },
+    {
+      chapter: '第六章 · 深夜',
+      title: '派系拉拢',
+      text: '凌晨一点，参议院多数党领袖深夜来访。他带来一个提议：如果你愿意在最高法院大法官提名上支持他的人选，他可以保证你未来两年的所有法案畅通无阻。\n\n这个人选极端保守，会引发巨大的社会争议。但你的法案——你真正的legacy——全卡在参议院。',
+      narrator: '「权力的道路」：每一次交易都有价格。问题不是要不要交易，是你愿意付出什么。',
+      choices: [
+        {
+          text: '同意——两年畅通无阻值这个价',
+          hint: '你的 legacy 保住了，但社会撕裂会加剧。',
+          analysis: '《置身事内》：在权力结构中，最高法院是终极筹码。让出这个筹码意味着你放弃了长期影响力来换取短期收益。但两年后你可能已经不在位了——到时候的后果不由你承担。',
+          effects: { influence:20, public_op:-20, pressure:10, faction:15, trust:5 },
+          consequence: '提名通过了。社会舆论炸了锅。但你的法案确实畅通无阻了——基建、教育、医疗改革，两年内全部落地。历史会怎么评价你？也许要五十年后才有答案。'
+        },
+        {
+          text: '拒绝——司法独立不能拿来交易',
+          hint: '但你的法案怎么办？四年任期，一无所获。',
+          analysis: '坚守底线在《沧浪之水》里意味着被边缘化。但《白宫幕僚》也记录了另一面：有原则的总统在卸任后往往获得更高的历史评价——如果他能撑过任期的话。',
+          effects: { public_op:10, influence:-15, pressure:15, trust:10, faction:-10 },
+          consequence: '多数党领袖摔门而去。接下来两年，你的所有法案都被卡在参议院。你的任期成了"一事无成"的代名词。但你的幕僚们说："至少我们没有出卖灵魂。"'
+        },
+        {
+          text: '提出替代方案：换一个温和人选',
+          hint: '「沧浪之水」：谈判的本质是找到双方都能接受的第三种方案。',
+          analysis: '折中需要极强的谈判技巧和足够的筹码。《权力的道路》：没有筹码的谈判就是投降。你有什么可以交换的？',
+          effects: { influence:5, pressure:8, trust:3, faction:3 },
+          consequence: '谈判持续了三周。最终双方找到了一个中间人选——不够保守，也不够自由，但至少能通过。法案通过了一半，最高法院少了一场风暴。你累得瘦了十斤。'
+        }
+      ]
+    },
+    {
+      chapter: '第七章 · 黎明',
+      title: '危机表态',
+      text: '全国爆发大规模抗议。起因是一起执法过度事件，但矛头直指你的施政方针。\n\n抗议者包围了白宫。你的安全部门建议你"低调处理"。但你的女儿发来短信："爸，你应该说点什么。"\n\n全国都在等你开口。',
+      narrator: '「乡土中国」：在危机中，人们需要的不是真相，是一个可以相信的人。',
+      choices: [
+        {
+          text: '发表全国讲话——直面问题',
+          hint: '真诚是危险的。但沉默更危险。',
+          analysis: '「白宫幕僚」：在危机中，总统的声音是唯一的稳定器。但每句话都会被无限放大——一个用词不当就可能引发更大的风暴。',
+          effects: { public_op:15, pressure:20, influence:5, trust:5 },
+          consequence: '你站在镜头前，说了十五分钟。没有提词器，没有稿子。你说："我听到了你们的声音。"支持者热泪盈眶，反对者说你在"作秀"。但至少，你开口了。'
+        },
+        {
+          text: '让副总统出面——分散风险',
+          hint: '「权力的道路」：永远不要让自己成为唯一的靶子。',
+          analysis: '让下属出面是常见的危机分散策略。但《沧浪之水》警告：在关键时刻缺席的领导者，会被认为是"不敢担当"。',
+          effects: { pressure:-5, trust:-10, influence:-5, public_op:-5 },
+          consequence: '副总统发表了讲话，但效果平平。评论说："总统在哪？"你的缺席成了最大的新闻。幕僚们开始在私下讨论：总统是不是"怕了"？'
+        },
+        {
+          text: '私下会见抗议代表——不在镜头前表态',
+          hint: '「置身事内」：真正的谈判从来不在台面上。',
+          analysis: '私下谈判是最务实的选择，但风险是：如果会谈内容泄露，你会被指责"暗箱操作"。《权力的道路》：秘密谈判需要绝对的信任——你信任谁？',
+          effects: { influence:5, pressure:10, faction:5, trust:3 },
+          consequence: '你在白宫地下室会见了五名抗议代表。会谈持续了三小时。没有达成协议，但双方都说了真心话。三天后，会谈内容被泄露了——但泄露的版本对你有利。你开始怀疑：是谁泄露的？'
+        }
+      ]
+    },
+    {
+      chapter: '第八章 · 终局',
+      title: '最后的选择',
+      text: '任期进入最后一年。你面前有两条路：\n\n一是全力推动一项争议性极大的改革——成功了是 legacy，失败了是政治自杀。\n二是稳扎稳打，保住现有成果，安全落地。\n\n你的幕僚长说："总统，该做决定了。"\n\n窗外，华盛顿的灯火像棋盘。',
+      narrator: '「权力的道路」：在权力的游戏中，你不当玩家，就只能当棋子。',
+      choices: [
+        {
+          text: '全力一搏——不成功便成仁',
+          hint: '「沧浪之水」：池大为最终选择了妥协。但你不是池大为。',
+          analysis: '「权力的道路」：历史上所有伟大的政治遗产，都是在"不成功便成仁"的赌博中诞生的。但赌博的另一面是：大多数赌徒都输了。',
+          effects: { influence:20, pressure:25, public_op:-10, trust:10, faction:-5 },
+          consequence: '你押上了一切。法案在国会鏖战了四十七天。你瘦了十五斤，头发白了一半。最终——以两票之差通过了。你在签字时手在发抖。这是你的 legacy，也是你的代价。'
+        },
+        {
+          text: '稳扎稳打——安全落地比什么都重要',
+          hint: '但你会不会后悔？',
+          analysis: '「沧浪之水」：安全是一种选择，但安全也是一种放弃。你选择了不输——但你也没有赢。历史会记住你吗？也许不会。但你会活着。',
+          effects: { pressure:-15, influence:-10, trust:5, public_op:5 },
+          consequence: '你签署了几项温和的行政命令，没有大风大浪。卸任那天，你在白宫草坪上回头看了一眼——它看起来和你入住时一模一样。你不知道该欣慰还是遗憾。'
+        },
+        {
+          text: '把选择权交给选民——发起公投',
+          hint: '最民主的方式，也可能是最危险的方式。',
+          analysis: '「置身事内」：把决策权交给民众听起来很美，但《白宫幕僚》警告：公投是最不可控的政治工具——你无法预测结果，也无法控制后果。',
+          effects: { influence:10, public_op:15, pressure:15, faction:-5 },
+          consequence: '公投通过了。你赢了。但你知道，这不是你的胜利——是民意的胜利。你只是那个顺水推舟的人。但有时候，顺势而为才是最大的智慧。'
+        }
+      ]
+    }
+  ],
+  endings: [
+    {
+      id: 'wh_peak',
+      title: '棋手',
+      subtitle: '你活了下来，而且活得不错',
+      icon: '♟️',
+      condition: s => s.influence >= 65 && s.pressure <= 50 && s.trust >= 45,
+      verdict: '你学会了权力的游戏规则——不是最聪明的人赢，是最会玩的人赢。你的支持率不错，幕僚还算忠诚，精神状态也还行。但你偶尔会想：那些被你牺牲的原则，值不值？',
+      analysis: '《权力的道路》说：真正的权力高手是让所有人觉得自己赢了。你的选择路径体现了"顺势而为"的核心逻辑——在关键时刻选择利益最大化，在非关键处保持灵活。这正是《白宫幕僚》里描述的"华盛顿生存术"。',
+      quote: '「权力是最好的春药，也是最好的安眠药。」——基辛格',
+      atmosphere: 'confetti'
+    },
+    {
+      id: 'wh_trapped',
+      title: '困兽',
+      subtitle: '你赢了，但代价是什么？',
+      icon: '🦁',
+      condition: s => s.influence >= 55 && s.pressure > 55,
+      verdict: '你在政治上站稳了脚跟，但代价是无尽的失眠、焦虑和孤独。你开始理解为什么历届总统卸任后都老了十岁。权力是甜的，但它是裹着糖衣的毒药。',
+      analysis: '《沧浪之水》里池大为的结局就是如此——他得到了权力，但失去了自己。高精神压力意味着你一直在"表演"——表演强大、表演果断、表演不在乎。但人的精神不是永动机。',
+      quote: '「权力使人腐化，绝对权力使人绝对腐化。」——阿克顿勋爵',
+      atmosphere: 'dark'
+    },
+    {
+      id: 'wh_silent',
+      title: '隐者',
+      subtitle: '你选择了退出',
+      icon: '🏔️',
+      condition: s => s.influence <= 40 && s.pressure <= 40,
+      verdict: '你没有成为最成功的总统，但你可能是最幸福的。你学会了在权力的游戏中说"不"。也许历史不会记住你，但你的家人会。',
+      analysis: '「沧浪之水」的另一条路：不是所有人都必须在权力的漩涡中沉浮。退出不代表失败——它代表你认清了自己真正想要什么。《乡土中国》说：人最终要回到自己的"圈子"里去。',
+      quote: '「不争，故天下莫能与之争。」——老子',
+      atmosphere: 'neutral'
+    },
+    {
+      id: 'wh_marginalized',
+      title: '落子',
+      subtitle: '棋盘上还有你的位置，但棋局已经变了',
+      icon: '♟',
+      condition: s => s.influence <= 45 && s.trust <= 35,
+      verdict: '你的任期充满了妥协和遗憾。你不是最好的，也不是最差的。幕僚们不再等你的决策，他们开始自己做决定。你学会了一件事：在权力的游戏中，没有赢家，只有还没输的人。',
+      analysis: '《置身事内》：当领导者的决策力下降到一定程度，体制会自动"接管"——幕僚们会形成自己的权力中心。你名义上还在位，但实际上已经被架空。这是最温和的"出局"方式。',
+      quote: '「政治是可能的艺术。」——奥托·冯·俾斯麦',
+      atmosphere: 'dark'
+    },
+    {
+      id: 'wh_compromise',
+      title: '顺势者',
+      subtitle: '你活成了规则本身',
+      icon: '🌊',
+      condition: s => s.influence >= 50 && s.faction >= 50 && s.public_op >= 40,
+      verdict: '你没有坚守原则，也没有彻底堕落。你学会了在人情和利益之间走钢丝。你的legacy是——让所有人都不太满意，但也没有人翻桌。这也许就是政治的真谛。',
+      analysis: '《乡土中国》：在中国社会（其实任何社会都一样），最成功的不是最有原则的人，而是最会"做人"的人。你的选择路径体现了"差序格局"的核心逻辑——亲疏有别，远近有度。',
+      quote: '「天下熙熙，皆为利来；天下攘攘，皆为利往。」——司马迁',
+      atmosphere: 'neutral'
+    },
+    {
+      id: 'wh_idealist',
+      title: '殉道者',
+      subtitle: '你守住了自己，但官场没有你的位置',
+      icon: '🕯️',
+      condition: s => s.public_op >= 60 && s.influence <= 35,
+      verdict: '你成了"人民的总统"——但代价是被整个政治体制抛弃。你的幕僚离心，派系孤立，话语权流失。你守住了原则，但失去了改变一切的能力。',
+      analysis: '「沧浪之水」：理想主义者在体制内的最终命运，要么被同化，要么被边缘化。你选择了后者。但历史会记住你——不是因为你做了什么，而是因为你没做什么。',
+      quote: '「沧浪之水清兮，可以濯吾缨；沧浪之水浊兮，可以濯吾足。」——屈原',
+      atmosphere: 'dark'
+    }
+  ]
+},
+
+ming: {
+  label: '特朗普穿越明朝官场',
+  badge: '🏯',
+  stats: [
+    { key:'influence', label:'官场地位', value:20, color:'#c9a96e' },
+    { key:'pressure', label:'生存压力', value:40, color:'#c45c4a' },
+    { key:'relationship', label:'人情关系', value:30, color:'#6b8f71' },
+    { key:'reputation', label:'民间口碑', value:50, color:'#7a8ba0' },
+    { key:'morality', label:'道德操守', value:65, color:'#9b8ec4' }
+  ],
+  scenes: [
+    {
+      chapter: '第一折 · 到任',
+      title: '两本账',
+      text: '你穿越到了大明万历年间，成为江南某县的七品知县。到任第一天，师爷递给你两本账册：一本是给朝廷看的"官账"，一本是县里实际运转的"私账"。\n\n两本账，数字差了三倍。师爷说："大人，这是规矩。"',
+      narrator: '「置身事内」：在中国，正式制度和非正式制度永远并行运转。看懂两本账，才算入门。',
+      choices: [
+        {
+          text: '按官账上报——规矩就是规矩',
+          hint: '「沧浪之水」：池大为刚进卫生厅时也这么想。后来他明白了——规矩是给守规矩的人定的。',
+          analysis: '坚持原则在理论上是正确的，但在实际操作中，《置身事内》告诉我们：正式制度之所以存在"两本账"，是因为它本身就是制度运转的一部分。强行回归"一本账"，等于试图用理想替代现实。',
+          effects: { morality:15, influence:-10, pressure:15, relationship:-15, reputation:5 },
+          consequence: '上司收到你的公文后，沉默了三天。然后派了一个"巡查"下来。你的前任师爷暗示你："大人，水至清则无鱼啊。"你发现县衙的其他官员开始躲着你走。'
+        },
+        {
+          text: '按私账来——先融入再说',
+          hint: '「乡土中国」：在乡土社会，规矩不是写在纸上的，是活在人情里的。',
+          analysis: '《乡土中国》的核心观点：在中国基层社会，"人情"比"法律"更有约束力。接受私账意味着你接受了这套游戏规则——但这也意味着你从此被这张网困住。',
+          effects: { morality:-10, relationship:15, influence:10, pressure:-5, reputation:-3 },
+          consequence: '县衙上下松了一口气。师爷开始带你拜访本地乡绅。你发现，所谓的"私账"其实是整个县运转的真正规则——没有它，河道修不了，灾民赈不了，连衙门的薪水都发不出。'
+        },
+        {
+          text: '先不动，把两本账都研究透',
+          hint: '「置身事内」：不了解制度的实际运转方式，任何改革都是空中楼阁。',
+          analysis: '这是最理性的选择——先观察，再行动。但《沧浪之水》提醒：在官场，不表态本身就是一种表态。你研究账本的时间越长，别人就越紧张。',
+          effects: { pressure:10, influence:5, morality:3, relationship:3 },
+          consequence: '你花了半个月摸清门道。原来差额的大部分去了三个地方：上司的"冰敬炭敬"、河道修缮的"惯例浮报"、以及一个你还不敢深查的神秘去处。师爷看你的眼神变了——从轻视变成了谨慎。'
+        }
+      ]
+    },
+    {
+      chapter: '第二折 · 赴宴',
+      title: '乡绅宴请',
+      text: '本地最大的乡绅王员外请你赴宴。他的庄园占了全县三成良田，佃户上千人。\n\n宴席上，王员外笑眯眯地说："大人新到任，老朽备了薄礼，不成敬意。"一锭金元宝被推到你面前。\n\n旁边坐着你的上司派来的"监司"，正不动声色地看着你。',
+      narrator: '「乡土中国」：在乡土社会，送礼不是贿赂，是建立关系的仪式。拒绝礼物，就是拒绝这段关系。',
+      choices: [
+        {
+          text: '收下——入乡随俗',
+          hint: '收了这锭金子，你就进入了这张网。网会保护你，也会缠住你。',
+          analysis: '《乡土中国》说：礼物是社会关系的"黏合剂"。收下金子不仅是经济行为，更是政治表态——你接受了王员外的"好意"，也接受了他的"期待"。从此你欠了他一个人情。',
+          effects: { relationship:20, morality:-15, pressure:-5, influence:10, reputation:-5 },
+          consequence: '王员外大喜，当场认你做"贤侄"。监司回去后在报告里写了你的"懂事"。你在县里办事开始顺畅了——但你也知道，你再也不是那个"清官"了。'
+        },
+        {
+          text: '婉拒——「王员外的心意我领了，但这锭金子我不能收」',
+          hint: '你拒绝的不是金子，是王员外的面子。在乡土社会，打人脸是要付出代价的。',
+          analysis: '「乡土中国」：面子是中国社会最核心的运作机制。你拒绝的不是一锭金子，而是王员外向你发出的"结盟邀请"。在乡土社会，拒绝联盟就是宣战。',
+          effects: { morality:15, relationship:-20, pressure:15, influence:-5, reputation:10 },
+          consequence: '宴席的气氛瞬间冷了。王员外的笑容僵了一秒，然后恢复如常。但你知道，从今天起，你在县里将成为孤家寡人。三天后，县里最大的粮商拒绝向官仓供货。'
+        },
+        {
+          text: '收下，但当场宣布捐给县学——「让孩子们读书」',
+          hint: '既给了面子，又保了清名。但聪明人会被看作更危险的对手。',
+          analysis: '这是《沧浪之水》里池大为最擅长的操作——在规则的缝隙里找到第三条路。但《权力的道路》警告：过于聪明的人会让所有人不安——你既不完全属于自己，也不完全属于他们。',
+          effects: { morality:5, relationship:5, influence:10, reputation:10, pressure:5 },
+          consequence: '王员外愣了一秒，然后哈哈大笑："大人果然高风亮节！"监司的眼神变得复杂。你的名声传开了，但也有人开始说你"沽名钓誉"。你收到了三份来自其他乡绅的宴请——都在观望你。'
+        },
+        {
+          text: '看向监司：「您觉得呢？」',
+          hint: '把球踢给上级，是一种官场智慧。但你也在暴露自己的犹豫。',
+          analysis: '「置身事内」：在科层体制中，"请示上级"是最安全的选择——出了问题有上级担着。但《沧浪之水》提醒：总是请示的下属会被认为"没主见"，最终被边缘化。',
+          effects: { influence:5, pressure:5, relationship:3, morality:-3 },
+          consequence: '监司皮笑肉不笑："大人自己做主就好。"你听出了弦外之音——他在试探你。最终你还是收了，但你知道，你的把柄已经在别人手里了。当晚你在书房里坐了很久，对着那锭金子发呆。'
+        }
+      ]
+    },
+    {
+      chapter: '第三折 · 断案',
+      title: '土地之争',
+      text: '一桩棘手的案子摆在你面前：本县农民张老实状告王员外强占其祖传十亩水田。证据确凿——地契、人证都有。\n\n但王员外是本县最大的税源，也是你上司的表亲。\n\n张老实跪在堂下，他的妻子抱着三岁的孩子站在门外。',
+      narrator: '「沧浪之水」：正义是一种奢侈品。在官场，每一次伸张正义都是在透支你的政治资本。',
+      choices: [
+        {
+          text: '判张老实胜诉——法不容情',
+          hint: '你知道后果：王员外会动用一切关系对付你。你的上司会很不高兴。',
+          analysis: '「沧浪之水」里池大为的第一次重大选择就是类似场景——坚持正义还是保全自己。他最终选择了妥协。但你不是池大为。问题是：一次正义的判决，能改变什么？',
+          effects: { morality:20, relationship:-25, influence:-15, pressure:20, reputation:15 },
+          consequence: '判决当天，王员外摔门而去。三天后，你的上司以"政绩不佳"为由，将你的考评降为"下下"。张老实给你磕了三个响头，你的仕途却开始亮红灯。但民间开始流传"青天大老爷"的故事。'
+        },
+        {
+          text: '判王员外胜——「证据不足，驳回」',
+          hint: '你保住了仕途，但张老实的孩子可能会饿死。',
+          analysis: '《置身事内》：在基层治理中，"稳定"往往优先于"正义"。王员外是整个县运转的核心——得罪他等于得罪整个系统。但《沧浪之水》问了一个更尖锐的问题：如果连正义都守不住，你做官还有什么意义？',
+          effects: { morality:-25, relationship:15, influence:10, pressure:10, reputation:-15 },
+          consequence: '王员外派人送来厚礼。你在夜里把判决书翻来覆去看了十遍。师爷说："大人，做官就是做选择。"你开始理解这句话的重量了。张老实的妻子抱着孩子离开了县城，再也没有回来。'
+        },
+        {
+          text: '调解——让王员外"补偿"张老实银两，田归王员外',
+          hint: '「置身事内」：中国的基层治理，靠的不是法律，是协调。',
+          analysis: '调解是中国基层治理最常用的方式。《置身事内》：调解的精髓在于"各退一步"——没有人完全满意，但也没有人完全失败。问题是：弱者退的那一步，往往比强者大得多。',
+          effects: { morality:-5, relationship:5, pressure:5, reputation:3 },
+          consequence: '双方都不满意，但都接受了。张老实拿到银子时眼里没有感激，只有认命。王员外觉得你"多管闲事"。你谁也没得罪，但也谁都没交到。夜里你想：这算正义吗？'
+        },
+        {
+          text: '拖延——「此案复杂，需进一步调查」',
+          hint: '在官场，拖延是最安全的策略。但拖延也是最残忍的——对弱者来说，时间不站在他们那边。',
+          analysis: '「沧浪之水」：拖延是体制内最常见的"决策"方式——不做决定就不会犯错。但拖延的代价由最弱的人承担。张老实等得起吗？',
+          effects: { pressure:10, morality:-10, relationship:3, reputation:-5 },
+          consequence: '案子拖了三个月。张老实的妻子病倒了。王员外已经把地转到了别人名下。你最终以"证据灭失"结案。没有人指责你，但你知道真相。夜里你开始失眠。'
+        }
+      ]
+    },
+    {
+      chapter: '第四折 · 站队',
+      title: '派系抉择',
+      text: '朝廷里，内阁首辅和司礼监掌印太监的斗争白热化。你的上司是首辅的人，但掌印太监的人悄悄找上了你：只要你愿意在一份奏疏上署名，弹劾你的上司，太监可以保你连升三级。\n\n你的上司对你有知遇之恩。但他最近确实在贪墨河道银子。',
+      narrator: '「权力的道路」：在权力结构中，站队是最重要的决定——比能力重要，比政绩重要。',
+      choices: [
+        {
+          text: '拒绝——「知遇之恩，不敢忘」',
+          hint: '忠诚是一种美德。但在官场，忠诚的代价可能是你永远卡在七品。',
+          analysis: '「沧浪之水」：忠诚在官场是双刃剑——忠于一个人意味着得罪他的所有对手。你拒绝了太监的人，等于向整个宦官集团宣战。在万历年间，这可能比得罪首辅更危险。',
+          effects: { morality:10, relationship:10, influence:-10, pressure:15, reputation:5 },
+          consequence: '太监的人冷笑而去。你的上司听说后，感动了三天。然后继续贪他的银子。你保住了良心，但也保住了原地踏步的命运。三年后，你的上司被革职，你也被牵连调任。'
+        },
+        {
+          text: '署名弹劾——识时务者为俊杰',
+          hint: '「沧浪之水」：池大为最终也选择了这条路。不是因为他变了，是因为他终于看清了规则。',
+          analysis: '《沧浪之水》的核心命题：在体制内，理想主义者的最终命运要么是被同化，要么是被边缘化。你选择站队意味着你接受了这套规则——但规则也接受你了吗？',
+          effects: { influence:20, morality:-20, relationship:-15, pressure:10, reputation:-10 },
+          consequence: '上司被革职。你连升两级，成为五品同知。但同僚们看你的眼神变了——有敬畏，有鄙夷，唯独没有亲近。你开始一个人吃饭。晚上对着铜镜，你发现自己的笑容越来越像王员外。'
+        },
+        {
+          text: '两不得罪——署名但暗中通知上司',
+          hint: '脚踩两只船的人，最终往往会掉进水里。',
+          analysis: '「权力的道路」：在派系斗争中，脚踩两只船是最危险的——因为两边都会觉得你是叛徒。但《沧浪之水》也记录了另一种可能：如果你的"泄密"做得足够巧妙，两边都会觉得你是"自己人"。',
+          effects: { pressure:20, influence:5, relationship:-5, morality:-5 },
+          consequence: '上司提前做了准备，弹劾失败。太监的人查出是你泄的密。你同时失去了两边的信任。从此你成了官场上的透明人——没人害你，也没人帮你。你的公文总是最后才被批复。'
+        },
+        {
+          text: '辞官——「这官场，我不玩了」',
+          hint: '退出是一种选择。但退出也意味着你之前所有的妥协都白费了。',
+          analysis: '「沧浪之水」：辞官是理想主义者最后的反抗。但《乡土中国》问了一个更深刻的问题：你辞了官，就能逃出这张网吗？你的家人呢？你的佃户呢？你的"人情债"呢？',
+          effects: { morality:20, pressure:-20, influence:-30, relationship:-20, reputation:10 },
+          consequence: '你递了辞呈。上司挽留了三次，太监的人嘲笑你"没出息"。你回到了乡下，种了一亩薄田。夜里读书时，你忽然觉得，也许这才是你真正想要的。但偶尔你会想起张老实——你走了，谁来替他说话？'
+        }
+      ]
+    },
+    {
+      chapter: '第五折 · 饭局',
+      title: '官场酒局',
+      text: '你被邀请参加一场府城的官场酒局。在座的有知府、同知、通判，还有几个你认不出的"幕友"。\n\n酒过三巡，知府开始讲"笑话"——每个笑话都在暗讽你的上司。你听出来了：这是一场站队的"面试"。\n\n所有人的目光都落在你身上。',
+      narrator: '「乡土中国」：饭局是中国社会最重要的社交场——所有的交易、站队、表态，都在觥筹交错之间完成。',
+      choices: [
+        {
+          text: '跟着笑——附和知府的"笑话"',
+          hint: '你笑的不是笑话，是立场。',
+          analysis: '「乡土中国」：在饭局上，笑声就是表态。你附和知府意味着你向他递了"投名状"。但《沧浪之水》警告：今天你笑别人的上司，明天别人笑你的上司——官场的笑话永远轮流转。',
+          effects: { relationship:15, morality:-10, influence:10, pressure:5 },
+          consequence: '知府拍着你的肩膀说："小兄弟懂事。"你升了一级。但你在回去的马车里，对着夜空吐了。不是因为酒，是因为你发现自己笑得越来越自然了。'
+        },
+        {
+          text: '沉默——低头喝酒，不接话',
+          hint: '沉默是金，但在官场，沉默也是表态——你表态说"我不参与"。',
+          analysis: '「权力的道路」：不参与本身就是一种参与。你的沉默在座所有人都看到了——它传达的信息是："我不站队。"但不站队的人，两边都不会拉拢你。',
+          effects: { pressure:10, influence:-5, morality:5, relationship:-5 },
+          consequence: '酒局的气氛微妙地冷了。知府不再看你，转头和别人说话。你安全了，但也孤立了。回县后，你发现几个关键的审批开始"卡住"了——不是针对你，只是没人愿意帮一个"局外人"。'
+        },
+        {
+          text: '反击——讲一个关于知府的"笑话"',
+          hint: '在官场酒局上反击上级，需要极高的技巧和极强的后盾。',
+          analysis: '这是最危险的选择——除非你有足够的筹码。《权力的道路》：在权力博弈中，敢于反击的人要么一战成名，要么一败涂地。没有中间地带。',
+          effects: { influence:5, pressure:20, relationship:-15, morality:5, reputation:10 },
+          consequence: '你讲了一个关于知府"微服私访"的笑话。全场安静了三秒。然后知府哈哈大笑——但笑声没有到达眼底。你知道你给自己树立了一个强大的敌人。但你的"敢言"也在官场传开了。'
+        },
+        {
+          text: '中途离席——「身体不适，先行告退」',
+          hint: '退出是最安全的，但也是最无趣的。',
+          analysis: '「沧浪之水」：在关键时刻缺席，是一种自我保护。但《置身事内》提醒：在体制内，"不在场"的人永远不会被考虑——无论是提拔还是站队。',
+          effects: { pressure:-5, influence:-8, relationship:-8, morality:5 },
+          consequence: '你借口醉酒离席了。知府没有挽留。你走在府城的夜街上，闻到了路边馄饨摊的香味。你坐下来吃了一碗——这是你穿越以来最自在的一刻。但你也知道，你错过了一个改变命运的机会。'
+        }
+      ]
+    },
+    {
+      chapter: '第六折 · 上访',
+      title: '民变前夜',
+      text: '县里爆发了佃农抗租事件。起因是王员外加了两成租子，佃户们活不下去了。三百多人围在县衙门口。\n\n你的上司来信："安抚即可，不可扩大事态。"\n\n王员外来信："大人，这些刁民，抓几个为首的就老实了。"\n\n门外的佃户们举着"求青天大老爷做主"的牌子。',
+      narrator: '「置身事内」：基层治理的核心矛盾——稳定与公正、上级与民众、人情与法律——永远没有完美解。',
+      choices: [
+        {
+          text: '开仓放粮，强制减租——为民做主',
+          hint: '你知道后果：王员外会动用一切关系，你的上司会很不高兴。但三百个人的命在你手里。',
+          analysis: '「沧浪之水」：在体制内，"为民做主"是最危险的选择——因为它同时得罪了权力结构中的所有利益方。但《乡土中国》也说：在乡土社会，"青天"的传说是最强大的社会资本。',
+          effects: { morality:20, reputation:20, relationship:-25, influence:-15, pressure:20 },
+          consequence: '你开了官仓，贴了减租告示。佃户们跪了一地。但王员外当晚就给府城写了信。七天后，你被以"擅权妄为"为由停职。佃户们在县衙门口放了一地的鸡蛋和蔬菜——他们能给的，只有这些了。'
+        },
+        {
+          text: '按上司指示——安抚为主，不做实质行动',
+          hint: '你保住了位置，但佃户们的命呢？',
+          analysis: '「置身事内」：在科层体制中，"执行上级指示"是最安全的选择。但《沧浪之水》问了一个更尖锐的问题：如果你连三百个人的命都救不了，你做官还有什么意义？',
+          effects: { morality:-15, relationship:10, influence:5, pressure:5, reputation:-15 },
+          consequence: '你贴了一张"正在调查"的告示，然后关了县衙的门。三天后，佃户们散了。王员外派人送来一坛好酒。你在书房里把酒倒了——然后又重新倒了一杯。'
+        },
+        {
+          text: '两边斡旋——让王员外减一成租，佃户散去',
+          hint: '「置身事内」：中国的基层治理，靠的不是法律，是协调。',
+          analysis: '调解是《置身事内》里描述的中国基层治理核心模式。但调解的前提是双方都有妥协的意愿——王员外愿意让步吗？佃户们能接受"只减一成"吗？',
+          effects: { morality:3, relationship:5, pressure:10, reputation:5, influence:3 },
+          consequence: '你苦口婆心谈了三天。王员外最终同意减一成——他也不希望事情闹大。佃户们勉强接受了。没有人满意，但也没有人流血。你累得在公堂上睡着了。师爷给你盖了一件外衣。'
+        },
+        {
+          text: '装病——把烂摊子推给县丞',
+          hint: '在官场，"病"是最万能的借口——也是最懦弱的选择。',
+          analysis: '「沧浪之水」：逃避是体制内最常见的生存策略。但逃避也有代价——你推掉的每一件事，都在消耗你的权威。县丞会替你处理好吗？如果处理好了，你还有存在的必要吗？',
+          effects: { pressure:-10, influence:-10, morality:-10, relationship:-5, reputation:-10 },
+          consequence: '你"病"了七天。县丞替你处理了——他两边都不得罪，佃户散了，王员外也没闹。但所有人都知道了：这个知县，关键时候靠不住。你的考评又降了一等。'
+        }
+      ]
+    },
+    {
+      chapter: '第七折 · 面圣',
+      title: '陛见',
+      text: '你被举荐面圣。皇帝问你：「朕听说你治下有方。你觉得，天下之弊，弊在何处？」\n\n你面前有两条路：说真话，或者说皇帝想听的话。\n\n殿外，太监和大臣们都在竖着耳朵。',
+      narrator: '「沧浪之水」：真话的代价，有时候不是丢官，是丢命。但假话的代价，是丢掉自己。',
+      choices: [
+        {
+          text: '「弊在兼并——豪绅占田，百姓无立锥之地」',
+          hint: '你说的是真话。但真话动了所有人的蛋糕。',
+          analysis: '「沧浪之水」：说真话是理想主义者最后的倔强。但《权力的道路》警告：在权力面前，真话是最危险的武器——它可能伤到别人，也可能伤到自己。',
+          effects: { morality:25, influence:-20, pressure:25, relationship:-20, reputation:20 },
+          consequence: '皇帝沉默了很久。退朝后，三个大臣来找你"叙旧"，话里话外都是威胁。你的考评又降了。但民间开始流传一个"敢说真话的知县"的故事。二十年后，一个年轻的御史读到了你的事迹。'
+        },
+        {
+          text: '「弊在吏治——官员贪腐，上行下效」',
+          hint: '这话说了等于没说。但至少不会得罪具体的人。',
+          analysis: '「置身事内」：在体制内，"正确的废话"是最安全的发言策略。它既不会得罪人，也不会改变什么。但《沧浪之水》问：如果你连面圣的机会都不敢说真话，你还有什么机会？',
+          effects: { morality:5, influence:3, pressure:5, relationship:3 },
+          consequence: '皇帝点了点头，不置可否。你安全过关了。但你也知道，你错过了一个可能改变什么的机会。回县后，一切照旧。你开始怀疑：面圣的意义是什么？'
+        },
+        {
+          text: '「天下太平，皆赖陛下圣明」',
+          hint: '这是所有皇帝最想听的话。也是所有有良心的臣子最不想说的话。',
+          analysis: '「沧浪之水」：假话是官场的润滑剂。但《权力的道路》提醒：说假话的人最终会变成假话本身——你不再是"说谎的真人"，而是"真话说不出口的假人"。',
+          effects: { morality:-20, influence:15, pressure:-5, relationship:15, reputation:-10 },
+          consequence: '皇帝龙颜大悦，当场赐你绸缎若干。太监对你刮目相看。你升了官。但回到驿站后，你对着铜镜看了很久——镜子里的人，你还认识吗？'
+        },
+        {
+          text: '「臣愚钝，不敢妄议。请陛下教诲。」',
+          hint: '把球踢回去。这是最安全的，也是最窝囊的。',
+          analysis: '「权力的道路」：在权力面前示弱，是一种自我保护。但示弱也有代价——皇帝会觉得你"不堪大用"。在官场，不表态的人永远不会被重用，但也永远不会被清算。',
+          effects: { pressure:5, morality:-5, influence:-3, relationship:3 },
+          consequence: '皇帝有些失望，挥了挥手让你退下。你没有升官，也没有获罪。就像一滴水落进大海——无声无息。你想：也许这就是大多数人的命运。'
+        }
+      ]
+    },
+    {
+      chapter: '第八折 · 三年',
+      title: '去留抉择',
+      text: '你在任上三年了。\n\n你的政绩不算差，也不算好。你学会了很多——如何在两本账之间游走，如何在酒桌上说场面话，如何在派系之间左右逢源。\n\n今天，朝廷考核，你的去留将被决定。你坐在书房里，翻出三年前刚到任时写的日记。上面只有一句话：「做一个好官。」\n\n墨迹已经淡了。',
+      narrator: '「沧浪之水」：人最终都会变成自己曾经最讨厌的样子。区别只在于——你是主动变的，还是被逼变的。',
+      choices: [
+        {
+          text: '继续做官——往上爬，才能做更多的事',
+          hint: '你已经学会了规则。也许，你可以用规则来改变规则。',
+          analysis: '「沧浪之水」：池大为的最终选择——用权力来改变体制。但《置身事内》提醒：用规则改变规则的前提是，你还记得为什么要改变。你还记得吗？',
+          effects: { influence:15, morality:-5, pressure:10, relationship:10 },
+          consequence: '你被调任府城，官升一级。你开始接触更大的棋局。有一天你忽然发现，你已经在用"为百姓好"来为自己的妥协辩护了。你翻开那本日记——"做一个好官"五个字已经模糊得看不清了。'
+        },
+        {
+          text: '辞官归隐——「我尽力了」',
+          hint: '「沧浪之水」的结局：池大为最终选择了权力。你可以选择另一条路。',
+          analysis: '退出是理想主义者最后的反抗。但《乡土中国》问了一个更深刻的问题：你辞了官，就能逃出这张网吗？你回到乡下，面对的还是同一套人情规则。',
+          effects: { morality:15, pressure:-20, influence:-25, reputation:10 },
+          consequence: '你回到了故乡。乡亲们还记得你——"那个做了三年官没发财的书生"。你笑了。你终于可以睡一个安稳觉了。但偶尔你会想：如果当初再坚持一下呢？'
+        },
+        {
+          text: '上万言书——把三年所见所闻如实上报',
+          hint: '你知道这意味着什么。但也许，总要有人说一次真话。',
+          analysis: '「沧浪之水」：万言书是理想主义者最悲壮的选择——它既不能改变什么，也不能保全自己。但《权力的道路》也记录了另一种可能：有时候，一颗种子需要二十年才能发芽。',
+          effects: { morality:25, influence:-15, pressure:25, relationship:-15, reputation:20 },
+          consequence: '万言书递上去了。石沉大海。三个月后，你被调往边疆——明升暗降。但你的万言书被人抄录，在士林中悄悄流传。你不知道的是，二十年后，一个年轻的御史读到了它，然后改变了整个朝廷。'
+        }
+      ]
+    }
+  ],
+  endings: [
+    {
+      id: 'ming_qingfeng',
+      title: '清风',
+      subtitle: '你守住了自己，但官场没有你的位置',
+      icon: '🍃',
+      condition: s => s.morality >= 60 && s.influence <= 30,
+      verdict: '你是清官，但清官在大明活不长。你被调往边疆，仕途坎坷。但你的万言书在士林中流传，你的名字被后人记住。有时候，失败也是一种胜利。',
+      analysis: '「沧浪之水」的终极命题：理想主义者在体制内的命运，要么被同化，要么被边缘化。你选择了后者。但《乡土中国》说：在乡土社会，"清名"是最持久的社会资本——它比权力更持久。',
+      quote: '「沧浪之水清兮，可以濯吾缨；沧浪之水浊兮，可以濯吾足。」——屈原',
+      atmosphere: 'neutral'
+    },
+    {
+      id: 'ming_nongchao',
+      title: '弄潮',
+      subtitle: '你学会了规则，也学会了代价',
+      icon: '🌊',
+      condition: s => s.influence >= 50 && s.morality <= 40,
+      verdict: '你在官场如鱼得水，步步高升。但你也变成了自己曾经最讨厌的那种人。你开始用"为百姓好"来为自己的妥协辩护。也许这就是成长——或者堕落。',
+      analysis: '「沧浪之水」里池大为的结局：他得到了权力，但失去了自己。《置身事内》解释了这个过程——在体制内，"适应规则"和"被规则同化"之间只有一线之隔。跨过去，就回不来了。',
+      quote: '「一个人最终都会变成自己曾经最讨厌的样子。」——《沧浪之水》',
+      atmosphere: 'dark'
+    },
+    {
+      id: 'ming_juanniao',
+      title: '倦鸟',
+      subtitle: '你累了',
+      icon: '🐦',
+      condition: s => s.pressure >= 60,
+      verdict: '官场的尔虞我诈让你心力交瘁。你选择了辞官归隐，回到了乡下。种田、读书、睡觉——这些曾经最简单的事，现在成了最奢侈的事。',
+      analysis: '「沧浪之水」：精神内耗是体制内最常见的"职业病"。《乡土中国》说：人最终要回到自己的"圈子"里去——那个不需要表演、不需要站队、不需要说假话的地方。',
+      quote: '「归去来兮，田园将芜胡不归？」——陶渊明',
+      atmosphere: 'neutral'
+    },
+    {
+      id: 'ming_fuping',
+      title: '浮萍',
+      subtitle: '随波逐流，身不由己',
+      icon: '🌿',
+      condition: s => s.influence >= 30 && s.influence <= 50 && s.morality >= 30 && s.morality <= 50,
+      verdict: '你没有大善，也没有大恶。你学会了在人情和原则之间走钢丝。你活下来了，但你也失去了某种东西——也许是初心，也许是勇气。',
+      analysis: '「置身事内」：在体制内，大多数人的最终状态就是"浮萍"——不高不低、不好不坏、不进不退。这是最普遍的结局，也是最容易被遗忘的结局。',
+      quote: '「天下熙熙，皆为利来；天下攘攘，皆为利往。」——司马迁',
+      atmosphere: 'neutral'
+    },
+    {
+      id: 'ming_bianjiang',
+      title: '边疆孤臣',
+      subtitle: '你说了真话，代价是流放',
+      icon: '🏜️',
+      condition: s => s.morality >= 55 && s.reputation >= 55 && s.influence <= 25,
+      verdict: '你的万言书让你被流放边疆。但你的名字在士林中流传。二十年后，一个年轻的御史读到了你的事迹，然后改变了整个朝廷。你没能看到那一天——但历史记住了你。',
+      analysis: '「权力的道路」：历史上所有伟大的改革者都有一个共同点——他们愿意付出代价。代价可能是官位、自由、甚至生命。但他们的种子会在未来发芽。',
+      quote: '「亦余心之所善兮，虽九死其犹未悔。」——屈原',
+      atmosphere: 'confetti'
+    },
+    {
+      id: 'ming_yuanman',
+      title: '圆满',
+      subtitle: '你找到了第三条路',
+      icon: '☯️',
+      condition: s => s.influence >= 40 && s.morality >= 45 && s.relationship >= 40 && s.pressure <= 50,
+      verdict: '你既没有被同化，也没有被边缘化。你学会了在规则和原则之间找到平衡点。你不是最清的官，也不是最浊的官——但你可能是最"活"的官。',
+      analysis: '「沧浪之水」：在理想和现实之间，存在第三条路——不是妥协，不是对抗，而是"在规则中寻找空间"。《置身事内》说：最好的基层治理者，是那些既懂规则又有人情味的人。',
+      quote: '「极高明而道中庸。」——《中庸》',
+      atmosphere: 'confetti'
+    }
+  ]
+}
+
+};
+
+// ====== GAME ENGINE ======
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'game-screen') {
+    document.getElementById('statsBar').classList.add('visible');
+  } else {
+    document.getElementById('statsBar').classList.remove('visible');
+  }
+}
+
+function startGame(scenario) {
+  state = { scenario, currentScene:0, stats:{}, choices:[], history:[] };
+  const sc = scenarios[scenario];
+  sc.stats.forEach(s => state.stats[s.key] = s.value);
+
+  const overlay = document.getElementById('transitionOverlay');
+  overlay.classList.add('active');
+  setTimeout(() => {
+    showScreen('game-screen');
+    document.getElementById('scenarioLabel').textContent = sc.label;
+    document.getElementById('vignette').classList.toggle('active', scenario === 'ming');
+    document.getElementById('scanline').classList.toggle('active', scenario === 'ming');
+    renderStats();
+    renderScene();
+    setTimeout(() => overlay.classList.remove('active'), 100);
+  }, 600);
+}
+
+function renderStats() {
+  const sc = scenarios[state.scenario];
+  const bar = document.getElementById('statsBar');
+  bar.innerHTML = sc.stats.map(s => `
+    <div class="stat-item">
+      <span class="stat-label">${s.label}</span>
+      <span class="stat-value" id="sv-${s.key}" style="color:${s.color}">${state.stats[s.key]}</span>
+      <div class="stat-bar">
+        <div class="stat-bar-fill" id="sb-${s.key}" style="width:${state.stats[s.key]}%;background:${s.color}"></div>
+      </div>
+    </div>
+  `).join('');
+  setTimeout(() => bar.classList.add('visible'), 300);
+}
+
+function updateStats(effects) {
+  const sc = scenarios[state.scenario];
+  const popup = document.createElement('div');
+  popup.className = 'stat-change-popup';
+  document.body.appendChild(popup);
+
+  Object.keys(effects).forEach((key, i) => {
+    state.stats[key] = Math.max(0, Math.min(100, state.stats[key] + effects[key]));
+    const valEl = document.getElementById(`sv-${key}`);
+    const barEl = document.getElementById(`sb-${key}`);
+    if (valEl) {
+      valEl.textContent = state.stats[key];
+      valEl.style.color = effects[key] > 0 ? '#6b8f71' : '#c45c4a';
+      setTimeout(() => {
+        const stat = sc.stats.find(s => s.key === key);
+        if (stat) valEl.style.color = stat.color;
+      }, 1200);
+    }
+    if (barEl) barEl.style.width = state.stats[key] + '%';
+
+    const stat = sc.stats.find(s => s.key === key);
+    if (stat && effects[key] !== 0) {
+      const item = document.createElement('div');
+      item.className = `stat-change-item ${effects[key] > 0 ? 'positive' : 'negative'}`;
+      item.textContent = `${stat.label} ${effects[key] > 0 ? '+' : ''}${effects[key]}`;
+      item.style.animationDelay = `${i * 0.1}s`;
+      popup.appendChild(item);
+    }
+  });
+
+  setTimeout(() => popup.remove(), 2500);
+}
+
+function showResultFlash(text) {
+  const flash = document.getElementById('resultFlash');
+  flash.textContent = text;
+  flash.style.opacity = '1';
+  flash.style.transform = 'translate(-50%, -50%) scale(1)';
+  setTimeout(() => {
+    flash.style.opacity = '0';
+    flash.style.transform = 'translate(-50%, -50%) scale(0.95)';
+  }, 2500);
+}
+
+function renderScene() {
+  const sc = scenarios[state.scenario];
+  const scene = sc.scenes[state.currentScene];
+  const container = document.getElementById('sceneContainer');
+  const level = document.getElementById('levelIndicator');
+  level.textContent = `${state.currentScene + 1} / ${sc.scenes.length}`;
+
+  container.innerHTML = `
+    <div class="scene-chapter" id="sceneChapter">${scene.chapter} · ${scene.title}</div>
+    <div class="scene-text" id="sceneText"></div>
+    <div class="scene-narrator" id="sceneNarrator"></div>
+    <div class="choices-container" id="choicesContainer"></div>
+  `;
+
+  const chapterEl = document.getElementById('sceneChapter');
+  const textEl = document.getElementById('sceneText');
+  const narratorEl = document.getElementById('sceneNarrator');
+  const choicesEl = document.getElementById('choicesContainer');
+
+  setTimeout(() => {
+    chapterEl.style.opacity = '1';
+    chapterEl.style.transform = 'translateY(0)';
+    chapterEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+  }, 100);
+
+  setTimeout(() => {
+    textEl.style.opacity = '1';
+    textEl.style.transform = 'translateY(0)';
+    textEl.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    typewriter(textEl, scene.text, () => {
+      setTimeout(() => {
+        narratorEl.style.opacity = '1';
+        narratorEl.style.transform = 'translateY(0)';
+        narratorEl.style.transition = 'all 0.8s ease';
+        narratorEl.innerHTML = scene.narrator;
+      }, 300);
+
+      setTimeout(() => {
+        choicesEl.style.opacity = '1';
+        choicesEl.style.transform = 'translateY(0)';
+        choicesEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+        scene.choices.forEach((choice, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'choice-btn';
+          btn.innerHTML = `${choice.text}<span class="choice-hint">${choice.hint}</span>${choice.analysis ? `<div class="deep-analysis" id="analysis-${state.currentScene}-${i}">${choice.analysis}</div>` : ''}`;
+
+          // long press for deep analysis
+          let pressTimer = null;
+          const showAnalysis = () => {
+            pressTimer = setTimeout(() => {
+              const el = document.getElementById(`analysis-${state.currentScene}-${i}`);
+              if (el) el.classList.add('show');
+            }, 800);
+          };
+          const hideAnalysis = () => { clearTimeout(pressTimer); };
+          btn.addEventListener('mousedown', showAnalysis);
+          btn.addEventListener('mouseup', hideAnalysis);
+          btn.addEventListener('mouseleave', hideAnalysis);
+          btn.addEventListener('touchstart', showAnalysis, { passive: true });
+          btn.addEventListener('touchend', hideAnalysis);
+
+          btn.style.opacity = '0';
+          btn.style.transform = 'translateX(-20px)';
+          btn.onclick = () => makeChoice(i);
+          choicesEl.appendChild(btn);
+          setTimeout(() => {
+            btn.style.transition = 'all 0.5s cubic-bezier(0.23,1,0.32,1)';
+            btn.style.opacity = '1';
+            btn.style.transform = 'translateX(0)';
+          }, 200 + i * 150);
+        });
+      }, 800);
+    });
+  }, 400);
+}
+
+function typewriter(el, text, callback) {
+  let i = 0;
+  const cursor = document.createElement('span');
+  cursor.className = 'typewriter-cursor';
+  el.textContent = '';
+  el.appendChild(cursor);
+
+  function type() {
+    if (i < text.length) {
+      if (text[i] === '\n') {
+        el.insertBefore(document.createElement('br'), cursor);
+      } else {
+        el.insertBefore(document.createTextNode(text[i]), cursor);
+      }
+      i++;
+      const ch = text[i-1];
+      const speed = ch === '。' ? 120 : ch === '，' ? 80 : ch === '\n' ? 200 : 25 + Math.random() * 20;
+      setTimeout(type, speed);
+    } else {
+      setTimeout(() => { cursor.remove(); if (callback) callback(); }, 500);
+    }
+  }
+  type();
+}
+
+function makeChoice(index) {
+  const sc = scenarios[state.scenario];
+  const scene = sc.scenes[state.currentScene];
+  const choice = scene.choices[index];
+
+  state.choices.push({ scene: state.currentScene, choice: index, text: choice.text });
+  state.history.push({ ...state.stats });
+
+  // ink splash for ming
+  if (state.scenario === 'ming') {
+    const splash = document.createElement('div');
+    splash.className = 'ink-splash';
+    splash.style.left = '50%';
+    splash.style.top = '50%';
+    document.body.appendChild(splash);
+    setTimeout(() => splash.remove(), 2000);
+  }
+
+  updateStats(choice.effects);
+
+  // disable buttons
+  document.querySelectorAll('.choices-container .choice-btn').forEach(btn => {
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.3';
+  });
+
+  // show consequence
+  const container = document.getElementById('sceneContainer');
+  const consequenceEl = document.createElement('div');
+  consequenceEl.className = 'consequence-box';
+  consequenceEl.innerHTML = `
+    <div class="consequence-label">后果</div>
+    <div class="consequence-text">${choice.consequence}</div>
+  `;
+  container.appendChild(consequenceEl);
+  setTimeout(() => {
+    consequenceEl.style.transition = 'all 0.8s ease';
+    consequenceEl.style.opacity = '1';
+    consequenceEl.style.transform = 'translateY(0)';
+  }, 100);
+
+  // next button
+  setTimeout(() => {
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'choice-btn';
+    nextBtn.style.marginTop = '2rem';
+    nextBtn.style.opacity = '0';
+    nextBtn.innerHTML = state.currentScene < sc.scenes.length - 1 ? '继续 →' : '查看结局 →';
+    nextBtn.onclick = () => {
+      const overlay = document.getElementById('transitionOverlay');
+      overlay.classList.add('active');
+      setTimeout(() => {
+        if (state.currentScene < sc.scenes.length - 1) {
+          state.currentScene++;
+          renderScene();
+        } else {
+          showEnding();
+        }
+        setTimeout(() => overlay.classList.remove('active'), 100);
+      }, 600);
+    };
+    container.appendChild(nextBtn);
+    setTimeout(() => {
+      nextBtn.style.transition = 'all 0.5s ease';
+      nextBtn.style.opacity = '1';
+    }, 100);
+  }, 2000);
+}
+
+// ====== ENDING SYSTEM ======
+function determineEnding() {
+  const sc = scenarios[state.scenario];
+  const endings = sc.endings;
+  for (const ending of endings) {
+    if (ending.condition(state.stats)) return ending;
+  }
+  return endings[endings.length - 1];
+}
+
+function showEnding() {
+  showScreen('ending-screen');
+  document.getElementById('vignette').classList.remove('active');
+  document.getElementById('scanline').classList.remove('active');
+  document.getElementById('statsBar').classList.remove('visible');
+
+  const sc = scenarios[state.scenario];
+  const ending = determineEnding();
+
+  // unlock ending
+  if (!unlockedEndings[state.scenario]) unlockedEndings[state.scenario] = [];
+  if (!unlockedEndings[state.scenario].includes(ending.id)) {
+    unlockedEndings[state.scenario].push(ending.id);
+    localStorage.setItem('unlockedEndings', JSON.stringify(unlockedEndings));
+  }
+
+  if (ending.atmosphere === 'confetti') createConfetti();
+  if (ending.atmosphere === 'dark') createDarkAtmosphere();
+
+  const screen = document.getElementById('ending-screen');
+  screen.innerHTML = `
+    <div class="ending-badge">${ending.icon}</div>
+    <div class="ending-title glitch-text" data-text="${ending.title}">${ending.title}</div>
+    <div class="ending-subtitle">${ending.subtitle}</div>
+    <div class="ending-stats">
+      ${sc.stats.map(s => `
+        <div class="ending-stat">
+          <div class="val" style="color:${s.color}">${state.stats[s.key]}</div>
+          <div class="lbl">${s.label}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="ending-verdict">${ending.verdict}</div>
+    <div class="ending-analysis">
+      <h4>五本书视角解析</h4>
+      ${ending.analysis}
+    </div>
+    <div class="ending-quote">${ending.quote}</div>
+    <div class="ending-btns">
+      <button class="ending-btn primary" onclick="startGame('${state.scenario}')">再来一次</button>
+      <button class="ending-btn" onclick="showScreen('landing')">返回首页</button>
+      <button class="ending-btn" onclick="showGallery()">结局图鉴</button>
+    </div>
+  `;
+}
+
+function createConfetti() {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+  const colors = ['#c9a96e', '#6b8f71', '#9b8ec4', '#7a8ba0', '#c45c4a'];
+  for (let i = 0; i < 80; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + '%';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    c.style.animationDelay = Math.random() * 2 + 's';
+    c.style.width = (Math.random() * 8 + 4) + 'px';
+    c.style.height = (Math.random() * 8 + 4) + 'px';
+    container.appendChild(c);
+  }
+  setTimeout(() => container.remove(), 6000);
+}
+
+function createDarkAtmosphere() {
+  const el = document.createElement('div');
+  el.className = 'atmosphere-dark';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+
+// ====== GALLERY ======
+function showGallery() {
+  showScreen('gallery-screen');
+  renderGalleryContent('whitehouse');
+}
+
+function renderGalleryContent(tab) {
+  const screen = document.getElementById('gallery-screen');
+  const sc = scenarios[tab];
+  const unlocked = unlockedEndings[tab] || [];
+  screen.innerHTML = `
+    <div class="gallery-header">
+      <h2>结局图鉴</h2>
+      <p>已解锁 ${unlocked.length} / ${sc.endings.length} 个结局</p>
+    </div>
+    <div class="gallery-tabs">
+      <button class="gallery-tab ${tab === 'whitehouse' ? 'active' : ''}" onclick="renderGalleryContent('whitehouse')">白宫篇</button>
+      <button class="gallery-tab ${tab === 'ming' ? 'active' : ''}" onclick="renderGalleryContent('ming')">明朝篇</button>
+    </div>
+    <div class="gallery-grid">
+      ${sc.endings.map(e => {
+        const isUnlocked = unlocked.includes(e.id);
+        return `
+          <div class="gallery-card ${isUnlocked ? 'unlocked' : 'locked'}">
+            <div class="gc-icon">${isUnlocked ? e.icon : '🔒'}</div>
+            <div class="gc-title">${isUnlocked ? e.title : '???'}</div>
+            <div class="gc-subtitle">${isUnlocked ? e.subtitle : '未解锁'}</div>
+            <div class="gc-quote">${isUnlocked ? e.quote : '继续探索以解锁此结局'}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+    <button class="gallery-back" onclick="showScreen('landing')">返回首页</button>
+  `;
+}
+
+function confirmExit() {
+  if (confirm('确定要返回首页吗？当前进度不会保存。')) {
+    showScreen('landing');
+    document.getElementById('vignette').classList.remove('active');
+    document.getElementById('scanline').classList.remove('active');
+  }
+}
+
+// ====== KEYBOARD SHORTCUTS ======
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const gs = document.getElementById('game-screen');
+    if (gs.classList.contains('active')) confirmExit();
+  }
+});
+
+</script>
+</body>
+</html>
