@@ -811,4 +811,23 @@ body.theme-cyber .danger-flash{animation:cyberFlash 0.3s ease-out;}
 @keyframes cyberFlash{0%{box-shadow:0 0 80px rgba(255,107,107,0.8);}100%{box-shadow:0 0 0px rgba(255,107,107,0);}}
 body.theme-cyber .scene-chapter.crisis-title{color:#ff4444;text-shadow:0 0 30px rgba(255,68,68,0.6);animation:cyberTitleGlitch 0.3s ease-in-out;}
 @keyframes cyberTitleGlitch{0%,100%{transform:translateX(0);}20%{transform:translateX(-3px);}40%{transform:translateX(3px);}60%{transform:translateX(-1px);}80%{transform:translateX(1px);}}
+/* ====== V14.2: 混沌道路主题 — 紫金交织，时空融合 ====== */
+body.theme-chaos{--accent-w:#b8a9d4;--accent-m:#6b5b95;--purple:#b8a9d4;}
+body.theme-chaos #particles{opacity:0.7;}
+body.theme-chaos .ambient-glow{background:radial-gradient(ellipse at 50% 50%,rgba(184,169,212,0.08),transparent 40%),radial-gradient(ellipse at 30% 30%,rgba(201,169,110,0.05),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(78,205,196,0.04),transparent 50%);}
+body.theme-chaos .scene-chapter{color:#b8a9d4;text-shadow:0 0 25px rgba(184,169,212,0.4);}
+body.theme-chaos .scene-chapter::before,body.theme-chaos .scene-chapter::after{background:rgba(184,169,212,0.5);}
+body.theme-chaos .choice-btn::after{background:#b8a9d4;}
+body.theme-chaos .choice-btn:hover{border-color:#b8a9d4;box-shadow:0 0 30px rgba(184,169,212,0.12);}
+body.theme-chaos .consequence-box{border-left-color:#b8a9d4;}
+body.theme-chaos .debt-panel-title{color:#b8a9d4;}
+body.theme-chaos .echo-card{border-color:rgba(184,169,212,0.2);background:linear-gradient(135deg,rgba(15,12,20,0.95),rgba(184,169,212,0.04));}
+body.theme-chaos .echo-card .ec-title{color:#b8a9d4;}
+body.theme-chaos .intro-badge{border-color:#b8a9d4;animation:chaosBadgeSpin 3s ease-in-out infinite;}
+@keyframes chaosBadgeSpin{0%,100%{box-shadow:0 0 15px rgba(184,169,212,0.3);transform:rotate(0deg);}50%{box-shadow:0 0 40px rgba(201,169,110,0.5),0 0 60px rgba(184,169,212,0.3);transform:rotate(5deg);}}
+body.theme-chaos .theme-bg-layer{background:radial-gradient(ellipse at 50% 30%,rgba(184,169,212,0.08),transparent 50%),radial-gradient(ellipse at 30% 70%,rgba(201,169,110,0.05),transparent 50%),radial-gradient(ellipse at 70% 50%,rgba(78,205,196,0.04),transparent 50%),linear-gradient(180deg,var(--bg) 0%,rgba(15,12,25,0.95) 50%,var(--bg) 100%);}
+@keyframes chaosCardGlow{0%,100%{box-shadow:0 0 20px rgba(184,169,212,0.15),0 0 60px rgba(201,169,110,0.05);}50%{box-shadow:0 0 40px rgba(184,169,212,0.3),0 0 80px rgba(201,169,110,0.1);}}
+.choice-card[data-scenario="chaos"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(184,169,212,0.12),transparent 60%),radial-gradient(ellipse at 30% 70%,rgba(201,169,110,0.06),transparent 60%);}
+.choice-card[data-scenario="chaos"]:hover{box-shadow:0 20px 80px rgba(0,0,0,0.4),0 0 80px rgba(184,169,212,0.15);}
+
 /* V14: gallery overrides removed — merged into main gallery section */

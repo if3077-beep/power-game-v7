@@ -291,6 +291,12 @@ class AudioEngine {
         bass:    [58,  62,  69,  77,  87,  77,  69,  62,  58,  55,  52,  58],
         wave: 'sawtooth', harmWave: 'sawtooth', tempo: 900, melVol: 0.14, harmVol: 0.1, bassVol: 0.28,
       },
+      chaos: {
+        melody:  [261, 330, 392, 523, 440, 349, 293, 261, 330, 440, 523, 659, 523, 440],
+        harmony: [130, 165, 196, 261, 220, 175, 146, 130, 165, 220, 261, 330, 261, 220],
+        bass:    [65,  82,  98, 130, 110,  87,  73,  65,  82, 110, 130, 165, 130, 110],
+        wave: 'sine', harmWave: 'triangle', tempo: 2400, melVol: 0.26, harmVol: 0.14, bassVol: 0.18,
+      },
     };
     const cfg = configs[style] || configs.whitehouse;
     const len = cfg.melody.length;

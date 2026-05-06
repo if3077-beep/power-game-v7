@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>权力的游戏 v14</title>
+<title>权力的游戏 v14.2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Noto+Sans+KR:wght@300;400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
@@ -79,6 +79,13 @@
       <div class="card-era">Chapter VI — 日常</div>
       <h2>日常投影</h2>
       <p>首尔，25岁，大学毕业两年。换了三份工作，目前在咖啡店打工。<br><br>你不是在闯关——你是在过自己的人生。</p>
+    <div class="choice-card hidden-road-card chaos-card" data-scenario="chaos" id="chaosCard" onclick="renderPrelude('chaos')" style="display:none;">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🌀</span>
+      <div class="card-era">Chapter Ω — 混沌</div>
+      <h2>时空之渊</h2>
+      <p>古人与未来人同坐一席，大明的奏折与AI的数据流同时抵达。<br><br>这不是历史，不是预言——是一面镜子，照出权力的永恒面孔。</p>
+    </div>
     </div>
   </div>
   <div class="landing-footer">
@@ -131,10 +138,11 @@
 <script src="M8-Data-Africa.js"></script>
 <script src="M9-Data-3077.js"></script>
 <script src="M10-Data-Korea.js"></script>
+<script src="M11-Data-Chaos.js"></script>
 <script src="M3-Engine.js"></script>
 <script src="M6-Mechanics.js"></script>
 <script>
-// V14.1: 页面加载时检查隐藏道路解锁状态 + 随机引言含出处
+// V14.2: 页面加载时检查隐藏道路解锁状态
 (function() {
   const hidden = ['africa','cyber','korea'];
   hidden.forEach(road => {
@@ -143,15 +151,18 @@
       if (card) card.style.display = '';
     }
   });
-  // V14.1: AI道路——已解锁或30%概率直接出现
+  // AI道路——已解锁或30%概率直接出现
   const aiCard = document.getElementById('aiCard');
   if (aiCard) {
     if (localStorage.getItem('aiUnlocked') || Math.random() < 0.3) {
       aiCard.style.display = '';
-      if (!localStorage.getItem('aiUnlocked')) {
-        localStorage.setItem('aiUnlocked', 'true');
-      }
+      if (!localStorage.getItem('aiUnlocked')) localStorage.setItem('aiUnlocked', 'true');
     }
+  }
+  // 混沌道路——通过全解锁动画后显示
+  const chaosCard = document.getElementById('chaosCard');
+  if (chaosCard && localStorage.getItem('chaosUnlocked')) {
+    chaosCard.style.display = '';
   }
 })();
 </script>

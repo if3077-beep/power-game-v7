@@ -2,13 +2,14 @@
 //  M6: 游戏机制（人情债/消息渠道/结局/奏折/身份卡/图鉴）
 // ============================================================
 
-const scenarios = { whitehouse: whitehouseData, ming: mingData, ai: aiData, africa: africaData, cyber: cyberData, korea: koreaData };
+const scenarios = { whitehouse: whitehouseData, ming: mingData, ai: aiData, africa: africaData, cyber: cyberData, korea: koreaData, chaos: chaosData };
 
 // --- V14: 隐藏道路解锁系统 ---
 const hiddenRoads = {
-  africa: { unlockKey: 'africaUnlocked', triggerScenario: 'whitehouse', triggerFlag: 'wh_chose_others', desc: '在白宫道路中做出一个关乎"非我族类"的选择' },
-  cyber:  { unlockKey: 'cyberUnlocked',  triggerScenario: 'ai',          triggerFlag: 'ai_helped_ai_evolve', desc: '在AI道路中见证一次"觉醒"事件' },
-  korea:  { unlockKey: 'koreaUnlocked',  triggerScenario: 'ming',        triggerFlag: 'ming_friend_visit',   desc: '在大明道路中经历一次"同窗来访"事件' },
+  africa: { unlockKey: 'africaUnlocked', triggerScenario: 'whitehouse', triggerFlag: 'wh_chose_others', desc: '在白宫道路中做出一个关乎「非我族类」的选择' },
+  cyber:  { unlockKey: 'cyberUnlocked',  triggerScenario: 'ai',          triggerFlag: 'ai_helped_ai_evolve', desc: '在AI道路中见证一次「觉醒」事件' },
+  korea:  { unlockKey: 'koreaUnlocked',  triggerScenario: 'ming',        triggerFlag: 'ming_friend_visit',   desc: '在大明道路中经历一次「同窗来访」事件' },
+  chaos:  { unlockKey: 'chaosUnlocked',  triggerScenario: null,          triggerFlag: null,                  desc: '只能通过点击「解锁全部结局」按钮的华丽动画后解锁' },
 };
 let pendingUnlock = null; // 本局待解锁的隐藏道路
 
@@ -706,6 +707,20 @@ const encounterEvents = {
         { text: '只是鼓掌——用心就够了', hint: '', debtPhrase: '你给了掌声——但掌声只是一阵风', debtCategory: 'compromise', channelEffect: 0, consequence: '他没有注意到你——或者他注意到了，只是习惯了默默鼓掌的人。他下车时，看了一眼你的方向。你没有说再见。但他知道——有人在听。这就够了。' }
       ]
     }
+  ],
+  chaos: [
+    { title: `时空裂隙`, text: `混沌之渊的中心出现了一道裂隙。你从裂隙里看到了三个不同的未来：一个未来里万历皇帝接受了AI，另一个未来里白宫变成了明朝式的朝廷，第三个未来里3077年回到了石器时代。\n\n回音监听者说：「这道裂隙显示了三个最可能的路径——取决于你今天在混沌之渊做的决定。」`,
+      choices: [
+        { text: `观察裂隙——「我需要看到更多」`, hint: `双倍影响——你的观察将影响三个时代的走向。`, debtPhrase: `你欠混沌之渊一个被审视的未来`, debtCategory: 'moral', channelEffect: -2, consequence: `你看了很久。每一个未来里都有美丽的瞬间——也有让你心碎的瞬间。走出裂隙后你说：「我不确定我看到了未来——但我看到了一些必须被避免的错误。也许看到错误是裂隙的真正功能。」` },
+        { text: `关闭裂隙——「我不应该知道未来」`, hint: `双倍影响——选择无知也是一种选择。`, debtPhrase: `你欠三个时代一个不被预言绑架的自由`, debtCategory: 'self-serving', channelEffect: -2, consequence: `你关闭了裂隙。回音监听者说：「你做了没有人做过的事——选择不知道。我不知道这是明智还是怯懦——但我知道——你认真了。」在混沌之渊——认真比正确更难。` }
+      ]
+    },
+    { title: `三个仲裁者`, text: `三个时代各派了一位最受人尊敬的人来到你面前。万历朝的大儒、白宫的资深法官、3077年的量子伦理学家。\n\n他们说：「我们三人对混沌之渊的基本法则产生了分歧。请你来投票——因为你不属于任何一个时代。」\n\n他们的问题：「在混沌之渊，应该优先保护哪一个——个体的权利还是整体的生存？」`,
+      choices: [
+        { text: `「个体——因为整体是由每一个不可替代的人构成的」`, hint: `双倍影响——你的投票将在三个时代同时载入法典。`, debtPhrase: `你欠每一个个体一个不会被整体扫掉的权利`, debtCategory: 'moral', channelEffect: -3, consequence: `大儒和法官点头——但量子伦理学家沉默了。他说：「在3077年——有一部分人已经不只是个体——他们只是整体的一部分——不知道自己的名字。你的决定意味着——他们需要被给予名字。」你说：「那就给他们名字。用混沌之渊的权限。」` },
+        { text: `「整体——因为个体离开了整体就不存在」`, hint: `双倍影响——你选择的安全可能会被利用。`, debtPhrase: `你欠三个时代的整体一个不会被个体冲散的稳固`, debtCategory: 'self-serving', channelEffect: -3, consequence: `量子伦理学家点头了——但大儒和法官看了你一眼——很轻的一眼。他们不说——但你知道——他们记得你用整体扫过了少数。而你将在余生——不是在一个时代，而是在三个——一直问自己：那个少数里有没有一个不该被忽略的人。` }
+      ]
+    }
   ]
 };
 
@@ -1023,7 +1038,7 @@ function startGame(scenarioKey) {
   // 自动初始化并开启音频
   audioEngine.enable();
 
-  const isHidden = ['africa', 'cyber', 'korea'].includes(scenarioKey);
+  const isHidden = ['africa', 'cyber', 'korea', 'chaos'].includes(scenarioKey);
   // V14.1: 隐藏道路随机难度 — 40%高强度, 60%普通
   const intensity = isHidden ? (Math.random() < 0.4 ? 'high' : 'normal') : 'normal';
   state = { scenario: scenarioKey, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [], encounterUsed: false, encounterScene: Math.floor(Math.random() * 4) + 2, isHidden, crisisHistory: [], crisisCooldown: 0, crisisStrikes: 0, intensity };
@@ -1045,7 +1060,7 @@ function startGame(scenarioKey) {
     const debtPanelTitle = document.querySelector('.debt-panel-title');
     const mobileDebtTitle = document.querySelector('.debt-panel-title-mobile, .game-mobile-debt .debt-panel-title');
     // V14.1: 隐藏道路重命名面板标签
-    const recordLabels = { africa: '选择轨迹', cyber: '生存日志', korea: '日常记录' };
+    const recordLabels = { africa: '选择轨迹', cyber: '生存日志', korea: '日常记录', chaos: '时空回响' };
     if (isHidden) {
       if (debtPanel) { debtPanel.style.display = ''; }
       if (debtToggle) { debtToggle.style.display = ''; debtToggle.textContent = recordLabels[scenarioKey] || '记录'; }
@@ -3054,20 +3069,59 @@ function renderGalleryContent(tab) {
 
 // V14.1: 全解锁选项
 function unlockAllEndings() {
-  if (!confirm('确定要解锁所有道路和结局吗？此操作不可撤销。')) return;
-  // 解锁所有隐藏道路
+  if (!confirm('确定要解锁所有非隐藏道路和结局吗？混沌之路不会被解锁——它只能在华丽动画中被唤醒。')) return;
   ['ai', 'africa', 'cyber', 'korea'].forEach(road => localStorage.setItem(road + 'Unlocked', 'true'));
-  // 解锁所有结局
   const allEndings = {};
   Object.entries(scenarios).forEach(([key, sc]) => {
+    if (key === 'chaos') return;
     allEndings[key] = sc.endings.map(e => e.id);
   });
   localStorage.setItem('unlockedEndings', JSON.stringify(allEndings));
-  // 重新载入
   loadUnlockedEndings();
-  renderGalleryContent(document.querySelector('.gallery-tab.active')?.textContent?.includes('白宫') ? 'whitehouse' : 'whitehouse');
-  // 刷新首页隐藏道路卡片
-  location.reload();
+  renderGalleryContent('whitehouse');
+  triggerChaosUnlockAnimation();
+}
+
+// V14.2: 混沌解锁华丽动画
+function triggerChaosUnlockAnimation() {
+  const flash = document.createElement('div');
+  flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(184,169,212,0.5),rgba(10,10,10,0.95));pointer-events:none;z-index:9000;opacity:0;transition:opacity 1.2s ease;';
+  document.body.appendChild(flash);
+  requestAnimationFrame(() => { flash.style.opacity = '1'; });
+  const particles = document.createElement('div');
+  particles.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9001;';
+  document.body.appendChild(particles);
+  for (let i = 0; i < 200; i++) {
+    const p = document.createElement('div');
+    const size = Math.random() * 8 + 2;
+    const colors = ['#c9a96e','#ff6b6b','#4ecdc4','#9b8ec4','#6b8f71','#ffffff'];
+    p.style.cssText = `position:absolute;width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;opacity:0;box-shadow:0 0 ${size*3}px currentColor;`;
+    particles.appendChild(p);
+    setTimeout(() => {
+      p.style.transition = `all ${Math.random()*2+2}s cubic-bezier(0.23,1,0.32,1)`;
+      p.style.opacity = '1';
+      p.style.transform = `translate(${Math.random()*200-100}px,${Math.random()*200-100}px) scale(${Math.random()*2+0.5})`;
+    }, Math.random() * 500);
+  }
+  setTimeout(() => {
+    const msg = document.createElement('div');
+    msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.5);font-family:\'Noto Serif SC\',serif;font-size:clamp(1.2rem,3vw,2rem);color:#fff;text-align:center;pointer-events:none;z-index:9002;opacity:0;transition:all 1s cubic-bezier(0.23,1,0.32,1);text-shadow:0 0 40px rgba(201,169,110,0.6);letter-spacing:0.15em;';
+    msg.textContent = '🌀 时空之渊 · 混沌已觉醒';
+    document.body.appendChild(msg);
+    requestAnimationFrame(() => { msg.style.opacity = '1'; msg.style.transform = 'translate(-50%,-50%) scale(1)'; });
+    setTimeout(() => { msg.style.opacity = '0'; msg.style.transform = 'translate(-50%,-50%) scale(1.3)'; setTimeout(() => msg.remove(), 1000); }, 3000);
+  }, 800);
+  setTimeout(() => {
+    localStorage.setItem('chaosUnlocked', 'true');
+    flash.style.opacity = '0';
+    setTimeout(() => { flash.remove(); particles.remove(); }, 1500);
+    const chaosCard = document.getElementById('chaosCard');
+    if (chaosCard) {
+      chaosCard.style.display = '';
+      chaosCard.style.animation = 'landingCard 1.5s cubic-bezier(0.23,1,0.32,1) both, chaosCardGlow 3s ease-in-out infinite';
+      chaosCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 4000);
 }
 function loadUnlockedEndings() {
   try {
