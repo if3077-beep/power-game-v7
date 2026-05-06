@@ -69,6 +69,9 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 .intro-btn{padding:1rem 3rem;background:transparent;border:1px solid var(--accent-w);color:var(--text);font-family:'Noto Serif SC',serif;font-size:1rem;cursor:pointer;transition:all 0.4s ease;letter-spacing:0.1em;}
 .intro-btn:hover{background:rgba(201,169,110,0.1);transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,169,110,0.1);}
 .intro-divider{text-align:center;margin:1.5rem 0;color:var(--accent-w);font-size:0.8rem;letter-spacing:0.3em;}
+/* V14.3: 通用入场动画 — 使用 CSS --i 变量控制延迟 */
+.intro-anim{opacity:0;transform:translateY(25px);animation:introItemIn 0.7s cubic-bezier(0.23,1,0.32,1) forwards;animation-delay:calc(0.15s + var(--i, 0) * 0.12s);}
+@keyframes introItemIn{from{opacity:0;transform:translateY(25px);filter:blur(4px);}to{opacity:1;transform:translateY(0);filter:blur(0);}}
 .intro-ambient-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle at center,rgba(201,169,110,0.06),transparent 60%);pointer-events:none;animation:introGlowPulse 3s ease-in-out infinite;}
 @keyframes introGlowPulse{0%,100%{opacity:0.3;transform:translate(-50%,-50%) scale(0.9);}50%{opacity:0.7;transform:translate(-50%,-50%) scale(1.1);}}
 /* V14.1: 隐藏道路入场动画 */

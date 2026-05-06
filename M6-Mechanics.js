@@ -1161,37 +1161,17 @@ function showIntro(scenarioKey) {
   screen.innerHTML = `
     <div class="intro-ambient-glow"></div>
     <div class="intro-identity theme-${scenarioKey}">
-      <div class="intro-badge" style="opacity:0;transform:translateY(20px);">${intro.badge}</div>
-      <div class="intro-name" style="opacity:0;transform:translateY(20px);">${intro.name}</div>
-      <div class="intro-role" style="opacity:0;transform:translateY(20px);">${intro.role}</div>
-      <div class="intro-desc" style="opacity:0;transform:translateY(20px);">${desc.replace(/\n/g, '<br>')}</div>
-      <div class="intro-divider" style="opacity:0;">&mdash; ✦ &mdash;</div>
-      <div class="intro-situation" style="opacity:0;transform:translateY(20px);">${situation.replace(/\n/g, '<br>')}</div>
-      <button class="intro-btn" onclick="startGame('${scenarioKey}')" style="opacity:0;transform:translateY(20px);">踏入命运</button>
+      <div class="intro-badge intro-anim" style="--i:0">${intro.badge}</div>
+      <div class="intro-name intro-anim" style="--i:1">${intro.name}</div>
+      <div class="intro-role intro-anim" style="--i:2">${intro.role}</div>
+      <div class="intro-desc intro-anim" style="--i:3">${desc.replace(/\n/g, '<br>')}</div>
+      <div class="intro-divider intro-anim" style="--i:4">&mdash; ✦ &mdash;</div>
+      <div class="intro-situation intro-anim" style="--i:5">${situation.replace(/\n/g, '<br>')}</div>
+      <button class="intro-btn intro-anim" style="--i:6" onclick="startGame('${scenarioKey}')">踏入命运</button>
     </div>
   `;
   audioEngine.play('chapter');
   transition(() => showScreen('intro-screen'));
-  // V14.1: 入场动画 — 各项元素依次淡入
-  setTimeout(() => {
-    const els = [
-      screen.querySelector('.intro-badge'),
-      screen.querySelector('.intro-name'),
-      screen.querySelector('.intro-role'),
-      screen.querySelector('.intro-desc'),
-      screen.querySelector('.intro-divider'),
-      screen.querySelector('.intro-situation'),
-      screen.querySelector('.intro-btn')
-    ];
-    els.forEach((el, i) => {
-      if (!el) return;
-      setTimeout(() => {
-        el.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      }, 100 + i * 180);
-    });
-  }, 300);
 }
 
 // --- 开始游戏 ---

@@ -446,9 +446,19 @@ function showScreen(id) {
   } else {
     document.getElementById('channelsBar').classList.remove('visible');
   }
-  // V14.3: 图鉴按钮仅首页和结算页显示
+  // V14.3: 图鉴按钮仅首页和结算页可见
   const footer = document.querySelector('.landing-footer');
-  if (footer) footer.style.display = (id === 'landing' || id === 'ending-screen') ? '' : 'none';
+  if (footer) {
+    if (id === 'landing' || id === 'ending-screen') {
+      footer.style.display = '';
+      footer.style.visibility = 'visible';
+      footer.style.pointerEvents = 'auto';
+    } else {
+      footer.style.display = 'none';
+      footer.style.visibility = 'hidden';
+      footer.style.pointerEvents = 'none';
+    }
+  }
 }
 
 // --- 转场 ---
