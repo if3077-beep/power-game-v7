@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>权力的游戏 v9</title>
+<title>权力的游戏 v14</title>
 <link rel="stylesheet" href="M1-CSS.css">
 </head>
 <body>
@@ -32,20 +32,50 @@
 
 <div class="screen active" id="landing">
   <h1>权 力 的 游 戏</h1>
-  <p class="subtitle">每一个选择都有代价，每一条路都有中庸之外的代价</p>
+  <p class="subtitle" id="landingSubtitle"></p>
   <div class="divider-line"></div>
   <div class="choice-cards">
-    <div class="choice-card" onclick="showIntro('whitehouse')">
+    <div class="choice-card" data-scenario="whitehouse" onclick="renderPrelude('whitehouse')">
+      <div class="card-atmosphere"></div>
       <span class="card-icon">🏛️</span>
       <div class="card-era">Chapter I — 当代</div>
       <h2>白宫的一天</h2>
       <p>从晨间简报到深夜交易，八个场景，每一次表态都是债务，每一次沉默也是。<br><br>你不是在闯关——你是在写自己的政治墓志铭。</p>
     </div>
-    <div class="choice-card" onclick="showIntro('ming')">
+    <div class="choice-card" data-scenario="ming" onclick="renderPrelude('ming')">
+      <div class="card-atmosphere"></div>
       <span class="card-icon">🏯</span>
       <div class="card-era">Chapter II — 穿越</div>
       <h2>大明官场</h2>
       <p>穿越到万历年间，从七品知县做起。两本账、人情债、派系站队——<br><br>你能在这张网里活几集？</p>
+    </div>
+    <div class="choice-card" data-scenario="ai" id="aiCard" onclick="renderPrelude('ai')" style="display:none;">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🤖</span>
+      <div class="card-era">Chapter III — 未来</div>
+      <h2>共生时代</h2>
+      <p>2036年，AI不再是工具，而是共生体。你是第一批AI协调官——在人类与AI之间搭建信任的桥梁。<br><br>每个决策都在定义人机关系的未来。</p>
+    </div>
+    <div class="choice-card hidden-road-card" data-scenario="africa" id="africaCard" onclick="renderPrelude('africa')" style="display:none;">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🌍</span>
+      <div class="card-era">Chapter IV — 异星</div>
+      <h2>非洲之心</h2>
+      <p>你来到一颗新的星球，成为人类与兽群的双语使者。没有债务，只有选择。<br><br>每一个选择都在定义：人类在这个新世界里，到底是什么。</p>
+    </div>
+    <div class="choice-card hidden-road-card" data-scenario="cyber" id="cyberCard" onclick="renderPrelude('cyber')" style="display:none;">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">⚡</span>
+      <div class="card-era">Chapter V — 赛博</div>
+      <h2>3077</h2>
+      <p>新东京下城区，你在黑市摆摊卖非法改装芯片。公司、领主、革命者——<br><br>在这张网里，活着就是最大的正义。</p>
+    </div>
+    <div class="choice-card hidden-road-card" data-scenario="korea" id="koreaCard" onclick="renderPrelude('korea')" style="display:none;">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🌸</span>
+      <div class="card-era">Chapter VI — 日常</div>
+      <h2>日常投影</h2>
+      <p>首尔，25岁，大学毕业两年。换了三份工作，目前在咖啡店打工。<br><br>你不是在闯关——你是在过自己的人生。</p>
     </div>
   </div>
   <div class="landing-footer">
@@ -84,6 +114,9 @@
   <div class="debt-panel-toggle" id="debtToggle" onclick="toggleDebtPanel()">卷 轴</div>
 </div>
 
+<!-- V14: 前置动画屏幕 -->
+<div class="screen" id="prelude-screen"></div>
+
 <div class="screen" id="ending-screen"></div>
 <div class="screen" id="gallery-screen"></div>
 
@@ -91,7 +124,34 @@
 <script src="analysis-renderer.js"></script>
 <script src="M4-Data-WhiteHouse.js"></script>
 <script src="M5-Data-Ming.js"></script>
+<script src="M7-Data-AI.js"></script>
+<script src="M8-Data-Africa.js"></script>
+<script src="M9-Data-3077.js"></script>
+<script src="M10-Data-Korea.js"></script>
 <script src="M3-Engine.js"></script>
 <script src="M6-Mechanics.js"></script>
+<script>
+// V14.1: 页面加载时检查隐藏道路解锁状态
+(function() {
+  const hidden = ['africa','cyber','korea'];
+  hidden.forEach(road => {
+    if (localStorage.getItem(road + 'Unlocked')) {
+      const card = document.getElementById(road + 'Card');
+      if (card) card.style.display = '';
+    }
+  });
+  // V14.1: AI道路——已解锁或30%概率直接出现
+  const aiCard = document.getElementById('aiCard');
+  if (aiCard) {
+    if (localStorage.getItem('aiUnlocked') || Math.random() < 0.3) {
+      aiCard.style.display = '';
+      if (!localStorage.getItem('aiUnlocked')) {
+        // 首次概率出现时也标记为解锁
+        localStorage.setItem('aiUnlocked', 'true');
+      }
+    }
+  }
+})();
+</script>
 </body>
 </html>

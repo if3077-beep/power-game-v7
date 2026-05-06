@@ -9,7 +9,13 @@ const whitehouseData = {
     role: '总统核心幕僚',
     badge: '🏛️',
     desc: '你是总统最信任的核心幕僚之一。在这个位置上，你每天面对的不是"对与错"，而是"哪个代价更小"。\n\n你的每一个建议都可能改变历史——也可能毁掉你自己。',
-    situation: '今天是关键的一天：晨间简报有紧急情报，内阁会议将爆发争吵，媒体手里有一段可能毁掉一切的录音。\n\n你需要在24小时内做出8个决定。每个决定都会欠下一笔人情债。\n\n你准备好了吗？'
+    descVariants: [
+      '凌晨四点，白宫西翼的灯还亮着。你是这栋楼里最后几个还醒着的人之一。\n\n总统刚打来电话："明天的新闻发布会，你来写稿。"你知道——明天的发布会，是关于那件事的。那件所有人都知道、但没人敢说的事。\n\n你的手在发抖。不是因为害怕，是因为你知道：你写的每一个字，都可能改变这个国家的方向。'
+    ],
+    situation: '今天是关键的一天：晨间简报有紧急情报，内阁会议将爆发争吵，媒体手里有一段可能毁掉一切的录音。\n\n你需要在24小时内做出8个决定。每个决定都会欠下一笔人情债。\n\n你准备好了吗？',
+    situationVariants: [
+      '你刚坐下，三份文件同时送到桌上：一份是对手阵营的内部邮件泄露，一份是总统的体检报告（有几项指标不乐观），还有一份是你的辞职信草稿——你的前任写了一半没寄出的。\n\n窗外，华盛顿纪念碑在晨雾中若隐若现。你知道：今天，你将做出至少一个会让自己后悔的决定。\n\n准备好了吗？'
+    ]
   },
   scenes: [
     {
@@ -178,6 +184,7 @@ const whitehouseData = {
           text: '拒绝——有些底线不能碰',
           bookQuote: '选这个？《沧浪之水》：坚守原则的代价是什么？池大为的答案是——被边缘化。',
           debtPhrase: '你的幕僚们说"终于做了一次对的事"——但任期还剩两年，手里已经没有牌了',
+          historyFlag: 'wh_chose_others',
           debtCategory: 'moral',
           channelEffect: 0,
           consequence: '法案流产了。反对党领袖在电视上说你"不懂政治"。但你的核心团队对你更加忠诚。只是，你的任期还剩两年，手里已经没有牌了。',
@@ -436,6 +443,37 @@ const whitehouseData = {
       quote: '「极高明而道中庸。」——《中庸》',
       atmosphere: 'confetti',
       epitaph: '在刀锋上跳舞的人'
+    },
+    {
+      id: 'wh_chessmaster',
+      title: '棋手',
+      subtitle: '你把所有人都当成了棋子——包括你自己',
+      icon: '🎲',
+      condition: (debts, ch) => {
+        const selfServing = debts.filter(d => d.category === 'self-serving').length;
+        const compromise = debts.filter(d => d.category === 'compromise').length;
+        return selfServing >= 2 && compromise >= 2 && ch >= 1;
+      },
+      verdict: '你把权力场当成了棋盘。每一步都经过精密计算，每一次妥协都是为了更大的布局。你赢了——但你也发现：当你把所有人都当棋子时，你自己也变成了棋盘上的一颗棋子。',
+      analysis: '《权力的道路》：最高级的权力操控不是强迫别人服从，而是让别人觉得服从是他们自己的选择。但操控者最终也会被自己的逻辑所困。',
+      quote: '「你以为你在下棋，其实你也是棋盘上的一颗棋子。」——《纸牌屋》',
+      atmosphere: 'dark',
+      epitaph: '把棋盘当世界的精密操盘手'
+    },
+    {
+      id: 'wh_scapegoat',
+      title: '替罪羊',
+      subtitle: '你为所有人背了锅',
+      icon: '🐐',
+      condition: (debts, ch) => {
+        const betrayal = debts.filter(d => d.category === 'betrayal').length;
+        return betrayal >= 2 && ch <= 1;
+      },
+      verdict: '你背叛了太多人，也失去了所有信息来源。当危机来临时，没有人愿意替你说话——因为他们都在等这一天。你被推上了祭坛，成了所有人的替罪羊。',
+      analysis: '《置身事内》：在科层体制中，替罪羊不是随机产生的——它是权力结构自我保护的产物。当系统需要一个"交代"时，信息最闭塞、盟友最少的那个人就是最佳人选。',
+      quote: '「牺牲一个人，保全所有人——这是最古老的权力游戏。」',
+      atmosphere: 'dark',
+      epitaph: '被所有人推上祭坛的替罪羊'
     }
   ]
 };

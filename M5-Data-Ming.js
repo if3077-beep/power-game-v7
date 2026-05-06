@@ -9,7 +9,13 @@ const mingData = {
     role: '江南某县知县',
     badge: '🏯',
     desc: '你穿越到了大明万历年间，成为江南某县的七品知县。到任第一天，你就发现——这里的规则和你想象的完全不同。\n\n两本账、人情债、派系站队——你能在这张网里活几集？',
-    situation: '你的师爷递给你两本账册：一本是给朝廷看的"官账"，一本是县里实际运转的"私账"。两本账，数字差了三倍。\n\n师爷说："大人，这是规矩。"\n\n你需要在8个场景中做出选择。每个选择都会欠下一笔人情债。\n\n你准备好了吗？'
+    descVariants: [
+      '大明万历十五年。你骑着毛驴走了七天，终于到了这个江南小县。\n\n县衙门口，两个衙役在打瞌睡。师爷迎出来，第一句话不是"大人辛苦了"，而是："大人，您前任是被参走的。他查了三年的亏空，最后查到了自己头上。"\n\n你看着师爷的笑容，忽然觉得：这个县的水，比你想象的深得多。'
+    ],
+    situation: '你的师爷递给你两本账册：一本是给朝廷看的"官账"，一本是县里实际运转的"私账"。两本账，数字差了三倍。\n\n师爷说："大人，这是规矩。"\n\n你需要在8个场景中做出选择。每个选择都会欠下一笔人情债。\n\n你准备好了吗？',
+    situationVariants: [
+      '你刚到县衙，就收到了三份拜帖：一份来自本县最大的乡绅王员外，一份来自知府大人，一份来自一个你不认识的人——帖子上只写了四个字："故人托付。"\n\n师爷说："大人，这三份帖子，您先回哪份，决定了您在这个县的站位。"\n\n窗外下着雨。你忽然想起一句话——"千里来做官，只为吃和穿"。但你知道，你来这里，不只是为了吃穿。\n\n准备好了吗？'
+    ]
   },
   scenes: [
     {
@@ -117,6 +123,14 @@ const mingData = {
     { id: 'ming_deaf', title: '聋子', subtitle: '你失去了所有内线', icon: '🔇', condition: (d, ch) => ch <= 0, verdict: '你失去了所有消息渠道。你坐在县衙里，但你什么都不知道。你成了聋子。', analysis: '《置身事内》：信息是权力的血液。失去信息，就失去了一切。', quote: '「不知道真相的人是无知的；知道真相却假装不知道的人是卑劣的。」', atmosphere: 'dark', epitaph: '被所有人礼貌地遗忘的人' },
     { id: 'ming_betrayed', title: '背叛者', subtitle: '你踩着别人的肩膀往上爬', icon: '🗡️', condition: (d, ch) => d.filter(x => x.category === 'betrayal').length >= 3, verdict: '你升了官，但你踩过的人都记住了你。你开始一个人吃饭，一个人走路。', analysis: '《权力的道路》：用背叛换来的权力，最终也会被背叛终结。', quote: '「天下熙熙，皆为利来；天下攘攘，皆为利往。」——司马迁', atmosphere: 'dark', epitaph: '踩着白骨登高的人' },
     { id: 'ming_hermit', title: '倦鸟', subtitle: '你累了', icon: '🐦', condition: (d, ch) => d.filter(x => x.category === 'passive').length >= 4, verdict: '官场的尔虞我诈让你心力交瘁。你选择了辞官归隐。种田、读书、睡觉——这些曾经最简单的事，现在成了最奢侈的事。', analysis: '「沧浪之水」：精神内耗是体制内最常见的"职业病"。', quote: '「归去来兮，田园将芜胡不归？」——陶渊明', atmosphere: 'neutral', epitaph: '在风暴中选择归隐的人' },
-    { id: 'ming_balanced', title: '圆满', subtitle: '你找到了第三条路', icon: '☯️', condition: (d, ch) => true, verdict: '你既没有被同化，也没有被边缘化。你学会了在规则和原则之间找到平衡点。', analysis: '「沧浪之水」：在理想和现实之间，存在第三条路——不是妥协，不是对抗，而是"在规则中寻找空间"。', quote: '「极高明而道中庸。」——《中庸》', atmosphere: 'confetti', epitaph: '在刀锋上找到平衡的人' }
+    { id: 'ming_balanced', title: '圆满', subtitle: '你找到了第三条路', icon: '☯️', condition: (d, ch) => true, verdict: '你既没有被同化，也没有被边缘化。你学会了在规则和原则之间找到平衡点。', analysis: '「沧浪之水」：在理想和现实之间，存在第三条路——不是妥协，不是对抗，而是"在规则中寻找空间"。', quote: '「极高明而道中庸。」——《中庸》', atmosphere: 'confetti', epitaph: '在刀锋上找到平衡的人' },
+    { id: 'ming_whistleblower', title: '吹哨人', subtitle: '你说了真话——代价是你的官帽', icon: '📢', condition: (d, ch) => {
+        const moral = d.filter(x => x.category === 'moral').length;
+        return moral >= 3 && ch >= 2;
+      }, verdict: '你把三年的所见所闻写成了万言书。皇帝看了，沉默了三天。然后你被调往边疆——不是惩罚，是皇帝把你放在了他能看到的地方。你的万言书在士林中流传，人们称你为"吹哨人"。', analysis: '《置身事内》：在信息不对称的体制中，说真话的人不是被消灭，而是被"安置"——放到一个既能发挥作用又不会造成太大威胁的位置。', quote: '「知我者谓我心忧，不知我者谓我何求。」——《诗经》', atmosphere: 'neutral', epitaph: '用真话换了一顶更远的乌纱' },
+    { id: 'ming_weathervane', title: '墙头草', subtitle: '你随风倒——但风向变了太多次', icon: '🌾', condition: (d, ch) => {
+        const compromise = d.filter(x => x.category === 'compromise').length;
+        return compromise >= 3 && ch <= 1;
+      }, verdict: '你学会了随风倒——哪边强就站哪边。但你忘了：风向是可以变的。当新的势力崛起时，你已经没有可以倒向的那边了。你成了官场上的透明人——不是被惩罚，是被遗忘。', analysis: '《沧浪之水》：纯粹的机会主义者最终会被所有阵营排斥——因为没有人信任一个永远随风倒的人。墙头草的悲剧不是倒错边，是根本没根。', quote: '「墙头草，两边倒——倒到最后，连根都没了。」——民间谚语', atmosphere: 'dark', epitaph: '随风倒了太多次的墙头草' }
   ]
 };

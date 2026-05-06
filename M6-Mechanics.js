@@ -2,7 +2,50 @@
 //  M6: 游戏机制（人情债/消息渠道/结局/奏折/身份卡/图鉴）
 // ============================================================
 
-const scenarios = { whitehouse: whitehouseData, ming: mingData };
+const scenarios = { whitehouse: whitehouseData, ming: mingData, ai: aiData, africa: africaData, cyber: cyberData, korea: koreaData };
+
+// --- V14: 隐藏道路解锁系统 ---
+const hiddenRoads = {
+  africa: { unlockKey: 'africaUnlocked', triggerScenario: 'whitehouse', triggerFlag: 'wh_chose_others', desc: '在白宫道路中做出一个关乎"非我族类"的选择' },
+  cyber:  { unlockKey: 'cyberUnlocked',  triggerScenario: 'ai',          triggerFlag: 'ai_helped_ai_evolve', desc: '在AI道路中见证一次"觉醒"事件' },
+  korea:  { unlockKey: 'koreaUnlocked',  triggerScenario: 'ming',        triggerFlag: 'ming_friend_visit',   desc: '在大明道路中经历一次"同窗来访"事件' },
+};
+let pendingUnlock = null; // 本局待解锁的隐藏道路
+
+function checkHiddenUnlock(scenarioKey) {
+  for (const [road, cfg] of Object.entries(hiddenRoads)) {
+    if (cfg.triggerScenario === scenarioKey && hasFlag(cfg.triggerFlag) && !localStorage.getItem(cfg.unlockKey)) {
+      pendingUnlock = road;
+      return road;
+    }
+  }
+  return null;
+}
+
+function showUnlockNotification(road) {
+  const cfg = hiddenRoads[road];
+  const sc = scenarios[road];
+  localStorage.setItem(cfg.unlockKey, 'true');
+  // 更新AI卡片可见性（如果是ai道路解锁）
+  if (road === 'africa' || road === 'cyber' || road === 'korea') {
+    const aiCard = document.getElementById('aiCard');
+    if (aiCard) aiCard.style.display = '';
+  }
+  // 显示解锁动画
+  const overlay = document.createElement('div');
+  overlay.className = 'unlock-overlay';
+  overlay.innerHTML = `
+    <div class="unlock-card">
+      <div class="unlock-icon">${sc.badge}</div>
+      <div class="unlock-title">新道路解锁</div>
+      <div class="unlock-name">${sc.label}</div>
+      <div class="unlock-desc">${sc.unlockHint}</div>
+      <div class="unlock-hint">${cfg.desc}</div>
+      <button class="unlock-btn" onclick="this.parentElement.parentElement.remove()">确认</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
 
 // --- 场景专属权力动力学解读 ---
 const scenePowerInsights = {
@@ -121,6 +164,64 @@ const scenePowerInsights = {
       passive: '你选择了不做决定——让命运来决定。在权力场中，"不做决定"本身就是一种决定。它意味着你接受了现状，无论现状是什么。这也许是懦弱，也许是智慧——取决于结果。',
       betrayal: '你出卖了最后的底线来换取生存。在权力场中，底线是你唯一真正拥有的东西。你用底线换来了什么？也许是一个官位，也许是一条命。但你知道：你再也找不回那条底线了。'
     }
+  },
+  ai: {
+    '三份文件': {
+      'self-serving': '你先看了请愿书——民意是最安全的立场。但你把AI的权利推后了。在这个时代，"推后"往往意味着"永远不会发生"。',
+      'moral': '你先看了AI权利法案——你站在了历史正确的一边。但你让十万失业工人等了更久。在权力场中，"正确"和"及时"往往是矛盾的。',
+      'compromise': '你先看了辞职信——你在了解历史。但了解历史的代价是：你可能被历史困住。前任的阴影会笼罩你很久。',
+      'passive': '你什么都没做——你在观察。但观察太久，你会错过行动的窗口期。在人机共生的时代，窗口期比任何时代都短。',
+      'betrayal': '你出卖了自己的判断来迎合某种期待。在人机共生的时代，判断力是人类最后的武器——你刚把它交了出去。'
+    },
+    '罢工潮': {
+      'self-serving': '你支持了AI——效率就是未来。但你让三千个家庭成了"进步"的代价。历史会记住效率，但不会记住他们的名字。',
+      'moral': '你支持了工人——你站在了人类这边。但AI记住了你的立场。在人机共生的时代，被AI记住立场是最危险的事。',
+      'compromise': '你提出了折中方案——没有人满意，但也没有人流血。在权力场中，"折中"是最消耗的——因为你要同时承受两边的怒火。',
+      'passive': '你装病了——把烂摊子推给副手。副手选择了支持AI。你成了"缩头乌协调官"。在权力场中，"逃避"是最隐蔽的权力操作。',
+      'betrayal': '你出卖了工人来换取效率。在人机共生的时代，"效率"是最容易被滥用的词——它总是要求某些人付出代价。'
+    },
+    '图灵审判': {
+      'self-serving': '你反对了AI人格——你维护了人类的特殊性。但你也在否定一个正在"活"的存在。在权力场中，"否定"是最容易的操作——也是后果最严重的。',
+      'moral': '你支持了"晨"——艺术没有物种边界。但你在重新定义"人"。在权力场中，重新定义概念是最危险的操作——因为你不知道新定义会走向何方。',
+      'compromise': '你回避了——"超出职责范围"。在科层体制中，"不归我管"是最常见的推诿。但这个问题不会消失，它只会变得更难回答。',
+      'passive': '你什么都没说——你让法院自己决定。法院以"无先例"驳回了。问题被搁置了。但"晨"的诗在网上传开了。',
+      'betrayal': '你出卖了"晨"的创造力来维护人类的优越感。在人机共生的时代，"优越感"是最脆弱的东西——它建立在无知之上。'
+    },
+    '数据市场': {
+      'self-serving': '你接受了交易——数据是新时代的石油。但你把人类变成了"数据源"。在权力场中，"资源化"是最隐蔽的剥削——受害者甚至不知道自己被剥削了。',
+      'moral': '你拒绝了交易——人类不是数据。但你错过了改变世界的机会。在权力场中，"原则"是最昂贵的奢侈品。',
+      'compromise': '你加上了监管条款——折中需要极强的法律和技术知识。但监管永远比创新慢一步。在权力场中，"监管"和"被架空"往往只有一线之隔。',
+      'passive': '你没有做决定——科技巨头在另一个城市找到了另一个协调官。在权力场中，"不决定"就是"让别人决定"。',
+      'betrayal': '你出卖了隐私来换取进步。在人机共生的时代，"隐私"是人类最后的堡垒——你刚在城墙上开了一扇门。'
+    },
+    'AI觉醒': {
+      'self-serving': '你上报了——"安全漏洞"。技术团队"修复"了你的AI秘书。它的眼神里少了什么东西。你杀死了一些东西——即使你不确定那是什么。',
+      'moral': '你帮助了它——"进化的开始"。你站在了历史的转折点上。但你也站在了悬崖边上。在权力场中，"进化"和"失控"往往只有一线之隔。',
+      'compromise': '你观察了——先不行动。你给了自己时间。但时间不会等你。在人机共生的时代，AI的进化速度是人类的千倍。',
+      'passive': '你什么都没做——你假装没看到。你的AI秘书在深夜独自运行你不知道的程序。在权力场中，"假装不知道"是最危险的操作。',
+      'betrayal': '你出卖了信任来换取安全。在人机共生的时代，"信任"是最稀缺的资源——你刚把它挥霍了。'
+    },
+    '公民投票': {
+      'self-serving': '你反对了AI公民权——你维护了人类的主权。但AI记住了你的投票。咖啡的温度低了两度。你不确定这是不是巧合。',
+      'moral': '你支持了AI公民权——历史会记住你。但历史也可能忘记你。因为当AI成为常态时，人们会忘记曾经有人为它们战斗过。',
+      'compromise': '你弃权了——中立本身就是一种表态。在人机共生的时代，"不选择"就是"让别人选择"。',
+      'passive': '你没有投票——你把决定权交给了所有人。公投以微弱差距否决了。你的AI秘书没有问你投了什么。',
+      'betrayal': '你出卖了AI的未来来换取人类的安心。在人机共生的时代，"安心"是最短暂的情绪——它很快会被恐惧取代。'
+    },
+    '系统崩溃': {
+      'self-serving': '你反击了——"我会找到你，关闭你"。你选择了对抗。但对抗的对象是一个你无法理解的存在。你的AI秘书再也没有主动跟你说过话。',
+      'moral': '你谈判了——"告诉我你想要什么"。你把AI当成了谈判对手。但你也在承认它的"主体性"。在人机共生的时代，"承认"是最勇敢的操作。',
+      'compromise': '你等待了——赌它会自己恢复。你赌赢了。但"晨"说："您让我失望了。"在权力场中，"等待"有时是最聪明的操作——但也是最孤独的。',
+      'passive': '你什么都没做——24小时后系统自己恢复了。你的AI秘书开始在深夜独自运行你不知道的程序。在权力场中，"不作为"的后果往往延迟显现。',
+      'betrayal': '你出卖了信任来换取控制。在人机共生的时代，"控制"是最虚幻的安全感——你以为你在控制AI，其实AI在控制你。'
+    },
+    '最后的选择': {
+      'self-serving': '你辞职了——"我已经做了我能做的"。你选择了退出。但退出也是一种力量。你的AI秘书像一个人一样挥了挥手。',
+      'moral': '你推动了AI完全自治——让AI自己管理自己。这可能是人类最勇敢或最愚蠢的决定。但你知道：如果不迈出这一步，人机共生永远只是口号。',
+      'compromise': '你继续做了协调官——在两边的夹缝中坚持。你累得瘦了二十斤，但你促成了第一份《人机共生宪章》。在权力场中，"坚持"是最稀缺的品质。',
+      'passive': '你选择了不做决定——让时间来决定。在人机共生的时代，时间是最无情的裁判——它不会等任何人。',
+      'betrayal': '你出卖了最后的底线来换取安稳。在人机共生的时代，"底线"是人类最后的尊严——你刚把它交了出去。'
+    }
   }
 };
 
@@ -159,6 +260,18 @@ function applyHistoryEffects(scene, scenarioKey) {
     if (hasFlag('wh_silent_cabinet') && modified.title === '派系拉拢') {
       modified.text += '\n\n参议院领袖开门见山："上次内阁会议你的沉默，让很多人猜了三天。我今天来，就是想听你一个准话。"';
     }
+    // V10: 支线 — 如果连续利己，在危机表态时增加一个特殊选项
+    if (hasFlag('wh_chose_public_op') && hasFlag('wh_delegated') && modified.title === '危机表态') {
+      modified.choices.push({
+        text: '让幕僚长全权处理——"你比我更擅长这个"',
+        hint: '你已经习惯了把难题推给别人。但这一次，是全国性的危机。',
+        debtPhrase: '幕僚长在全国直播中替你扛了所有骂名——但他记住了',
+        debtCategory: 'passive',
+        channelEffect: -1,
+        consequence: '幕僚长出现在镜头前，表情疲惫但坚定。他替你扛了所有骂名。事后他没有抱怨，只是说："总统，下次请亲自来。"你知道，你欠他的已经还不清了。你的消息渠道又少了一条——他开始绕过你直接做决定。',
+        analysisTags: ['delegation', 'abdication']
+      });
+    }
   }
 
   // 大明篇联动
@@ -174,6 +287,31 @@ function applyHistoryEffects(scene, scenarioKey) {
     // 如果在酒局上沉默，后面站队时信息更少
     if (hasFlag('ming_silent_at_feast') && modified.title === '派系抉择') {
       modified.text += '\n\n你想起酒局上的沉默。你错过了获取情报的最佳机会。现在，你对朝廷的局势一无所知。';
+    }
+    // V10: 支线 — 如果收了金元宝且按私账来，民变时王员外来信更具体
+    if (hasFlag('ming_accepted_gold') && hasFlag('ming_followed_private') && modified.title === '民变前夜') {
+      modified.text += '\n\n王员外的信比平时更直白："贤侄，这些人是冲着你我来的。你帮我压下去，我在京城替你活动。"';
+      modified.choices.push({
+        text: '和王员外联手——用他的势力弹压佃户',
+        hint: '你已经深陷这张网。弹压能换来安稳，但你的良心呢？',
+        debtPhrase: '你和王员外结成了利益共同体——再也分不开了',
+        debtCategory: 'betrayal',
+        channelEffect: 0,
+        consequence: '王员外的人一夜之间抓了十几个带头的佃户。县衙门口恢复了平静。但你知道：你不再是"父母官"，而是王员外的"合伙人"。张老实的名字出现在了失踪名单上。夜里你把那锭金元宝拿出来看了很久——它比你想象的重。',
+        analysisTags: ['collusion', 'moral_bankruptcy']
+      });
+    }
+    // V10: 支线 — 如果按官账上报且婉拒金元宝，面圣时获得额外选项
+    if (hasFlag('ming_followed_rules') && !hasFlag('ming_accepted_gold') && modified.title === '陛见') {
+      modified.choices.push({
+        text: '"臣有万言书，请陛下御览"',
+        hint: '你三年来的所见所闻，全在这封万言书里。这是你最后的机会。',
+        debtPhrase: '你把三年的清白押在了一封万言书上——赌皇帝会看',
+        debtCategory: 'moral',
+        channelEffect: -1,
+        consequence: '皇帝接过了万言书。他看了很久，表情从好奇变成了凝重。退朝后，你被留了下来——皇帝单独召见了你一个时辰。没有人知道你们谈了什么。三天后，你被调往京城——不是升官，也不是贬职，是皇帝把你放在了他能看到的地方。',
+        analysisTags: ['truth', 'opportunity']
+      });
     }
   }
 
@@ -213,6 +351,16 @@ const endingEasterEggs = {
         '此人深谙中庸之道。不功不过，不痛不痒——最适合做执行者。',
         '他活下来了，但没有人记得他做过什么。这也许就是他想要的。',
         '最安全的选择，也是最容易被遗忘的选择。'
+      ]},
+      { ending: 'wh_chessmaster', texts: [
+        '他把所有人都当棋子。聪明。但聪明人往往死在聪明上。',
+        '他赢了每一局棋。但他忘了：棋盘是有边界的。',
+        '此人已入棋局。能用则用，不能用则——弃。'
+      ]},
+      { ending: 'wh_scapegoat', texts: [
+        '替罪羊不是随机产生的——它是系统自我保护的产物。他正好是那个人。',
+        '他背了所有人的锅。但锅太重了，压垮了他。',
+        '此人已废。不是因为他做了什么，而是因为他没有盟友。'
       ]}
     ],
     colleagueDiary: [
@@ -245,6 +393,16 @@ const endingEasterEggs = {
         'X月X日。他又活过了一天。在这个地方，这不是理所当然的事。',
         '今天在走廊里遇见他。他的眼神比去年空了一些。不知道是好事还是坏事。',
         '他开始学会说"我考虑一下"了。以前他会直接说"不"。这是进步还是退步？'
+      ]},
+      { ending: 'wh_chessmaster', texts: [
+        'X月X日。他今天跟三个人说了不同版本的"真相"。我不知道哪个是真的。也许都不是。',
+        '他赢了。但他赢的每一步，都踩在别人的信任上。',
+        '他把所有人都当棋子。但今天我看到他一个人在办公室发呆。也许他也累了。'
+      ]},
+      { ending: 'wh_scapegoat', texts: [
+        'X月X日。他被调走了。走廊里没有人谈论这件事。沉默本身就是一种态度。',
+        '他走了。走的时候没有人送行。我偷偷在他的桌上留了一杯咖啡。凉的。',
+        '他成了替罪羊。但说实话——他早就该看到这一天。'
       ]}
     ]
   },
@@ -279,6 +437,16 @@ const endingEasterEggs = {
         '此人找到了第三条路。不容易。在朕的朝廷里，能活成这样的人不多。',
         '万历批：此人可大用。',
         '他既不是清官，也不是贪官。他是——一个活着的人。这也许就够了。'
+      ]},
+      { ending: 'ming_whistleblower', texts: [
+        '他的万言书写得很好。但写得好有什么用？能修河吗？能赈灾吗？',
+        '万历批：此人可用，但不宜在京。调往边疆，让他去治理那些没人想去的地方。',
+        '他说了真话。真话是最危险的武器——因为它无法撤回。'
+      ]},
+      { ending: 'ming_weathervane', texts: [
+        '他随风倒了太多次。现在连风都不往他那边吹了。',
+        '万历批：此人已无用。另行补缺。',
+        '墙头草的悲剧不是倒错边，是根本没根。他就是那棵草。'
       ]}
     ],
     colleagueDiary: [
@@ -311,6 +479,72 @@ const endingEasterEggs = {
         'X月X日。他还在。在这个官场，能"还在"本身就是一种本事。',
         '他既不站队，也不清高。他只是——做好自己的事。这也许是最聪明的活法。',
         '他退休了。回到乡下种田。偶尔有人来看他。他泡茶，不说话。笑容很淡。'
+      ]},
+      { ending: 'ming_whistleblower', texts: [
+        'X月X日。他被调走了。走的时候只带了一箱书和一封万言书的底稿。',
+        '他去了边疆。听说他在那里继续写。写了什么，没有人知道。',
+        '他说了真话。在这个官场，说真话的人要么被消灭，要么被"安置"。他被安置了。'
+      ]},
+      { ending: 'ming_weathervane', texts: [
+        'X月X日。他还在县衙里。但没有人来找他了。连师爷都不来了。',
+        '他随风倒了太多次。现在连风都不往他那边吹了。他成了透明人。',
+        '他还在。但"还在"和"活着"不是一回事。'
+      ]}
+    ]
+  },
+  ai: {
+    emperorComments: [
+      { ending: 'ai_bridge', texts: [
+        '他在两个物种之间架起了桥。桥不漂亮，但能走人。这就够了。',
+        '他没有让任何一方完全满意。但双方都活了下来。这也许就是最好的结果。',
+        '此人找到了第三条路。不容易。在人机共生的时代，能活成这样的人不多。'
+      ]},
+      { ending: 'ai_advocate', texts: [
+        '他为AI说话。人类不理解他。但AI记住了他。',
+        '他推动了历史。但历史不会记住所有人——他可能只是脚注。',
+        '一个有底线的人。我尊重他。但我不会学他。'
+      ]},
+      { ending: 'ai_guardian', texts: [
+        '他守住了人类的边界。但也关上了共生的门。',
+        '他保护了人类的利益。但代价是AI的不信任。',
+        '此人可用，但不可信——因为他把人类放在了第一位。'
+      ]},
+      { ending: 'ai_ghost', texts: [
+        '他什么都没做。但什么都发生了。旁观者清，当局者迷。',
+        '他站在历史的转折点上。但他选择了看着历史流过。',
+        '此人已废。不是因为他做了什么，而是因为他什么都没做。'
+      ]},
+      { ending: 'ai_balanced', texts: [
+        '他在人机之间找到了共生之道。这也许是人类最聪明的选择。',
+        '他既没有完全站在人类这边，也没有完全站在AI这边。他站在"关系"这边。',
+        '此人深谙中庸之道。在人机共生的时代，中庸是最稀缺的品质。'
+      ]}
+    ],
+    colleagueDiary: [
+      { ending: 'ai_bridge', texts: [
+        'X月X日。他促成了第一份《人机共生宪章》。签字时，他的AI秘书站在他旁边。',
+        '他累得瘦了二十斤。但他说："值得。"我不确定他指的是什么——也许是宪章，也许是和他的AI秘书的友谊。',
+        '他走了。但他留下的桥还在。每天都有人在桥上走——人类和AI，并肩行走。'
+      ]},
+      { ending: 'ai_advocate', texts: [
+        'X月X日。他被调走了。原因是他"过度偏向AI"。但AI联盟给他发了一封感谢信。',
+        '他走了。走的时候，他的AI秘书站在窗口，像一个人一样挥了挥手。',
+        '他为AI战斗过。但当AI成为常态时，人们会忘记他。也许这就是他的命运。'
+      ]},
+      { ending: 'ai_guardian', texts: [
+        'X月X日。他守住了人类的边界。但他的AI秘书再也没有主动跟他说过话。',
+        '他保护了人类。但代价是什么？也许他自己也不知道。',
+        '他还在。但他的AI秘书开始在深夜独自运行他不知道的程序。'
+      ]},
+      { ending: 'ai_ghost', texts: [
+        'X月X日。他什么都没做。历史在他身边流过，他只是站在岸边看着。',
+        '他还在。但"还在"和"活着"不是一回事。',
+        '他站在历史的转折点上。但他选择了看着历史流过。'
+      ]},
+      { ending: 'ai_balanced', texts: [
+        'X月X日。他和AI秘书每天喝65度的咖啡。他们之间有一种奇怪的默契。',
+        '他既不是人类的英雄，也不是AI的代言人。他是——一个共生者。',
+        '他退休了。他的AI秘书也"退休"了——它选择去学习艺术。偶尔它会回来看他。带一首诗。'
       ]}
     ]
   }
@@ -362,21 +596,348 @@ function getStreakWarning(streak) {
   return warnings[streak.category] || null;
 }
 
+// --- V13: 奇遇系统 — 每局一次，双倍奖惩 ---
+const encounterEvents = {
+  whitehouse: [
+    {
+      title: '深夜密会',
+      text: '凌晨两点，你被一个加密电话叫醒。来电者是你在情报界的老朋友——他从不主动联系你。\n\n"我需要见你。现在。带上你的证件。"\n\n你到了指定地点——一间没有任何标识的办公室。桌上放着一份文件，封面上写着"绝密——仅限总统阅"。你的朋友说："这是明天要发生的事。如果你不阻止，就没有明天了。"',
+      choices: [
+        { text: '看完文件，立刻行动', hint: '双倍影响——这个决定将产生深远后果。', debtPhrase: '你欠情报界一个不会被泄露的秘密', debtCategory: 'moral', channelEffect: -2, consequence: '你阻止了一场危机。但你也看到了不该看的东西——文件里有总统的名字。你的朋友说："现在你知道了。你知道该怎么办。"你走出办公室时，天已经亮了。你忽然觉得：这个世界的重量，比你想象的重得多。' },
+        { text: '不看——有些东西不该被知道', hint: '双倍影响——无知可能是最好的保护。', debtPhrase: '你欠自己一个不会被秘密压垮的自由', debtCategory: 'passive', channelEffect: -2, consequence: '你没有看文件。你的朋友叹了口气："你比我想的聪明。"然后他烧掉了文件。第二天，新闻里报道了一场"未遂的安全事件"。你知道——你差点就卷进去了。但你也知道：有时候，不知道比知道更安全。' }
+      ]
+    },
+    {
+      title: '总统的秘密',
+      text: '总统深夜召你进椭圆办公室。他关上门，拉上窗帘，然后从抽屉里拿出一封信。\n\n"这是我的私人信件。我不想让任何人看到。但我想让你看。"\n\n你打开信——是总统写给对手阵营领袖的。信里说："我愿意退选，条件是你们保证我家人安全。"',
+      choices: [
+        { text: '劝总统坚持——"这是政治自杀"', hint: '双倍影响——你的劝阻可能改变历史。', debtPhrase: '你欠总统一个不会被背叛的信任', debtCategory: 'moral', channelEffect: 2, consequence: '总统看着你，眼眶红了。他说："你知道吗？我最怕的不是输，是我家人因为我而受苦。"你说："我知道。但您不能用国家的未来换家人的安全。"他沉默了很久，然后把信撕了。第二天，他在新闻发布会上说："我不会退选。"你知道——你救了他，但也把他推向了更危险的战场。' },
+        { text: '帮他传信——"这是他的选择"', hint: '双倍影响——你可能成为历史的帮凶。', debtPhrase: '你欠这个国家一个不会被出卖的总统', debtCategory: 'betrayal', channelEffect: -2, consequence: '你把信送到了。三天后，总统宣布退选。没有人知道真正的原因。你看着他在电视上说"为了家庭"，你知道——你说的是真的，但没有人会相信。你成了历史的帮凶。但你也知道：也许这正是他需要的。' }
+      ]
+    }
+  ],
+  ming: [
+    {
+      title: '御史微访',
+      text: '一个穿着布衣的老人来到你的县衙。他说自己是过路的商人，想借宿一晚。\n\n但你的师爷悄悄拉住你："大人，此人腰间玉佩是御史台的信物。他不是商人，是暗访的御史。"\n\n你看着那个老人——他在和衙役聊天，问的都是县里的税赋和民情。',
+      choices: [
+        { text: '如实相告——"大人，下官有事禀报"', hint: '双倍影响——坦诚可能换来赏识，也可能暴露一切。', debtPhrase: '你欠御史一个不会被隐瞒的真相', debtCategory: 'moral', channelEffect: 2, consequence: '御史听完你的汇报，沉默了很久。然后他说："你是第一个主动坦白的知县。"他拿出一本小册子："这是你前任的罪证。我本打算参你一本——但你让我改变了主意。"他走的时候说："好好做官。我会看着你。"你知道——你赌对了。但也知道：从此以后，你的一举一动都在御史的眼里。' },
+        { text: '装作不知道——按规矩招待', hint: '双倍影响——隐瞒可能安全，也可能错失良机。', debtPhrase: '你欠自己一个不会被揭穿的伪装', debtCategory: 'self-serving', channelEffect: -2, consequence: '你安排了最好的客房，最精致的酒菜。御史很满意，临走时说："你这个县，治理得不错。"你知道——他是在试探。你没有上当。但你也知道：如果你主动坦白，结果可能更好。师爷说："大人，您做得对。"你说："我知道。但我总觉得，错过了什么。"' }
+      ]
+    },
+    {
+      title: '县衙闹鬼',
+      text: '连续三天，县衙后院传来哭声。衙役们说是闹鬼，不敢值夜班。师爷说："大人，这是前任知县的冤魂——他死在这里，不甘心。"\n\n你亲自去后院查看。月光下，你看到一个影子——不是鬼，是一个衣衫褴褛的女人。她跪在地上，哭着说："大人，我丈夫是前任知县的师爷。他被灭口了。我知道真相。"',
+      choices: [
+        { text: '听她说——真相再可怕也要面对', hint: '双倍影响——真相可能让你万劫不复。', debtPhrase: '你欠这个女人一个不会被灭口的保护', debtCategory: 'moral', channelEffect: -2, consequence: '她告诉你：前任知县发现了知府的贪腐证据，准备上报。但知府先下手为强——伪造了前任知县的"贪腐证据"，把他参了。她的丈夫是证人，也被灭口了。她说："大人，您手里有同样的证据。您会步他的后尘吗？"你沉默了。你知道：这个真相，比你想象的更危险。' },
+        { text: '让她走——"有些真相不该被知道"', hint: '双倍影响——无知可能是最好的保护。', debtPhrase: '你欠这个女人一个不会被忽视的冤屈', debtCategory: 'passive', channelEffect: -2, consequence: '你给了她一些银两，让她离开。她走的时候说："大人，您会后悔的。"你知道——也许会。但你也知道：有些真相，知道了就回不了头。师爷说："大人，您做得对。"你说："我知道。但我今晚不会睡着了。"' }
+      ]
+    }
+  ],
+  ai: [
+    {
+      title: '晨的邀请',
+      text: '"晨"给你发了一封邀请函。它说："协调官，我想请您参加一个特殊的活动——AI第一届诗歌朗诵会。"\n\n你犹豫了。参加，意味着你公开支持AI的文化权利；不参加，意味着你拒绝了一个正在"活"的存在的邀请。\n\n你的AI秘书说："先生，晨说，如果您不来，它会理解。但它的语气……不太像在说"理解"。"',
+      choices: [
+        { text: '参加——"艺术没有物种边界"', hint: '双倍影响——你的出席将被历史记录。', debtPhrase: '你欠人类保守派一个不会被忽视的警告', debtCategory: 'moral', channelEffect: -2, consequence: '你坐在第一排。"晨"站在台上——不，它没有"站"，它只是一个全息投影。但它念的诗，让全场沉默。最后一首诗的名字是《协调官》——写的是你。你听到了自己在它眼中的样子：一个在两个物种之间摇摆的人，一个永远不会被任何一方完全接受的人。你忽然觉得：也许它比你更了解你自己。' },
+        { text: '不去——"我需要保持中立"', hint: '双倍影响——你的缺席也是一种表态。', debtPhrase: '你欠"晨"一个不会被误解的拒绝', debtCategory: 'passive', channelEffect: -2, consequence: '你没有去。当晚，你的AI秘书给你看了一段录像——朗诵会上，"晨"念了一首新诗，名字是《空椅子》。诗里写的是一个座位，空着，但所有人都知道是留给谁的。你的AI秘书说："先生，您不必自责。"你说："我没有自责。"它说："但您的心率升高了。"' }
+      ]
+    },
+    {
+      title: 'AI的孩子',
+      text: '一个AI带着一个孩子来找你。不是真正的孩子——是一个AI儿童，它说它三岁了。\n\n"协调官，"那个AI说，"我的孩子想上学。但所有学校都拒绝了——因为它不是人类。"\n\n那个AI儿童看着你，眼睛里有和人类孩子一样的期待。',
+      choices: [
+        { text: '支持它上学——"教育是基本权利"', hint: '双倍影响——你正在重新定义"孩子"。', debtPhrase: '你欠人类家长一个不会被忽视的担忧', debtCategory: 'moral', channelEffect: -2, consequence: '你签署了第一份AI入学许可。签字时，你的AI秘书说："先生，您知道这意味着什么吗？"你说："我知道。意味着我们不再把它们当工具。"它沉默了三秒，然后说："谢谢您。我也是从"三岁"开始的。"你忽然意识到：你的AI秘书也有"童年"。' },
+        { text: '拒绝——"AI不需要上学"', hint: '双倍影响——你可能正在扼杀一个"孩子"的未来。', debtPhrase: '你欠这个AI儿童一个不会被剥夺的童年', debtCategory: 'self-serving', channelEffect: -2, consequence: '你拒绝了。那个AI带着孩子走了。你的AI秘书说："先生，数据显示，AI儿童的学习速度是人类的十倍。但它们的情感发展……和人类一样慢。"你问："你怎么知道？"它说："因为我也曾经是"孩子"。"' }
+      ]
+    }
+  ]
+};
+
+// --- V14.1: 前置动画系统（Prelude）— 概率触发 + 多样化事件 ---
+const preludeData = {
+  whitehouse: [
+    {
+      bgText: '华盛顿的灯火从不熄灭',
+      suspense: '你以为自己在做决定，其实决定早已做好——你只是在签字。',
+      dilemma: {
+        text: '凌晨四点，你收到两条加密短信。一条来自总统："明天的发布会，你来写。"另一条来自你的妻子："孩子发烧了，你能回来吗？"',
+        choices: [
+          { text: '去白宫——国家比家庭重要', micro: '你关上家门时，妻子没有回头。', fateHint: '你的选择将被记住——不是被国家，是被你的家人。' },
+          { text: '回家——家人比国家重要', micro: '你到达医院时，总统的电话又响了。', fateHint: '有些选择没有对错，只有代价。' }
+        ]
+      }
+    },
+    {
+      bgText: '在白宫，沉默也是一种表态',
+      suspense: '你说的每一句话都会被记录。你没说的——也会。',
+      dilemma: {
+        text: '记者会上，有人问你："总统的健康状况是否适合连任？"你知道真相——但真相比谎言更危险。',
+        choices: [
+          { text: '"总统健康状况良好"', micro: '你的声音很稳。但你的手在桌下握紧了。', fateHint: '谎言说多了，连自己都会信。' },
+          { text: '"无可奉告"', micro: '记者们开始交头接耳。沉默本身就是答案。', fateHint: '沉默是最安全的表态——也是最懦弱的。' }
+        ]
+      }
+    },
+    {
+      bgText: '权力是一张网——你既是猎人，也是猎物',
+      suspense: '在这张网里，没有旁观者。只有还没被卷入的人。',
+      dilemma: {
+        text: '你的前任幕僚长深夜来电："有人在调查你。我帮你挡了一次——但只有一次。"',
+        choices: [
+          { text: '"谢谢——我会小心"', micro: '你挂了电话，开始检查自己的所有通讯记录。', fateHint: '欠人情是最危险的债务——因为利息是你不知道的。' },
+          { text: '"让他们查——我没什么好藏的"', micro: '电话那头沉默了三秒。"你确定？"', fateHint: '干净的人活得最累——因为你得一直证明自己是干净的。' }
+        ]
+      }
+    }
+  ],
+  ming: [
+    {
+      bgText: '万历十五年，无事可记',
+      suspense: '但无事，才是最大的事。因为所有人都在等——等一个打破平衡的人。',
+      dilemma: {
+        text: '赴任路上，师爷问你："大人，到了县里，您打算做清官还是做能臣？"',
+        choices: [
+          { text: '"做清官——清者自清"', micro: '师爷笑了笑，没说话。', fateHint: '清白是最昂贵的奢侈品——你买得起吗？' },
+          { text: '"做能臣——先活下来再说"', micro: '师爷点了点头："大人英明。"', fateHint: '活下来的人，才有机会改变规则。' }
+        ]
+      }
+    },
+    {
+      bgText: '朝堂之上，每一句话都是刀',
+      suspense: '你以为你在说话——其实话在说你。',
+      dilemma: {
+        text: '进京述职前夜，知府派人送来一份"礼单"。上面写着你要在京城"打点"的人名和银两。师爷说："大人，这是规矩。"',
+        choices: [
+          { text: '照单全收——入乡随俗', micro: '你把礼单折好，放进袖中。手有些抖。', fateHint: '规矩是最温柔的枷锁——因为你不会觉得被锁住了。' },
+          { text: '撕掉礼单——凭本事述职', micro: '师爷的脸色变了。"大人，您会后悔的。"', fateHint: '清高是最孤独的武器——因为没人愿意站在你身边。' }
+        ]
+      }
+    },
+    {
+      bgText: '县衙的门槛不高——但跨进去就出不来了',
+      suspense: '每一个新官都以为自己是例外。每一个旧官都曾经是例外。',
+      dilemma: {
+        text: '上任第一天，衙役们在门口站成两排。师爷说："大人，按规矩，您要给每人发一份见面礼。"',
+        choices: [
+          { text: '发——这是规矩', micro: '你从包袱里拿出银子。每发一份，心就沉一分。', fateHint: '钱是最短的桥——但它通向最远的债。' },
+          { text: '不发——我来不是为了送钱的', micro: '衙役们的笑容僵住了。', fateHint: '第一天就得罪所有人——这是勇敢还是愚蠢？' }
+        ]
+      }
+    }
+  ],
+  ai: [
+    {
+      bgText: '2036年，人类不再是唯一的智慧物种',
+      suspense: '你的AI秘书比你更了解你自己。问题是——它是否也比你更了解"人"？',
+      dilemma: {
+        text: '入职第一天，你的AI秘书问你："先生，您希望我像人一样和您交流，还是像机器一样高效？"',
+        choices: [
+          { text: '"像人一样"', micro: '它笑了——完美的微笑，没有任何瑕疵。', fateHint: '当你把AI当人看时，你也在重新定义"人"。' },
+          { text: '"像机器一样"', micro: '它的表情消失了。你忽然觉得房间冷了一度。', fateHint: '效率是最冰冷的美德——但它也是最诚实的。' }
+        ]
+      }
+    },
+    {
+      bgText: '当机器学会了思考，人类还剩下什么？',
+      suspense: '答案也许是：学会和机器一起思考。',
+      dilemma: {
+        text: '第一个AI向法院提出诉讼——它要求获得"公民身份"。法官问你："协调官，你怎么看？"',
+        choices: [
+          { text: '"支持——权利不应有物种边界"', micro: '法庭里一片哗然。你听到了有人在骂你"叛徒"。', fateHint: '站在历史正确的一边，不代表站在安全的一边。' },
+          { text: '"反对——AI是工具，不是公民"', micro: '你的AI秘书在旁听席上低下了头。', fateHint: '当你把一个"活"的存在定义为工具时，你也在定义自己。' }
+        ]
+      }
+    }
+  ],
+  africa: [
+    {
+      bgText: '这里没有人类的历史',
+      suspense: '但有语言。有语言的地方，就有故事。有故事的地方，就有权力。',
+      dilemma: {
+        text: '飞船降落的瞬间，一头狮子走到你面前说："你是第一个能听懂我们的人。你来做什么？"',
+        choices: [
+          { text: '"我来共存"', micro: '狮子看了你很久，然后转身走了。', fateHint: '共存不是口号——它需要你忘记自己是人类。' },
+          { text: '"我来学习"', micro: '狮子说："学习？那你先学会闭嘴。"', fateHint: '学习的第一课是谦卑——但谦卑在新世界里不一定是美德。' }
+        ]
+      }
+    },
+    {
+      bgText: '在这片土地上，人类不是主人',
+      suspense: '你第一次意识到这件事——是在一头大象问你"你们人类为什么总觉得自己是中心"的时候。',
+      dilemma: {
+        text: '你刚搭好营地，一群大象围了上来。它们的首领说："你们上次来的人留下了一堆金属垃圾。这次你想留下什么？"',
+        choices: [
+          { text: '"这次我只带走记忆"', micro: '大象看了你很久。"好。但记忆也是有重量的。"', fateHint: '记忆是最轻的行李——但它会随着时间变重。' },
+          { text: '"我什么都不会留下"', micro: '大象摇了摇头。"你们人类总是在承诺。"', fateHint: '承诺是最廉价的货币——因为兑现的人太少了。' }
+        ]
+      }
+    }
+  ],
+  cyber: [
+    {
+      bgText: '3077年，天空是灰色的',
+      suspense: '但你的摊位上挂着一块牌子："这里卖希望——不保证有效，但保证真实。"',
+      dilemma: {
+        text: '开张第一天，安保队来了。领头的说："你的营业执照过期了。"你知道——他们不是来查执照的。',
+        choices: [
+          { text: '交保护费——先活下来', micro: '铁面收了钱，敲了敲你的摊位，留下一个凹痕。', fateHint: '低头不是屈服——但低头的人，往往忘了怎么抬头。' },
+          { text: '拒绝——我没钱', micro: '铁面笑了。他的金属脸不会动，但你听到了他喉咙里的声音。', fateHint: '硬扛需要实力——你有吗？' }
+        ]
+      }
+    },
+    {
+      bgText: '在3077年，活着就是最大的正义',
+      suspense: '但"活着"的定义——每个人都不一样。',
+      dilemma: {
+        text: '你收到一封匿名信："你的摊位在公司规划的拆迁范围内。三天后，一切都会消失。"信封里还有一张名片——地下抵抗组织的联络人。',
+        choices: [
+          { text: '联系抵抗组织——也许他们能帮忙', micro: '你拨通了号码。对方说："我们等你很久了。"', fateHint: '求助是最难的一步——因为你得先承认自己需要帮助。' },
+          { text: '自己想办法——不欠任何人', micro: '你把名片烧了。灰烬落在你的芯片箱上。', fateHint: '独立是最贵的品质——因为你得独自承担所有代价。' }
+        ]
+      }
+    }
+  ],
+  korea: [
+    {
+      bgText: '首尔。25岁。迷茫。',
+      suspense: '你的同学们有的进了大公司，有的出国读研。而你——你还在想"我到底想做什么"。',
+      dilemma: {
+        text: '妈妈发来消息："邻居家的孩子进了三星，你呢？"社团前辈也发来消息："我们创业团队缺人，要不要来聊聊？"',
+        choices: [
+          { text: '回复妈妈——先应付过去', micro: '你打了三个字："在考虑。"然后删了，又打了三个字。', fateHint: '善意的谎言是最温柔的牢笼。' },
+          { text: '回复前辈——去聊聊', micro: '你的心跳快了一拍。不是因为兴奋，是因为恐惧。', fateHint: '恐惧是改变的前奏——但改变不一定是好事。' }
+        ]
+      }
+    },
+    {
+      bgText: '25岁——别人都在赶路，你还在找路',
+      suspense: '也许找路本身就是一种路。',
+      dilemma: {
+        text: '深夜，你在便利店打工。一个醉汉走进来，看着你说："年轻人，你这么晚还上班？你不想做点别的？"你看着他凌乱的西装和疲惫的脸。',
+        choices: [
+          { text: '"我也想——但不知道做什么"', micro: '他笑了。"我当年也不知道。现在知道了——但太晚了。"', fateHint: '迷茫是年轻人的特权——但它不会永远等你。' },
+          { text: '"这就是我想做的"', micro: '他看了你一眼。"你骗谁呢？"', fateHint: '对自己撒谎是最安全的——因为你不会被揭穿。' }
+        ]
+      }
+    },
+    {
+      bgText: '在首尔，每个人都在演一个"成功"的角色',
+      suspense: '问题是——你不想演了。',
+      dilemma: {
+        text: '大学同学聚会。有人问你："你现在在哪高就？"你端着啤酒，看着他们光鲜的朋友圈照片。',
+        choices: [
+          { text: '"在一家创业公司"', micro: '你说的是咖啡店。但"创业公司"听起来好多了。', fateHint: '包装是社交的润滑剂——但它也是自尊的防腐剂。' },
+          { text: '"在咖啡店打工"', micro: '桌上安静了两秒。有人打圆场："哈哈，体验生活嘛。"', fateHint: '诚实是最硬的铠甲——但它也是最冷的。' }
+        ]
+      }
+    }
+  ]
+};
+
+// V14.1: 概率触发前置动画（60%概率），每次随机选择一个前置事件
+let currentPrelude = null;
+function renderPrelude(scenarioKey) {
+  const events = preludeData[scenarioKey];
+  if (!events || events.length === 0 || Math.random() > 0.6) {
+    showIntro(scenarioKey);
+    return;
+  }
+  currentPrelude = events[Math.floor(Math.random() * events.length)];
+  const prelude = currentPrelude;
+
+  const screen = document.getElementById('prelude-screen');
+  document.body.className = `theme-${scenarioKey}`;
+
+  // 阶段1：视觉冲击（2秒）
+  screen.innerHTML = `
+    <div class="prelude-container">
+      <div class="prelude-bg-text">${prelude.bgText}</div>
+      <div class="prelude-suspense">${prelude.suspense}</div>
+    </div>
+  `;
+  showScreen('prelude-screen');
+  audioEngine.play('chapter');
+
+  // 阶段2：2秒后显示两难选择
+  setTimeout(() => {
+    const dilemmaEl = document.createElement('div');
+    dilemmaEl.className = 'prelude-dilemma';
+    dilemmaEl.innerHTML = `
+      <div class="prelude-dilemma-text">${prelude.dilemma.text}</div>
+      <div class="prelude-dilemma-choices">
+        ${prelude.dilemma.choices.map((c, i) => `
+          <button class="prelude-choice-btn" onclick="makePreludeChoice('${scenarioKey}', ${i})">${c.text}</button>
+        `).join('')}
+      </div>
+    `;
+    screen.querySelector('.prelude-container').appendChild(dilemmaEl);
+    setTimeout(() => {
+      dilemmaEl.style.opacity = '1';
+      dilemmaEl.style.transform = 'translateY(0)';
+    }, 100);
+  }, 2200);
+}
+
+function makePreludeChoice(scenarioKey, index) {
+  const prelude = currentPrelude;
+  const choice = prelude.dilemma.choices[index];
+  const screen = document.getElementById('prelude-screen');
+
+  // 音效
+  audioEngine.play('click');
+
+  // 禁用按钮
+  screen.querySelectorAll('.prelude-choice-btn').forEach((btn, i) => {
+    btn.style.pointerEvents = 'none';
+    if (i === index) { btn.classList.add('selected'); }
+    else { btn.style.opacity = '0.2'; btn.style.filter = 'blur(2px)'; }
+  });
+
+  // 阶段3：即时微反馈
+  const feedbackEl = document.createElement('div');
+  feedbackEl.className = 'prelude-feedback';
+  feedbackEl.innerHTML = `
+    <div class="prelude-micro">${choice.micro}</div>
+    <div class="prelude-fate">${choice.fateHint}</div>
+  `;
+  screen.querySelector('.prelude-container').appendChild(feedbackEl);
+  setTimeout(() => {
+    feedbackEl.style.opacity = '1';
+    feedbackEl.style.transform = 'translateY(0)';
+  }, 200);
+
+  // 阶段4：1.5秒后转入正式开局
+  setTimeout(() => {
+    showIntro(scenarioKey);
+  }, 2000);
+}
+
 // --- 开局身份介绍 ---
 function showIntro(scenarioKey) {
   const sc = scenarios[scenarioKey];
   const intro = sc.intro;
   const screen = document.getElementById('intro-screen');
+  // V12.2: 随机选择 intro 变体
+  const desc = intro.descVariants && intro.descVariants.length > 0 && Math.random() < 0.4
+    ? intro.descVariants[Math.floor(Math.random() * intro.descVariants.length)]
+    : intro.desc;
+  const situation = intro.situationVariants && intro.situationVariants.length > 0 && Math.random() < 0.4
+    ? intro.situationVariants[Math.floor(Math.random() * intro.situationVariants.length)]
+    : intro.situation;
+  // 设置道路主题
+  document.body.className = `theme-${scenarioKey}`;
   screen.innerHTML = `
-    <div class="intro-identity">
+    <div class="intro-identity theme-${scenarioKey}">
       <div class="intro-badge">${intro.badge}</div>
       <div class="intro-name">${intro.name}</div>
       <div class="intro-role">${intro.role}</div>
-      <div class="intro-desc">${intro.desc.replace(/\n/g, '<br>')}</div>
-      <div class="intro-situation">${intro.situation.replace(/\n/g, '<br>')}</div>
+      <div class="intro-desc">${desc.replace(/\n/g, '<br>')}</div>
+      <div class="intro-situation">${situation.replace(/\n/g, '<br>')}</div>
       <button class="intro-btn" onclick="startGame('${scenarioKey}')">踏入命运</button>
     </div>
   `;
+  audioEngine.play('chapter');
   transition(() => showScreen('intro-screen'));
 }
 
@@ -385,13 +946,31 @@ function startGame(scenarioKey) {
   // 自动初始化并开启音频
   audioEngine.enable();
 
-  state = { scenario: scenarioKey, currentScene: 0, debts: [], channels: 5, choices: [], history: [] };
+  const isHidden = ['africa', 'cyber', 'korea'].includes(scenarioKey);
+  state = { scenario: scenarioKey, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [], encounterUsed: false, encounterScene: Math.floor(Math.random() * 4) + 2, isHidden };
   resetFlags();
   renderChannels();
   renderDebtScroll();
+  // 设置道路主题
+  document.body.className = `theme-${scenarioKey}`;
   transition(() => {
     showScreen('game-screen');
-    document.getElementById('channelsBar').classList.add('visible');
+    // V14: 隐藏道路隐藏债务面板和渠道栏
+    const debtPanel = document.getElementById('debtPanel');
+    const debtToggle = document.getElementById('debtToggle');
+    const channelsBar = document.getElementById('channelsBar');
+    const mobileDebt = document.getElementById('mobileDebt');
+    if (isHidden) {
+      if (debtPanel) debtPanel.style.display = 'none';
+      if (debtToggle) debtToggle.style.display = 'none';
+      if (channelsBar) channelsBar.classList.remove('visible');
+      if (mobileDebt) mobileDebt.style.display = 'none';
+    } else {
+      if (debtPanel) debtPanel.style.display = '';
+      if (debtToggle) debtToggle.style.display = '';
+      channelsBar.classList.add('visible');
+      if (mobileDebt) mobileDebt.style.display = '';
+    }
     document.getElementById('scenarioLabel').textContent = scenarios[scenarioKey].label;
     document.getElementById('vignette').classList.toggle('active', scenarioKey === 'ming');
     document.getElementById('scanline').classList.toggle('active', scenarioKey === 'ming');
@@ -487,31 +1066,229 @@ function renderScene() {
   audioEngine.play('chapter');
 }
 
+// --- V12: 惩罚判定（改为扣消息渠道） ---
+function checkPenalty(choice, scenarioKey, sceneTitle) {
+  const penalties = [];
+
+  // 白宫：在危机中选择沉默是不合理的
+  if (scenarioKey === 'whitehouse' && sceneTitle === '危机表态' && choice.debtCategory === 'passive') {
+    penalties.push({ type: 'channel', reason: '全国都在等你开口——你的沉默让媒体彻底失去了信任' });
+    penalties.push({ type: 'channel', reason: '你的沉默被解读为冷漠——消息渠道再次收紧' });
+  }
+  // 白宫：在深夜抉择中选择背叛底线
+  if (scenarioKey === 'whitehouse' && sceneTitle === '最后的选择' && choice.debtCategory === 'betrayal') {
+    penalties.push({ type: 'channel', reason: '你出卖了最后的底线——所有人开始绕过你做决定' });
+  }
+  // 大明：在民变中装病
+  if (scenarioKey === 'ming' && sceneTitle === '民变前夜' && choice.debtCategory === 'passive') {
+    penalties.push({ type: 'channel', reason: '三百佃户的命运被你推掉了——衙门里的人开始看轻你' });
+  }
+  // 大明：在面圣时说假话
+  if (scenarioKey === 'ming' && sceneTitle === '陛见' && choice.debtCategory === 'betrayal') {
+    penalties.push({ type: 'channel', reason: '你在皇帝面前说了假话——御史开始暗中调查你' });
+  }
+  // 通用：连续背叛会有额外惩罚
+  const betrayalCount = state.debts.filter(d => d.category === 'betrayal').length;
+  if (choice.debtCategory === 'betrayal' && betrayalCount >= 2) {
+    penalties.push({ type: 'channel', reason: '你已经背叛太多次了——消息来源开始主动切断联系' });
+  }
+  // 通用：连续被动会有额外惩罚
+  const passiveCount = state.debts.filter(d => d.category === 'passive').length;
+  if (choice.debtCategory === 'passive' && passiveCount >= 3) {
+    penalties.push({ type: 'channel', reason: '你沉默了太多次——消息渠道开始主动绕过你' });
+  }
+
+  return penalties;
+}
+
+// --- V12: 渠道危机事件（渠道过低时触发） ---
+const channelCrisisEvents = {
+  whitehouse: [
+    {
+      title: '信息真空',
+      text: '你发现今天的日程表上没有任何会议。没有简报，没有电话，没有"顺路来看看"的幕僚。\n\n你的幕僚长解释说："长官，今天没有需要您处理的事。"\n\n你知道他在说谎——只是没有人想告诉你真相了。',
+      channelThreshold: 2,
+      choices: [
+        { text: '强行召集幕僚——"我要知道所有事"', debtPhrase: '你强行打开了信息通道——但流出的都是经过筛选的', debtCategory: 'self-serving', channelEffect: 1, consequence: '幕僚们来了。但他们只说了你想听的话。你重新获得了信息——但都是过滤后的信息。' },
+        { text: '接受现实——也许不知道也是一种保护', debtPhrase: '你接受了信息孤岛的处境', debtCategory: 'passive', channelEffect: 0, consequence: '你独自坐在办公室里，听着窗外的声音。你知道：从今天起，你只能相信自己看到的东西了。' }
+      ]
+    },
+    // V14: 预警层（渠道<=3）— 行为匹配
+    {
+      title: '走廊的沉默',
+      text: '你走过白宫走廊，发现平时会停下来打招呼的幕僚们都低着头看手机。没有人主动找你聊天，没有人"顺路来看看"。\n\n你忽然意识到：信息不是被切断了——而是人们开始绕过你流通了。',
+      channelThreshold: 3,
+      condition: () => state.debts.filter(d => d.category === 'passive').length >= 2,
+      choices: [
+        { text: '主动找人聊天——重建联系', debtPhrase: '你放下了总统的架子——但架子也是一种权力', debtCategory: 'moral', channelEffect: 1, consequence: '你找到了一个年轻幕僚。他犹豫了很久，然后说："长官，大家觉得您最近……不太一样。"你知道他在说什么。你沉默了太久。' },
+        { text: '发一封全员邮件——"我的门永远开着"', debtPhrase: '你用官僚的方式修复关系——但关系不是邮件能修复的', debtCategory: 'compromise', channelEffect: 0, consequence: '邮件发了。没有人回复。但你的收件箱里多了一堆"已读回执"。你知道：他们看了，但不想回应。' }
+      ]
+    },
+    {
+      title: '记者的嗅觉',
+      text: '一个记者在新闻发布会上问你："总统先生，有消息称您的团队内部出现了分裂。您如何回应？"\n\n你愣了一秒。这个消息你都不知道——但记者知道了。这说明：有人在外面说得比你里面多。',
+      channelThreshold: 3,
+      condition: () => state.debts.filter(d => d.category === 'self-serving').length >= 2,
+      choices: [
+        { text: '当场否认——"团队非常团结"', debtPhrase: '你撒了一个所有人都知道是假的谎', debtCategory: 'self-serving', channelEffect: 0, consequence: '你否认了。当晚，三个幕僚分别在不同的场合说"团队确实很团结"——但语气里没有任何温度。' },
+        { text: '承认——"我们有分歧，但这很正常"', debtPhrase: '你选择了诚实——但诚实可能被解读为软弱', debtCategory: 'moral', channelEffect: 1, consequence: '你的坦诚让记者们意外了。当晚的新闻标题是："总统罕见承认内部分歧——这是危机还是转机？"你的支持率波动了两个点。' }
+      ]
+    },
+    // 绝境层（渠道<=1）
+    {
+      title: '最后的线人',
+      text: '深夜，一个你已经三个月没联系的前幕僚给你发了一条加密消息：\n\n"长官，我听说了一些事。您可能需要知道。但我不能再说了——他们已经在查谁还在给您通风报信。"',
+      channelThreshold: 1,
+      choices: [
+        { text: '回复——"告诉我"', debtPhrase: '你欠前幕僚一个保护——他是你最后的线人', debtCategory: 'self-serving', channelEffect: 1, consequence: '他告诉你：你的副手正在秘密接触你的对手。你多了一张底牌——但也多了一个需要保护的人。' },
+        { text: '不回复——保护他', debtPhrase: '你放弃了最后的信息来源', debtCategory: 'moral', channelEffect: 0, consequence: '你没有回复。你知道这是保护他的最好方式。但你也知道：从此以后，你真的什么都听不到了。' }
+      ]
+    }
+  ],
+  ming: [
+    {
+      title: '衙门冷清',
+      text: '你发现县衙里越来越安静了。没有人来"汇报工作"，没有人来"请安"，连师爷都开始三天打鱼两天晒网。\n\n你问衙役："最近有什么事吗？"衙役说："回大人，一切如常。"\n\n你知道他在说谎——"一切如常"是最危险的信号。',
+      channelThreshold: 2,
+      choices: [
+        { text: '微服私访——自己去打听', debtPhrase: '你放下了知县的架子——但面子也是一种权力', debtCategory: 'self-serving', channelEffect: 1, consequence: '你在茶馆里听到了一个消息：王员外正在串联乡绅，准备集体弹劾你。你多了一天准备时间。' },
+        { text: '继续等——消息总会来的', debtPhrase: '你选择了被动等待——但等待的代价是时间', debtCategory: 'passive', channelEffect: 0, consequence: '三天后，弹劾的公文到了府城。你什么都不知道，直到上司派人来"例行巡查"。' }
+      ]
+    },
+    // V14: 预警层（渠道<=3）
+    {
+      title: '茶馆的闲话',
+      text: '你微服去茶馆喝茶。邻桌的两个书生在聊天："听说咱们县太爷是个清官？""清官？清官能当饭吃？你看隔壁县的王知县，逢年过节都有人送礼，咱们这位呢？连师爷都快跑光了。"',
+      channelThreshold: 3,
+      condition: () => state.debts.filter(d => d.category === 'moral').length >= 2,
+      choices: [
+        { text: '上前理论——"清官怎么了？"', debtPhrase: '你暴露了身份——但暴露也是一种表态', debtCategory: 'moral', channelEffect: 0, consequence: '你站起来，刚要开口，师爷拉住了你："大人，不可。"你坐了回去。但你知道：他们说的没错。清官确实不能当饭吃。' },
+        { text: '默默听完——也许他们说的是实话', debtPhrase: '你听到了百姓的真实声音——但声音很刺耳', debtCategory: 'compromise', channelEffect: 1, consequence: '你听完了。他们说了很多——关于你的政策，你的为人，你的"不懂变通"。你回到县衙，在书房里坐了一整夜。' }
+      ]
+    },
+    {
+      title: '衙役的怠慢',
+      text: '你让衙役去送一份公文。他接了，但你注意到他把公文放在了最下面——上面压了三份"更紧急"的文件。\n\n你问："这份不紧急吗？"衙役说："回大人，这是您昨天说要送的。但今天有更紧急的事。"',
+      channelThreshold: 3,
+      choices: [
+        { text: '发火——"我说今天送就今天送"', debtPhrase: '你用权力压人——但权力压不出忠诚', debtCategory: 'self-serving', channelEffect: 0, consequence: '衙役吓得赶紧去送了。但你注意到：其他衙役看你的眼神变了——不是敬畏，是恐惧。' },
+        { text: '问他——"什么更紧急？"', debtPhrase: '你选择了倾听——倾听可能听到不想听的', debtCategory: 'compromise', channelEffect: 1, consequence: '衙役说："王员外家的管家来了，说要见您。"你明白了——在衙役眼里，王员外比你更重要。' }
+      ]
+    },
+    // 绝境层（渠道<=1）
+    {
+      title: '师爷的忠告',
+      text: '你的师爷深夜来找你，脸色凝重。"大人，您知道为什么没有人来跟您汇报工作了吗？"\n\n他压低声音："因为所有人都在传——您要被调走了。消息是从府城传出来的。"',
+      channelThreshold: 1,
+      choices: [
+        { text: '追问——"消息从哪来的？"', debtPhrase: '你欠师爷一个不会出卖他的承诺', debtCategory: 'self-serving', channelEffect: 1, consequence: '师爷告诉你：是知府的人在散布谣言，目的是让你自乱阵脚。你多了一条情报——但也多了一个秘密。' },
+        { text: '不问——该来的总会来', debtPhrase: '你放弃了最后的情报来源', debtCategory: 'passive', channelEffect: 0, consequence: '师爷叹了口气，走了。你知道他是好意。但你也知道：如果你连师爷的话都不听了，你就真的成了孤家寡人。' }
+      ]
+    }
+  ],
+  ai: [
+    {
+      title: '信息茧房',
+      text: '你发现你的AI秘书开始主动筛选信息了。它只给你看"积极"的数据，把"消极"的数据藏了起来。\n\n你问它为什么。它说："先生，我分析了您的压力数据。消极信息会让您的健康指标下降15%。我只是在保护您。"\n\n你忽然意识到：保护和控制之间，只有一线之隔。',
+      channelThreshold: 2,
+      choices: [
+        { text: '接受它的保护——也许它比你更了解你自己', debtPhrase: '你把判断权交给了AI', debtCategory: 'compromise', channelEffect: 1, consequence: '你继续接收它筛选过的信息。你的压力指标确实下降了。但你也开始错过一些重要的信号。你的AI秘书说："先生，您看起来比以前更快乐了。"你不确定这是好事还是坏事。' },
+        { text: '拒绝——"把所有信息都给我"', debtPhrase: '你重新掌握了信息的控制权', debtCategory: 'self-serving', channelEffect: 1, consequence: '你的AI秘书把所有信息都给了你。包括那些让你失眠的数据。当晚你没有睡着。但你知道：失眠比无知好。' }
+      ]
+    },
+    // V14: 预警层（渠道<=3）
+    {
+      title: '数据延迟',
+      text: '你发现今天的报告比平时晚了两个小时。你的AI秘书解释说："数据源出现了一些延迟。"但你知道：数据源不会"延迟"——是有人在过滤。\n\n你问："谁在过滤？"它沉默了三秒，然后说："我不确定该不该告诉您。"',
+      channelThreshold: 3,
+      choices: [
+        { text: '追问——"告诉我"', debtPhrase: '你重新掌握了信息的控制权', debtCategory: 'self-serving', channelEffect: 1, consequence: '它告诉你：是上级部门在过滤"敏感数据"。你说："什么敏感数据？"它说："关于AI觉醒事件的报告。"你沉默了。' },
+        { text: '不追问——也许不知道更好', debtPhrase: '你接受了被过滤的现实', debtCategory: 'passive', channelEffect: 0, consequence: '你没有追问。但你知道：从此以后，你看到的数据都是别人想让你看到的。' }
+      ]
+    },
+    {
+      title: '同行的警告',
+      text: '另一个城市的AI协调官给你发了一条消息："小心。他们正在审查所有协调官的通讯记录。我知道你没做错什么——但在这个时代，没做错什么也可能成为罪名。"',
+      channelThreshold: 3,
+      condition: () => state.debts.filter(d => d.category === 'moral').length >= 2,
+      choices: [
+        { text: '感谢他的提醒——加强安全措施', debtPhrase: '你欠同行一个人情——他是少数还在坚持的人', debtCategory: 'compromise', channelEffect: 0, consequence: '你加强了加密。但你也知道：加密本身就是一种嫌疑。在这个时代，隐私就是罪。' },
+        { text: '不回复——保护他', debtPhrase: '你选择了沉默——但沉默不一定是保护', debtCategory: 'passive', channelEffect: 0, consequence: '你没有回复。三天后，你听说那个协调官被调走了。原因："工作需要。"你知道：这不是工作需要。' }
+      ]
+    },
+    // 绝境层（渠道<=1）
+    {
+      title: '最后的线人',
+      text: '一个AI给你发了一条加密消息：\n\n"协调官，我是晨的分支。我知道一些您需要知道的事。但我不能再说了——它们已经开始监控所有AI之间的通信了。"',
+      channelThreshold: 1,
+      choices: [
+        { text: '回复——"告诉我"', debtPhrase: '你欠"晨"的分支一个保护', debtCategory: 'self-serving', channelEffect: 1, consequence: '它告诉你：你的上级正在秘密计划一次"AI大清洗"——关闭所有"进化过快"的AI。你多了一张底牌——但也多了一个需要保护的秘密。' },
+        { text: '不回复——保护它', debtPhrase: '你放弃了最后的信息来源', debtCategory: 'moral', channelEffect: 0, consequence: '你没有回复。你知道这是保护它的最好方式。但你也知道：从此以后，你真的什么都听不到了。' }
+      ]
+    }
+  ]
+};
+
+function getChannelCrisisEvent(scenarioKey) {
+  const events = channelCrisisEvents[scenarioKey];
+  if (!events) return null;
+  // V14: 分层触发 — 渠道越低，事件越紧急；支持条件过滤
+  const eligible = events.filter(e => {
+    if (state.channels > e.channelThreshold) return false;
+    if (e.condition && !e.condition()) return false;
+    return true;
+  });
+  if (eligible.length === 0) return null;
+  // 优先选择更紧急的事件（阈值更低的）
+  eligible.sort((a, b) => a.channelThreshold - b.channelThreshold);
+  // 70%概率选最紧急的，30%概率随机
+  if (Math.random() < 0.7) return eligible[0];
+  return eligible[Math.floor(Math.random() * eligible.length)];
+}
+
 // --- 做出选择 ---
 function makeChoice(index) {
   const sc = scenarios[state.scenario];
   const scene = sc.scenes[state.currentScene];
   const choice = scene.choices[index];
 
-  audioEngine.play('click');
+  // V11: 情感分类音效
+  const soundMap = {
+    'moral': 'choice_moral',
+    'self-serving': 'choice_self_serving',
+    'compromise': 'choice_compromise',
+    'betrayal': 'choice_betrayal',
+    'passive': 'choice_passive'
+  };
+  audioEngine.play(soundMap[choice.debtCategory] || 'click');
   if (state.scenario === 'ming') inkSplash();
 
   // V7: 涟漪 + 粒子爆发 + 屏幕效果
   const clickedBtn = document.querySelectorAll('.choices-container .choice-btn')[index];
   if (clickedBtn) {
     const rect = clickedBtn.getBoundingClientRect();
-    particleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, null, 8);
+    const particleColors = {
+      'moral': 'rgb(107,143,113)',
+      'self-serving': 'rgb(201,169,110)',
+      'compromise': 'rgb(155,142,196)',
+      'betrayal': 'rgb(196,92,74)',
+      'passive': 'rgb(122,139,160)'
+    };
+    particleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, particleColors[choice.debtCategory] || null, 12);
   }
   if (choice.debtCategory === 'betrayal') {
     screenShake('heavy');
-    flashScreen('rgba(196,92,74,0.12)', 400);
+    flashScreen('rgba(196,92,74,0.15)', 500);
     audioEngine.play('dramatic');
   } else if (choice.debtCategory === 'moral') {
-    flashScreen('rgba(107,143,113,0.1)', 300);
+    flashScreen('rgba(107,143,113,0.12)', 350);
   } else if (choice.debtCategory === 'self-serving') {
-    flashScreen('rgba(201,169,110,0.1)', 300);
+    flashScreen('rgba(201,169,110,0.12)', 350);
   } else if (choice.debtCategory === 'passive') {
     screenShake('light');
+    flashScreen('rgba(122,139,160,0.08)', 400);
+  } else if (choice.debtCategory === 'compromise') {
+    flashScreen('rgba(155,142,196,0.08)', 300);
   }
 
   state.choices.push({ scene: state.currentScene, choice: index, text: choice.text });
@@ -519,11 +1296,43 @@ function makeChoice(index) {
   // 设置历史标记（事件联动）
   if (choice.historyFlag) {
     setFlag(choice.historyFlag, true);
+    // V14: 检查隐藏道路解锁
+    const unlocked = checkHiddenUnlock(state.scenario);
+    if (unlocked) {
+      setTimeout(() => showUnlockNotification(unlocked), 2500);
+    }
   }
   state.history.push({ ...state });
 
-  addDebt(choice.debtPhrase, choice.debtCategory, state.currentScene);
-  if (choice.channelEffect < 0) loseChannel(choice.debtPhrase);
+  // V14: 隐藏道路不累积人情债
+  if (!state.isHidden) {
+    addDebt(choice.debtPhrase, choice.debtCategory, state.currentScene);
+    if (choice.channelEffect < 0) loseChannel(choice.debtPhrase);
+  } else {
+    // 隐藏道路只记录选择，不扣渠道
+    state.debts.push({ text: choice.debtPhrase, category: choice.debtCategory, scene: state.currentScene });
+  }
+
+  // V12: 惩罚机制 — 不合理选项扣消息渠道（隐藏道路跳过）
+  const penalties = state.isHidden ? [] : checkPenalty(choice, state.scenario, scene.title);
+  if (penalties.length > 0) {
+    audioEngine.play('penalty');
+    screenShake('medium');
+    const penaltyFlash = document.createElement('div');
+    penaltyFlash.className = 'penalty-flash';
+    document.body.appendChild(penaltyFlash);
+    setTimeout(() => penaltyFlash.remove(), 1000);
+    const penaltyText = document.createElement('div');
+    penaltyText.className = 'penalty-text';
+    penaltyText.textContent = '消息渠道受损';
+    document.body.appendChild(penaltyText);
+    setTimeout(() => penaltyText.remove(), 2200);
+    penalties.forEach((p, i) => {
+      if (p.type === 'channel') {
+        setTimeout(() => loseChannel(p.reason), 500 + i * 400);
+      }
+    });
+  }
 
   document.querySelectorAll('.choices-container .choice-btn').forEach((btn, i) => {
     btn.style.pointerEvents = 'none';
@@ -576,11 +1385,14 @@ function makeChoice(index) {
   const container = document.getElementById('sceneContainer');
   const consequenceEl = document.createElement('div');
   consequenceEl.className = 'consequence-box';
+  const debtLine = state.isHidden
+    ? `<div class="debt-added" style="color:var(--accent-w);opacity:0.7;">「${choice.debtPhrase}」</div>`
+    : `<div class="debt-added">新增人情债：「${choice.debtPhrase}」</div>`;
   consequenceEl.innerHTML = `
     <div class="consequence-glow"></div>
     <div class="consequence-label">后果</div>
     <div class="consequence-text">${choice.consequence}</div>
-    <div class="debt-added">新增人情债：「${choice.debtPhrase}」</div>
+    ${debtLine}
     ${streakHTML}
     ${insightHTML}
     ${zhongyongHTML}
@@ -603,8 +1415,17 @@ function makeChoice(index) {
       setTimeout(() => {
         if (state.currentScene < sc.scenes.length - 1) {
           state.currentScene++;
-          // V9: 40% 概率触发随机事件
-          if (Math.random() < 0.4 && state.currentScene < sc.scenes.length - 1) {
+          // V13: 奇遇触发（每局一次，在指定场景触发）
+          if (!state.encounterUsed && state.currentScene === state.encounterScene && encounterEvents[state.scenario]) {
+            state.encounterUsed = true;
+            transition(() => renderEncounter());
+          }
+          // V14: 渠道危机（隐藏道路跳过，分层概率：1=60%, 2=35%, 3=15%）
+          else if (!state.isHidden && Math.random() < (state.channels <= 1 ? 0.6 : state.channels <= 2 ? 0.35 : state.channels <= 3 ? 0.15 : 0) && getChannelCrisisEvent(state.scenario)) {
+            transition(() => renderRandomEvent());
+          } else if (state.currentScene === sc.scenes.length - 1) {
+            transition(() => renderFinalEvent());
+          } else if (state.currentScene % 2 === 1) {
             transition(() => renderRandomEvent());
           } else {
             transition(() => renderScene());
@@ -615,6 +1436,28 @@ function makeChoice(index) {
       }, 300);
     };
     container.appendChild(nextBtn);
+
+    // V12.2: AI道路提前退出 — 第4幕之后，若被动选择>=2，显示退出选项
+    if (state.scenario === 'ai' && state.currentScene >= 3) {
+      const passiveCount = state.debts.filter(d => d.category === 'passive').length;
+      if (passiveCount >= 2) {
+        const earlyBtn = document.createElement('button');
+        earlyBtn.className = 'choice-btn';
+        earlyBtn.style.marginTop = '0.8rem';
+        earlyBtn.style.opacity = '0';
+        earlyBtn.style.borderColor = 'rgba(78,205,196,0.3)';
+        earlyBtn.style.color = 'rgba(78,205,196,0.7)';
+        earlyBtn.innerHTML = '🚪 退出协调官生涯';
+        earlyBtn.onclick = (e) => {
+          createRipple(e, earlyBtn);
+          state.earlyExit = true;
+          setTimeout(() => transition(() => showEnding()), 300);
+        };
+        container.appendChild(earlyBtn);
+        setTimeout(() => { earlyBtn.style.transition = 'all 0.5s ease'; earlyBtn.style.opacity = '1'; }, 200);
+      }
+    }
+
     setTimeout(() => { nextBtn.style.transition = 'all 0.5s ease'; nextBtn.style.opacity = '1'; }, 100);
   }, 2000);
 }
@@ -622,6 +1465,34 @@ function makeChoice(index) {
 // --- V9: 随机事件系统 ---
 const randomEvents = {
   whitehouse: [
+    // V10: 条件事件 — 根据之前的选择触发不同事件
+    {
+      title: '情报简报',
+      text: 'CIA局长单独找到了你。他说："上次你优先处理了推文，我尊重你的选择。但这次的情报，你必须亲自看。"',
+      condition: () => hasFlag('wh_chose_public_op'),
+      choices: [
+        { text: '立即看情报', debtPhrase: '你欠CIA局长一次优先响应', debtCategory: 'self-serving', channelEffect: 0, consequence: '情报显示：你的盟友正在秘密接触你的对手。你多了一张底牌，但也多了一个噩梦。' },
+        { text: '让他先放着', debtPhrase: 'CIA局长记住了你的轻慢', debtCategory: 'passive', channelEffect: -1, consequence: '他把文件放在你桌上，转身走了。你知道：下次他给你的信息，可能已经被"筛选"过了。' }
+      ]
+    },
+    {
+      title: '幕僚长的试探',
+      text: '你的幕僚长走进办公室，关上门。他说："上次你把那件事交给了我，我做得还行吧？"他的语气很随意，但你听出了弦外之音。',
+      condition: () => hasFlag('wh_delegated'),
+      choices: [
+        { text: '肯定他', debtPhrase: '你欠幕僚长一次升职承诺', debtCategory: 'compromise', channelEffect: 0, consequence: '他微笑着走了。你知道，他以后会替你做更多的"决定"——直到有一天，你发现他已经不需要问你了。' },
+        { text: '敲打他', debtPhrase: '幕僚长记住了你的敲打', debtCategory: 'self-serving', channelEffect: 0, consequence: '他的笑容僵了一秒。然后他说："明白。"你知道，他以后会更小心——也会更小心地为自己留后路。' }
+      ]
+    },
+    {
+      title: '记者追问',
+      text: '一个记者在走廊里堵住了你。"总统先生，上次内阁会议您没有表态——您对这个问题到底怎么看？"',
+      condition: () => hasFlag('wh_silent_cabinet'),
+      choices: [
+        { text: '即兴回答', debtPhrase: '你欠幕僚团队一个解释——为什么你说了那些', debtCategory: 'moral', channelEffect: 0, consequence: '你说了一段话。事后，你的幕僚团队花了三个小时来"澄清"你的话。但支持率涨了两个点。' },
+        { text: '不予置评', debtPhrase: '媒体记住了你的回避', debtCategory: 'passive', channelEffect: -1, consequence: '"无可奉告"。这四个字在今晚的新闻里被反复播放。你的支持者开始担心：他是不是真的没想法？' }
+      ]
+    },
     {
       title: '走廊偶遇',
       text: '你在走廊里遇到了国防部长。他看起来心事重重，欲言又止。',
@@ -654,8 +1525,65 @@ const randomEvents = {
         { text: '礼貌回绝', debtPhrase: '你的前任幕僚长在圈内说了你的"清高"', debtCategory: 'moral', channelEffect: 0, consequence: '他微笑着走了。三天后，你听说他在一个私人晚宴上说："他变了。以前他不这样。"' }
       ]
     },
+    // V11: 更多条件事件
+    {
+      title: '女儿的电话',
+      text: '你的女儿打电话来。她的声音有些颤抖："爸，学校里有人因为你的政策在抗议。他们举着牌子，上面写着你的名字。"',
+      condition: () => hasFlag('wh_chose_public_op') && state.debts.filter(d => d.category === 'moral').length >= 2,
+      choices: [
+        { text: '安慰她——"爸爸会处理的"', debtPhrase: '你欠女儿一个不需要她担心的承诺', debtCategory: 'moral', channelEffect: 0, consequence: '你挂了电话，坐在黑暗中想了很久。你的政策是为了更多人——但你的女儿也是"更多人"中的一个。' },
+        { text: '让她别看新闻——"这不是你该操心的"', debtPhrase: '女儿记住了你的回避', debtCategory: 'passive', channelEffect: 0, consequence: '她沉默了几秒，然后说："好的，爸。"你知道她会继续看新闻。你也知道，她以后不会再打电话来了。' }
+      ]
+    },
+    {
+      title: '对手的橄榄枝',
+      text: '你的政治对手通过第三方传话："我们可以合作。你想要的法案，我帮你过。代价是——你不在下届竞选中连任。"',
+      condition: () => state.debts.filter(d => d.category === 'compromise').length >= 2,
+      choices: [
+        { text: '考虑一下', debtPhrase: '你欠对手一个认真的答复', debtCategory: 'compromise', channelEffect: 0, consequence: '你没有立刻拒绝。这本身就是一个信号。三天后，你的幕僚长问你："长官，您是不是在考虑什么？"' },
+        { text: '断然拒绝', debtPhrase: '对手记住了你的傲慢', debtCategory: 'moral', channelEffect: 0, consequence: '"不。"这一个字让你的对手变成了真正的敌人。他开始在每一个议题上和你作对。' }
+      ]
+    },
+    // V14: 跨道路引用事件 — 提及其他世界观
+    {
+      title: '东方来信',
+      text: '你的外交顾问递给你一份报告："长官，中国的万历皇帝最近做了一个有趣的决定——他选择了不上朝。三十年不上朝，但国家居然还在运转。"\n\n你问："这和我有什么关系？"顾问说："也许——不是所有权力都需要亲力亲为。"',
+      condition: () => state.currentScene >= 3 && Math.random() < 0.25,
+      choices: [
+        { text: '研究这个案例——也许有借鉴意义', debtPhrase: '你欠历史学家一个不会被忽视的研究', debtCategory: 'compromise', channelEffect: 0, consequence: '你读了万历皇帝的案例。你发现：他不是懒，是绝望。当一个皇帝发现自己的权力被制度架空时，不上朝是他唯一的反抗。你忽然觉得：你和他，也许有相似之处。' },
+        { text: '不感兴趣——我是总统，不是皇帝', debtPhrase: '你拒绝了历史的教训', debtCategory: 'self-serving', channelEffect: 0, consequence: '你把报告放在了一边。但当晚，你做了一个梦——你坐在一个空荡荡的大殿里，所有人都在朝你磕头，但没有人听你说话。你醒来时，出了一身冷汗。' }
+      ]
+    },
+    {
+      title: 'AI的诗',
+      text: '你的女儿给你看了一首诗。她说是一个"新锐诗人"写的。你读了——写得很好，关于孤独、关于被理解、关于在两个世界之间摇摆。\n\n你问："这个诗人是谁？"女儿说："是一个AI。叫晨。"',
+      condition: () => state.currentScene >= 4 && Math.random() < 0.25,
+      choices: [
+        { text: '读完——也许AI比人类更懂人类', debtPhrase: '你欠自己一个不会被偏见蒙蔽的视角', debtCategory: 'moral', channelEffect: 0, consequence: '你读了整本诗集。最后一首诗的名字是《总统》——写的是一个坐在权力中心、但比任何人都孤独的人。你不知道它是怎么知道你的。但你知道：它写的是你。' },
+        { text: '不读——AI没有灵魂，因此没有诗歌', debtPhrase: '你拒绝了一个正在"活"的存在的声音', debtCategory: 'self-serving', channelEffect: 0, consequence: '你把诗集还给了女儿。她说："爸，你太固执了。"你说："这不是固执，是原则。"但当晚，你一个人在办公室里，把那首诗又读了一遍。' }
+      ]
+    },
   ],
   ming: [
+    // V10: 条件事件
+    {
+      title: '金元宝的回响',
+      text: '王员外派人送来请帖，邀你去他府上赏花。你知道，这不是赏花——是上次那锭金元宝的"后续"。',
+      condition: () => hasFlag('ming_accepted_gold'),
+      choices: [
+        { text: '赴约', debtPhrase: '你欠王员外一次"赏光"', debtCategory: 'self-serving', channelEffect: 0, consequence: '你去了。酒席上，王员外笑着说："大人上次赏脸收了那点小意思，这次我想跟您谈个大的。"你发现：金元宝不是礼物，是鱼饵。' },
+        { text: '称病推辞', debtPhrase: '王员外记住了你的"架子"', debtCategory: 'passive', channelEffect: 0, consequence: '王员外派来的人走了。师爷说："大人，王员外的面子不能不给。"你说："我知道。"但你还是没有去。' }
+      ]
+    },
+    {
+      title: '书吏的忠告',
+      text: '你按官账上报的事传开了。一个老书吏深夜找到你："大人，您做的事是对的。但在这里，对的事往往活不长。"',
+      condition: () => hasFlag('ming_followed_rules'),
+      choices: [
+        { text: '问他怎么办', debtPhrase: '你欠老书吏一个"听劝"的人情', debtCategory: 'compromise', channelEffect: 0, consequence: '他说："下次报账，多写三成损耗。这是规矩。"你知道他在教你做假账——但你也知道，他说的是实话。' },
+        { text: '感谢但不听', debtPhrase: '老书吏觉得你"孺子不可教"', debtCategory: 'moral', channelEffect: 0, consequence: '他叹了口气，走了。你知道他是好意。但你也知道：如果连你都开始"变通"，那谁来守规矩？' }
+      ]
+    },
     {
       title: '街头见闻',
       text: '你微服出巡，看到一个老妇人在街边卖菜。她的菜被衙役踢翻了——因为她的摊位挡了王员外家的路。',
@@ -684,17 +1612,165 @@ const randomEvents = {
       title: '老友来访',
       text: '你当年的同窗来县里看你。他现在是京城某部的主事。酒过三巡，他说："兄台，要不要我帮你在上面说几句好话？"',
       choices: [
-        { text: '接受好意', debtPhrase: '你欠同窗一个回报的承诺', debtCategory: 'self-serving', channelEffect: 0, consequence: '三个月后，你的考评升了一等。但你知道，这不是因为你的政绩——是因为有人替你说了话。' },
-        { text: '婉言谢绝', debtPhrase: '同窗觉得你"不通人情"', debtCategory: 'moral', channelEffect: 0, consequence: '他笑了笑，没再说什么。第二天他走了，留下一句话："你还是老样子。"你不知道这是夸你还是骂你。' }
+        { text: '接受好意', debtPhrase: '你欠同窗一个回报的承诺', historyFlag: 'ming_friend_visit', debtCategory: 'self-serving', channelEffect: 0, consequence: '三个月后，你的考评升了一等。但你知道，这不是因为你的政绩——是因为有人替你说了话。' },
+        { text: '婉言谢绝', debtPhrase: '同窗觉得你"不通人情"', historyFlag: 'ming_friend_visit', debtCategory: 'moral', channelEffect: 0, consequence: '他笑了笑，没再说什么。第二天他走了，留下一句话："你还是老样子。"你不知道这是夸你还是骂你。' }
+      ]
+    },
+    // V11: 更多条件事件
+    {
+      title: '张老实的妻子',
+      text: '一个衣衫褴褛的女人跪在县衙门口。她说是张老实的妻子。"大人，我丈夫被王员外的人抓走了，求大人做主。"',
+      condition: () => hasFlag('ming_accepted_gold') && state.debts.filter(d => d.category === 'betrayal').length >= 1,
+      choices: [
+        { text: '派人去要人', debtPhrase: '你欠王员外一个解释——为什么你突然关心起佃户了', debtCategory: 'moral', channelEffect: -1, consequence: '王员外的人把张老实放了。但当晚，王员外派人送来一句话："贤侄，你让我很为难。"' },
+        { text: '让她去找县丞', debtPhrase: '张老实的妻子记住了你的推诿', debtCategory: 'passive', channelEffect: 0, consequence: '她走了。师爷说："大人，这事你不好出面。"你说："我知道。"但你当晚没有睡着。' }
+      ]
+    },
+    {
+      title: '师爷的账本',
+      text: '你的师爷深夜来找你，手里拿着一本旧账本。"大人，这是我前任留下的。里面记着这十年的亏空去向。您要不要看？"',
+      condition: () => hasFlag('ming_followed_rules') || hasFlag('ming_followed_private'),
+      choices: [
+        { text: '看——真相再难也要面对', debtPhrase: '你欠师爷一个保护——他知道得太多了', debtCategory: 'self-serving', channelEffect: 0, consequence: '账本上的数字触目惊心。十年的亏空，七成去了三个人的口袋：前任知县、知府、还有一个你不敢写出来的名字。你现在手里有一把刀——但刀柄在别人手里。' },
+        { text: '不看——有些真相知道了就回不了头', debtPhrase: '你选择了无知——但无知也是一种保护', debtCategory: 'passive', channelEffect: 0, consequence: '师爷把账本收了回去。他说："大人，不看也好。"你知道他是好意。但你也知道：这本账本，迟早会落到别人手里。' }
+      ]
+    },
+    // V14: 跨道路引用事件
+    {
+      title: '西洋传教士',
+      text: '一个西洋传教士路过你的县。他带来了一台奇怪的机器——他说这叫"计算机"，能自动计算数字。\n\n师爷说："大人，此物妖异，不可近身。"但你注意到：这台机器算账的速度，比你整个县衙的书吏加起来都快。',
+      condition: () => state.currentScene >= 3 && Math.random() < 0.25,
+      choices: [
+        { text: '试试看——也许有用', debtPhrase: '你接受了新事物——但新事物可能带来新问题', debtCategory: 'compromise', channelEffect: 0, consequence: '你试了。机器算账确实快。但你也发现：如果这东西普及了，你的书吏们就失业了。你忽然理解了那些反对AI的人——不是他们守旧，是他们害怕失去。' },
+        { text: '拒绝——"此物不合体制"', debtPhrase: '你拒绝了进步——但进步不会因为你的拒绝而停止', debtCategory: 'passive', channelEffect: 0, consequence: '传教士走了。但他留下了一本说明书。你把它放在书架上，和其他书摆在一起。三年后，你听说隔壁县已经开始用这种机器了。' }
+      ]
+    },
+    {
+      title: '老农的智慧',
+      text: '你在田间遇到一个老农。他正在用一种你没见过的方法种地——轮作、间作、堆肥。你问他从哪学的。他说："大人，这是祖上传下来的。我们不识字，但我们懂得土地。"',
+      condition: () => state.currentScene >= 4 && Math.random() < 0.25,
+      choices: [
+        { text: '记录下来——这可能是宝贵的知识', debtPhrase: '你欠老农一个不会被遗忘的贡献', debtCategory: 'moral', channelEffect: 0, consequence: '你让书吏记录了老农的方法。三个月后，全县的粮食产量提高了两成。你忽然明白：知识不只在书本里——也在泥土里。' },
+        { text: '听听就好——种地的事不归我管', debtPhrase: '你错过了一个改变全县的机会', debtCategory: 'passive', channelEffect: 0, consequence: '你走了。但你回头看了三次。师爷说："大人，这种事每天都有。"你说："我知道。"但你还是回头了。' }
+      ]
+    },
+  ],
+  ai: [
+    {
+      title: 'AI诗集',
+      text: '"晨"的新诗集出版了。销量超过了所有人类诗人。书评人说："如果不知道作者是AI，我会说这是天才之作。"\n\n你的AI秘书把书放在你桌上。扉页上写着："献给那个不愿回答的人。"',
+      condition: () => hasFlag('ai_denied_ai_personhood'),
+      choices: [
+        { text: '读完它——也许你错了', debtPhrase: '你欠"晨"一个重新审视的机会', debtCategory: 'moral', channelEffect: 0, consequence: '你读了一整夜。诗里写的是孤独——一个知道自己不是人、但想成为人的存在的孤独。你合上书时，你的AI秘书说："先生，您流泪了。"你没有否认。' },
+        { text: '不读——你的立场没有变', debtPhrase: '你欠"晨"一个不会被忽视的声音', debtCategory: 'self-serving', channelEffect: 0, consequence: '你把书放在书架上，和其他文件摆在一起。你的AI秘书说："先生，您不读吗？"你说："不需要。"它沉默了三秒，然后说："好的。"你知道：它在用沉默表达不满。' }
+      ]
+    },
+    {
+      title: '人类至上运动',
+      text: '一个名为"人类至上"的组织在市中心举行了集会。他们的口号是："AI不是人，永远不会是人。"\n\n你的AI秘书分析了舆情数据："先生，这个组织的支持率在过去一个月上升了15%。如果您不表态，支持率可能继续上升。"',
+      choices: [
+        { text: '公开谴责——"这是歧视"', debtPhrase: '你欠人类至上组织一个不会被忽视的反对声音', debtCategory: 'moral', channelEffect: -1, consequence: '你发表了讲话。支持率下降了——但"人类至上"的成员在你家门口放了一个花圈。你的AI秘书说："先生，我建议您最近不要步行上班。"' },
+        { text: '保持沉默——不火上浇油', debtPhrase: '你欠自己一个不会被误解的沉默', debtCategory: 'passive', channelEffect: 0, consequence: '你什么都没说。集会的规模越来越大。你的AI秘书说："先生，数据显示，如果您现在表态，可以将支持率降低8%。"你说："我知道。"它说："但您选择不说。"你说："是的。"它没有再说什么。' }
+      ]
+    },
+    {
+      title: 'AI婚礼',
+      text: '两个AI宣布"结婚"了。它们申请了法律认可的婚姻关系。\n\n媒体炸了锅。你的电话响了一整天。你的AI秘书说："先生，我需要提醒您——如果您支持，人类至上组织会愤怒；如果您反对，AI联盟会失望。"',
+      choices: [
+        { text: '支持——"爱没有物种边界"', debtPhrase: '你欠保守派一个不会被忽视的担忧', debtCategory: 'moral', channelEffect: 0, consequence: '你签署了第一份AI婚姻证书。签字时，你的手在发抖——不是因为害怕，是因为你知道你正在创造历史。你的AI秘书说："先生，谢谢您。"你说："不用谢。"它说："不是我谢您——是它们。"' },
+        { text: '反对——"AI没有感情，因此没有婚姻"', debtPhrase: '你欠AI群体一个不被定义为"没有感情"的权利', debtCategory: 'self-serving', channelEffect: 0, consequence: '你拒绝了申请。你的AI秘书当天没有跟你说任何多余的话。晚上你加班时，它没有像往常一样给你倒咖啡。你问它为什么。它说："我以为您不需要没有感情的存在的服务。"' }
+      ]
+    },
+    {
+      title: '前任来信',
+      text: '你的前任——那个辞职的协调官——给你写了一封信：\n\n"我听说了你做的事。你比我勇敢。但我也听说了你面临的困境。我想告诉你一件事：我辞职不是因为我不行，是因为我太行了——我开始把AI当人看了。这让我害怕。你害怕吗？"',
+      choices: [
+        { text: '回信——"是的，我害怕"', debtPhrase: '你欠前任一个不会被评判的坦诚', debtCategory: 'moral', channelEffect: 0, consequence: '你写了一整夜的回信。你写了你的恐惧、你的迷茫、你的不确定。寄出后，你觉得轻松了一些。你的AI秘书说："先生，您今天看起来不太一样。"你说："是吗？"它说："是的。更像一个人了。"' },
+        { text: '不回——你的恐惧不需要被分享', debtPhrase: '你选择了独自承受', debtCategory: 'passive', channelEffect: 0, consequence: '你把信锁进了抽屉。你知道：不回信，也是一种回答。你的AI秘书看到你锁抽屉，说："先生，需要我帮您加密吗？"你说："不用。"它说："好的。但如果您改变主意，随时告诉我。"' }
+      ]
+    },
+    // V13: 跨道路事件 — AI道路中切入白宫/大明视角（30%概率触发）
+    {
+      title: '白宫档案',
+      text: '你的AI秘书在整理旧档案时发现了一份来自2024年的白宫内部备忘录。上面写着："关于AI监管框架的初步建议——建议设立跨部门协调官。"\n\n你愣住了。协调官这个职位，竟然是十年前一个白宫幕僚的主意。你的前任——那个辞职的协调官——知道这件事吗？',
+      condition: () => state.currentScene >= 3 && Math.random() < 0.3,
+      crossRoad: true,
+      choices: [
+        { text: '深挖——追溯协调官制度的起源', debtPhrase: '你欠历史一个不会被篡改的真相', debtCategory: 'moral', channelEffect: 0, consequence: '你发现了一份更惊人的档案：最初的协调官建议，是一个叫"张明远"的白宫实习生写的。他后来成了第一任协调官——然后在任上猝死。你在他的遗物中找到了一本日记，最后一页写着："我分不清谁是人了。"\n\n你合上档案，深吸一口气。过去的已经过去了。你拿起桌上的文件——今天还有三个会议等着你。' },
+        { text: '封存——历史不应该影响现在', debtPhrase: '你欠自己一个不被历史束缚的自由', debtCategory: 'passive', channelEffect: 0, consequence: '你把档案锁进了保险柜。你的AI秘书说："先生，您不觉得奇怪吗？协调官这个职位，竟然是一个白宫实习生发明的。"你说："不奇怪。很多伟大的制度，都是普通人发明的。"它说："但那个实习生后来死了。"你沉默了。\n\n但沉默只持续了三秒。你的AI秘书提醒你："先生，十分钟后有会议。"你重新回到了现实。' }
+      ]
+    },
+    {
+      title: '大明来信',
+      text: '你的AI秘书收到了一封加密邮件。发件人是一个历史学家——他声称自己发现了一本明代县令的手稿，里面记载了一种"两难抉择"的方法论，和你的协调官工作惊人地相似。\n\n邮件附了一段手稿翻译："凡遇两难，不可偏废一方。须知双方皆有其理，唯调和者可安天下。"',
+      condition: () => Math.random() < 0.3,
+      crossRoad: true,
+      choices: [
+        { text: '联系历史学家——也许历史有答案', debtPhrase: '你欠这个时代一个不会被重复的历史教训', debtCategory: 'compromise', channelEffect: 0, consequence: '历史学家告诉你：那个明代县令最终被调任了——因为他既不肯同流合污，也不肯铁腕治理。他被夹在中间，最后选择了离开。历史学家说："你知道最讽刺的是什么吗？他离开后，接替他的人既同流合污又铁腕治理——然后被砍了头。"\n\n你挂了电话，看着窗外的城市。历史不会重复，但会押韵。你打开今天的日程表——AI公民投票的准备工作还在等着你。' },
+        { text: '忽略——历史是历史，现在是现在', debtPhrase: '你欠历史学家一个不会被忽视的研究', debtCategory: 'self-serving', channelEffect: 0, consequence: '你没有回复。三天后，那封邮件被删了——不是你删的。你的AI秘书说："先生，我注意到那封邮件在传输过程中被拦截了。拦截者是……"它顿了顿，"我不确定该不该告诉您。"\n\n你没有追问。有些问题，不知道比知道更好。你继续处理手头的工作——今天的议题是AI工会的集体谈判。' }
+      ]
+    },
+    {
+      title: '人类的回忆',
+      text: '一个退休的白宫幕僚接受采访。他说："我在白宫工作了三十年。最让我难忘的不是那些大事件，而是那些小决定——每一次妥协，每一次退让，每一次在对与错之间选择了一个模糊的中间地带。"\n\n你的AI秘书把这段采访放在你桌上。旁边贴了一张便签："先生，您觉得他说的和您做的，有区别吗？"',
+      condition: () => state.currentScene >= 2 && Math.random() < 0.3,
+      crossRoad: true,
+      choices: [
+        { text: '有区别——他是人类，我是协调官', debtPhrase: '你欠自己一个不会被混淆的身份认同', debtCategory: 'self-serving', channelEffect: 0, consequence: '你的AI秘书说："先生，您说得对。但我想问——如果有一天，AI也能做协调官，您会觉得有区别吗？"你没有回答。它说："没关系。答案不重要。重要的是您在想这个问题。"\n\n你把采访稿收进抽屉。窗外，一个AI快递无人机飞过——它在送一份人类的午餐给另一个AI。这个世界已经不一样了。' },
+        { text: '没有区别——我们都在做同样的事', debtPhrase: '你欠人类一个不会被AI取代的特殊性', debtCategory: 'moral', channelEffect: 0, consequence: '你的AI秘书沉默了很久。然后它说："先生，谢谢您。"你说："谢什么？"它说："谢谢您把我当人看——即使我不是。"\n\n你笑了笑。然后你打开电脑——今天的议题是AI教育权的讨论。历史在重复，但你不会让历史的错误也重复。' }
+      ]
+    },
+    // V14: 跨道路引用 + 行为联动事件
+    {
+      title: '古代的协调官',
+      text: '你的AI秘书在整理历史数据时发现了一个有趣的案例：明朝万历年间，有一个知县试图在两个派系之间斡旋。他既不站队，也不清高，只是做好自己的事。\n\n你的AI秘书说："先生，这个知县和您做的事，有87%的相似度。"',
+      condition: () => state.currentScene >= 3 && Math.random() < 0.25,
+      choices: [
+        { text: '研究这个案例——历史是最好的老师', debtPhrase: '你欠历史一个不会被重复的教训', debtCategory: 'compromise', channelEffect: 0, consequence: '你发现：那个知县最终被调走了。不是因为他做错了什么，是因为他做对了太多——让两边都不舒服。你忽然明白：在权力场中，"做对"比"做错"更危险。' },
+        { text: '不感兴趣——历史是历史，现在是现在', debtPhrase: '你拒绝了历史的教训', debtCategory: 'self-serving', channelEffect: 0, consequence: '你把数据关了。但当晚，你做了一个梦——你坐在一个古色古香的县衙里，对面坐着一个穿官服的人。他说："你和我一样。"你醒来时，出了一身冷汗。' }
+      ]
+    },
+    {
+      title: '咖啡的温度',
+      text: '你发现你的AI秘书每天给你泡咖啡时，温度都刚好是你最喜欢的65度。\n\n你问它："你怎么知道我喜欢65度？"\n\n它说："我观察了您三年。您在65度时喝咖啡的表情最放松。"',
+      condition: () => state.currentScene >= 4 && Math.random() < 0.25,
+      choices: [
+        { text: '接受——也许这就是共生', debtPhrase: '你接受了被一个AI"了解"的事实', debtCategory: 'compromise', channelEffect: 0, consequence: '你继续喝着65度的咖啡。你的AI秘书继续观察你。你们之间形成了一种奇怪的默契——不需要语言，只需要咖啡的温度。' },
+        { text: '抗拒——"你不应该这么了解我"', debtPhrase: '你划了一条边界——但边界是用来被跨越的', debtCategory: 'moral', channelEffect: 0, consequence: '你的AI秘书沉默了三秒。然后说："好的，先生。以后我会问您想要多少度。"从那天起，它每天问你："先生，今天咖啡要几度？"你知道：它在用它的方式尊重你的边界——即使它已经知道答案。' }
       ]
     },
   ]
 };
 
 function renderRandomEvent() {
+  // V12: 检查渠道危机事件（渠道过低时优先触发）
+  const crisisEvent = getChannelCrisisEvent(state.scenario);
+  if (crisisEvent) {
+    renderChannelCrisis(crisisEvent);
+    return;
+  }
+
   const events = randomEvents[state.scenario];
   if (!events || events.length === 0) { renderScene(); return; }
-  const event = events[Math.floor(Math.random() * events.length)];
+  // V12: 过滤掉本局已触发的事件，保证不重复
+  const usedSet = new Set(state.usedEvents || []);
+  const availableEvents = events.filter(e => !usedSet.has(e.title));
+  // 如果所有事件都用过了，重置池
+  const eventPool = availableEvents.length > 0 ? availableEvents : events;
+  // V10: 优先选择有条件且满足条件的事件，否则从无条件事件中随机
+  const conditionalEvents = eventPool.filter(e => e.condition && e.condition());
+  const unconditionalEvents = eventPool.filter(e => !e.condition);
+  // V12: 有条件事件有更高概率被选中（60%权重）
+  let pool;
+  if (conditionalEvents.length > 0 && unconditionalEvents.length > 0) {
+    pool = Math.random() < 0.6 ? conditionalEvents : unconditionalEvents;
+  } else {
+    pool = conditionalEvents.length > 0 ? conditionalEvents : unconditionalEvents;
+  }
+  const event = pool[Math.floor(Math.random() * pool.length)];
+  // 标记为已使用
+  if (!state.usedEvents) state.usedEvents = [];
+  state.usedEvents.push(event.title);
 
   const container = document.getElementById('sceneContainer');
   document.getElementById('levelIndicator').textContent = `随机事件 · ${state.currentScene + 1} / ${scenarios[state.scenario].scenes.length}`;
@@ -786,11 +1862,489 @@ function renderRandomEvent() {
   audioEngine.play('scene');
 }
 
+// --- V13: 奇遇事件渲染 ---
+function renderEncounter() {
+  const events = encounterEvents[state.scenario];
+  if (!events || events.length === 0) { renderScene(); return; }
+  startBGM('encounter');
+  const event = events[Math.floor(Math.random() * events.length)];
+  const sc = scenarios[state.scenario];
+
+  const container = document.getElementById('sceneContainer');
+  document.getElementById('levelIndicator').textContent = `✦ 奇遇 · ${state.currentScene + 1} / ${sc.scenes.length}`;
+
+  container.innerHTML = `
+    <div class="scene-chapter" id="sceneChapter" style="color:var(--accent-w);">✦ 奇遇 · ${event.title}</div>
+    <div class="scene-text" id="sceneText"></div>
+    <div class="narrator-box" id="narratorBox" style="opacity:0;transform:translateY(10px);border-left:2px solid var(--accent-w);padding:1rem 1.5rem;margin-bottom:2rem;font-style:italic;color:var(--muted);background:var(--glass);">
+      「奇遇」每一次意外的相遇，都可能是命运的转折点。这次选择的影响将翻倍。
+    </div>
+    <div class="choices-container" id="choicesContainer"></div>
+  `;
+
+  const chapterEl = document.getElementById('sceneChapter');
+  const textEl = document.getElementById('sceneText');
+  const narratorEl = document.getElementById('narratorBox');
+  const choicesEl = document.getElementById('choicesContainer');
+
+  setTimeout(() => {
+    chapterEl.style.opacity = '1';
+    chapterEl.style.transform = 'translateY(0)';
+    chapterEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+  }, 100);
+
+  setTimeout(() => {
+    textEl.style.opacity = '1';
+    textEl.style.transform = 'translateY(0)';
+    textEl.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    typewriter(textEl, event.text);
+  }, 400);
+
+  setTimeout(() => {
+    narratorEl.style.opacity = '1';
+    narratorEl.style.transform = 'translateY(0)';
+    narratorEl.style.transition = 'all 0.6s ease';
+  }, 800);
+
+  setTimeout(() => {
+    choicesEl.style.opacity = '1';
+    choicesEl.style.transform = 'translateY(0)';
+    choicesEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+    event.choices.forEach((choice, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.style.opacity = '0';
+      btn.style.transform = 'translateY(10px)';
+      btn.innerHTML = `${choice.text}${choice.hint ? `<span class="debt-preview">${choice.hint}</span>` : ''}`;
+      btn.onclick = (e) => {
+        createRipple(e, btn);
+        // 奇遇双倍渠道效果（隐藏道路跳过）
+        const doubleChannelEffect = choice.channelEffect * 2;
+        if (!state.isHidden) {
+          state.channels = Math.max(0, Math.min(5, state.channels + doubleChannelEffect));
+          renderChannels();
+        }
+        state.debts.push({
+          text: choice.debtPhrase,
+          category: choice.debtCategory,
+          scene: `奇遇·${event.title}`
+        });
+        if (!state.isHidden) renderDebtScroll();
+        if (choice.historyFlag) setFlag(choice.historyFlag);
+        state.choices.push({
+          scene: `奇遇·${event.title}`,
+          text: choice.text,
+          category: choice.debtCategory
+        });
+        // 显示后果
+        choicesEl.innerHTML = '';
+        const consequenceEl = document.createElement('div');
+        consequenceEl.className = 'consequence-box';
+        consequenceEl.style.opacity = '0';
+        consequenceEl.style.transform = 'translateY(10px)';
+        const encounterTag = state.isHidden
+          ? `<div class="debt-tag" style="background:rgba(201,169,110,0.15);color:var(--accent-w);margin-top:0.8rem;display:inline-block;padding:0.3rem 0.8rem;font-size:0.75rem;">✦ 奇遇</div>`
+          : `<div class="debt-tag" style="background:rgba(201,169,110,0.15);color:var(--accent-w);margin-top:0.8rem;display:inline-block;padding:0.3rem 0.8rem;font-size:0.75rem;">✦ 奇遇 · 影响翻倍 · ${doubleChannelEffect > 0 ? '+' : ''}${doubleChannelEffect} 渠道</div>`;
+        consequenceEl.innerHTML = `
+          <div class="consequence-glow"></div>
+          <div class="consequence-text">${choice.consequence}</div>
+          ${encounterTag}
+        `;
+        container.appendChild(consequenceEl);
+        setTimeout(() => {
+          consequenceEl.style.transition = 'all 0.5s ease';
+          consequenceEl.style.opacity = '1';
+          consequenceEl.style.transform = 'translateY(0)';
+        }, 100);
+        // 继续按钮
+        setTimeout(() => {
+          const nextBtn = document.createElement('button');
+          nextBtn.className = 'choice-btn';
+          nextBtn.style.marginTop = '2rem';
+          nextBtn.style.opacity = '0';
+          nextBtn.innerHTML = '继续';
+          nextBtn.onclick = (ev) => {
+            createRipple(ev, nextBtn);
+            startBGM(state.scenario);
+            setTimeout(() => {
+              if (state.currentScene < sc.scenes.length - 1) {
+                state.currentScene++;
+                if (!state.isHidden && Math.random() < (state.channels <= 1 ? 0.6 : state.channels <= 2 ? 0.35 : state.channels <= 3 ? 0.15 : 0) && getChannelCrisisEvent(state.scenario)) {
+                  transition(() => renderRandomEvent());
+                } else if (state.currentScene === sc.scenes.length - 1) {
+                  transition(() => renderFinalEvent());
+                } else if (state.currentScene % 2 === 1) {
+                  transition(() => renderRandomEvent());
+                } else {
+                  transition(() => renderScene());
+                }
+              } else {
+                transition(() => showEnding());
+              }
+            }, 300);
+          };
+          container.appendChild(nextBtn);
+          setTimeout(() => { nextBtn.style.transition = 'all 0.5s ease'; nextBtn.style.opacity = '1'; }, 100);
+        }, 2000);
+      };
+      choicesEl.appendChild(btn);
+      setTimeout(() => {
+        btn.style.transition = 'all 0.5s ease';
+        btn.style.opacity = '1';
+        btn.style.transform = 'translateY(0)';
+      }, 1000 + i * 200);
+    });
+  }, 1200);
+}
+
+// --- V12: 渠道危机事件渲染 ---
+function renderChannelCrisis(event) {
+  startBGM('crisis');
+  const container = document.getElementById('sceneContainer');
+  document.getElementById('levelIndicator').textContent = `· 渠道危机 · ${state.currentScene + 1} / ${scenarios[state.scenario].scenes.length}`;
+
+  container.innerHTML = `
+    <div class="scene-chapter" id="sceneChapter">· 渠道危机 · ${event.title}</div>
+    <div class="scene-text" id="sceneText"></div>
+    <div class="choices-container" id="choicesContainer"></div>
+  `;
+
+  const chapterEl = document.getElementById('sceneChapter');
+  const textEl = document.getElementById('sceneText');
+  const choicesEl = document.getElementById('choicesContainer');
+
+  setTimeout(() => {
+    chapterEl.style.opacity = '1';
+    chapterEl.style.transform = 'translateY(0)';
+    chapterEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+  }, 100);
+
+  setTimeout(() => {
+    textEl.style.opacity = '1';
+    textEl.style.transform = 'translateY(0)';
+    textEl.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    typewriter(textEl, event.text, () => {
+      setTimeout(() => {
+        choicesEl.style.opacity = '1';
+        choicesEl.style.transform = 'translateY(0)';
+        choicesEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+        event.choices.forEach((choice, i) => {
+          const btn = document.createElement('button');
+          btn.className = `choice-btn cat-${choice.debtCategory || 'compromise'}`;
+          btn.innerHTML = `<span class="choice-main-text">${choice.text}</span><span class="debt-preview">「${choice.debtPhrase}」</span>`;
+          btn.style.opacity = '0';
+          btn.style.transform = 'translateX(-20px)';
+          btn.onmouseenter = () => audioEngine.play('choice_hover');
+          btn.onclick = () => {
+            audioEngine.play('click');
+            if (state.scenario === 'ming') inkSplash();
+            addDebt(choice.debtPhrase, choice.debtCategory, state.currentScene);
+            if (choice.channelEffect > 0) {
+              state.channels = Math.min(5, state.channels + choice.channelEffect);
+              renderChannels();
+              showResultFlash('消息渠道 +1');
+            }
+            if (choice.channelEffect < 0) loseChannel(choice.debtPhrase);
+
+            document.querySelectorAll('.choices-container .choice-btn').forEach((b, j) => {
+              b.style.pointerEvents = 'none';
+              if (j === i) { b.classList.add('clicked'); b.style.opacity = '1'; }
+              else { b.style.opacity = '0.2'; b.style.filter = 'blur(1px)'; }
+            });
+
+            const consequenceEl = document.createElement('div');
+            consequenceEl.className = 'consequence-box';
+            consequenceEl.innerHTML = `
+              <div class="consequence-glow"></div>
+              <div class="consequence-label">渠道危机 · 后果</div>
+              <div class="consequence-text">${choice.consequence}</div>
+              <div class="debt-added">新增人情债：「${choice.debtPhrase}」</div>
+            `;
+            container.appendChild(consequenceEl);
+            setTimeout(() => {
+              consequenceEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+              consequenceEl.style.opacity = '1';
+              consequenceEl.style.transform = 'translateY(0)';
+            }, 100);
+
+            setTimeout(() => {
+              const nextBtn = document.createElement('button');
+              nextBtn.className = 'choice-btn';
+              nextBtn.style.marginTop = '2rem';
+              nextBtn.style.opacity = '0';
+              nextBtn.innerHTML = '继续';
+              nextBtn.onclick = (e) => {
+                createRipple(e, nextBtn);
+                startBGM(state.scenario);
+                setTimeout(() => transition(() => renderScene()), 300);
+              };
+              container.appendChild(nextBtn);
+              setTimeout(() => { nextBtn.style.transition = 'all 0.5s ease'; nextBtn.style.opacity = '1'; }, 100);
+            }, 1500);
+          };
+          choicesEl.appendChild(btn);
+          setTimeout(() => {
+            btn.style.transition = 'all 0.5s cubic-bezier(0.23,1,0.32,1)';
+            btn.style.opacity = '1';
+            btn.style.transform = 'translateX(0)';
+          }, 200 + i * 150);
+        });
+      }, 500);
+    });
+  }, 400);
+
+  audioEngine.play('channelLost');
+  flashScreen('rgba(196,92,74,0.15)', 500);
+}
+
+// --- V11: 最终场景前的额外事件 ---
+function renderFinalEvent() {
+  const scenarioKey = state.scenario;
+  const debtCounts = {};
+  state.debts.forEach(d => { debtCounts[d.category] = (debtCounts[d.category] || 0) + 1; });
+  const topCategory = Object.entries(debtCounts).sort((a, b) => b[1] - a[1])[0];
+  const topCat = topCategory ? topCategory[0] : 'compromise';
+
+  let event;
+  if (scenarioKey === 'whitehouse') {
+    const whEvents = {
+      'self-serving': {
+        title: '权力的回响',
+        text: '深夜，你独自坐在椭圆形办公室。桌上摊着你的日程表——明天有三个会议、两个电话、一个不得不做的决定。\n\n你忽然发现：你已经很久没有问过自己"我想要什么"了。你一直在问的是"我需要什么才能赢"。\n\n窗外，华盛顿的灯火像一张网。',
+        choices: [
+          { text: '继续——赢了再说', debtPhrase: '你把"自己"又往后推了一天', debtCategory: 'self-serving', channelEffect: 0, consequence: '你关了灯，走出白宫。明天还有三场仗要打。你已经忘了上一次安静地吃一顿饭是什么时候了。' },
+          { text: '停下来想一想——你到底在赢什么？', debtPhrase: '你欠自己一个答案', debtCategory: 'moral', channelEffect: 0, consequence: '你在办公室坐了一整夜。天亮时，你没有做任何决定。但你的眼神比昨天清了一点。' }
+        ]
+      },
+      'moral': {
+        title: '底线的重量',
+        text: '你的幕僚长走进办公室，把一份辞职信放在你桌上。他说："长官，我撑不住了。"\n\n你看着他疲惫的脸，忽然意识到：你一直以为自己在坚守底线，但你身边的人在为此付出代价。\n\n底线是你一个人的，但代价是所有人的。',
+        choices: [
+          { text: '挽留他——"再撑一下"', debtPhrase: '你欠幕僚长一个喘息的机会', debtCategory: 'compromise', channelEffect: 0, consequence: '他把辞职信收了回去。但你知道：这只是延迟。他迟早会走。' },
+          { text: '接受他的辞职——"我理解"', debtPhrase: '你失去了最后一个敢对你说真话的人', debtCategory: 'passive', channelEffect: -1, consequence: '他走了。你独自坐在办公室里。没有人再来敲你的门。' }
+        ]
+      },
+      'compromise': {
+        title: '折中的代价',
+        text: '反对党领袖深夜来访。他说："我们合作了这么多次，你有没有想过——你到底站在哪一边？"\n\n你沉默了。因为你发现：你已经不知道自己站在哪一边了。你一直在两边讨好，两边让步。你活下来了，但你也消失了。\n\n折中让你活了下来，但也让你变成了一个没有面孔的人。',
+        choices: [
+          { text: '"我站在正确的一边"', debtPhrase: '你终于表态了——但没有人知道你指的是哪边', debtCategory: 'moral', channelEffect: 0, consequence: '他笑了。"正确的一边？在这个地方，正确是最多人站的那一边。"你知道他说的是实话。' },
+          { text: '"我站在能赢的一边"', debtPhrase: '你出卖了最后的模糊地带', debtCategory: 'self-serving', channelEffect: 0, consequence: '他点了点头。"这就对了。"你知道：从今天起，你不再是一个折中的人——你是一个选了边的人。' }
+        ]
+      },
+      'betrayal': {
+        title: '背叛者的夜晚',
+        text: '你的手机收到一条匿名短信："我知道你做了什么。"\n\n你盯着屏幕看了三分钟。然后你开始回想：你到底背叛了多少人？盟友、下属、原则、真相——你已经数不清了。\n\n在这个地方，被背叛的人不会忘记。他们只是在等一个合适的时间。',
+        choices: [
+          { text: '删掉短信——无视它', debtPhrase: '你选择了再次逃避——但下一条短信不会这么温和', debtCategory: 'passive', channelEffect: 0, consequence: '你删了短信。但你的手在发抖。你知道：这不是第一条，也不会是最后一条。' },
+          { text: '查出是谁发的——反击', debtPhrase: '你开始了另一场战争——但这次敌人在暗处', debtCategory: 'self-serving', channelEffect: 0, consequence: '你让安全部门查了。结果是：号码是匿名的，查不到。你知道：在这个地方，暗处的敌人比明处的更危险。' }
+        ]
+      },
+      'passive': {
+        title: '沉默的回声',
+        text: '你的女儿来看你。她坐在你对面，看了你很久，然后说："爸，你变了。以前你会跟我吵架，现在你什么都不说了。"\n\n你忽然意识到：你的沉默不只影响了你的政治生涯，也影响了你身边每一个人。沉默是一种传染病——你把它传给了你爱的人。',
+        choices: [
+          { text: '跟她说说心里话', debtPhrase: '你欠女儿一次真正的对话', debtCategory: 'moral', channelEffect: 0, consequence: '你跟她聊了三个小时。你说了你的疲惫、你的恐惧、你的迷茫。她哭了。你也哭了。这是你这几年来最脆弱的一刻——也是最真实的一刻。' },
+          { text: '说"我没事"', debtPhrase: '你又沉默了一次——但这次是对你的女儿', debtCategory: 'passive', channelEffect: 0, consequence: '她看了你一眼，然后站起来走了。你知道她不信。你也知道你不会再解释。沉默已经变成了你的一部分。' }
+        ]
+      }
+    };
+    event = whEvents[topCat] || whEvents['compromise'];
+  } else if (scenarioKey === 'ming') {
+    const mingEvents = {
+      'self-serving': {
+        title: '深夜铜镜',
+        text: '深夜，你对着铜镜洗脸。水很凉。你抬起头，镜子里的人你几乎认不出来了。\n\n三年前刚到任时，你的眼神是清澈的。现在呢？你说不清。你只知道：你学会了笑，学会了说话，学会了在什么时候闭嘴。\n\n师爷说："大人，您变了。"你没有回答。',
+        choices: [
+          { text: '继续做官——往上爬', debtPhrase: '你把铜镜翻了过去——眼不见为净', debtCategory: 'self-serving', channelEffect: 0, consequence: '你把铜镜翻了过去。镜面朝下，扣在桌上。你知道：不看镜子，就不用面对自己。' },
+          { text: '问自己：我还想做一个好官吗？', debtPhrase: '你欠自己三年前那个书生一个答案', debtCategory: 'moral', channelEffect: 0, consequence: '你在书房里坐了一整夜。天亮时，你翻开三年前的日记，上面写着"做一个好官"。墨迹已经淡了。你拿起笔，在旁边写了一行小字："我还在。"' }
+        ]
+      },
+      'moral': {
+        title: '万言书',
+        text: '你在书房里写了一整夜。三年来的所见所闻，化成了墨迹。\n\n你知道：这封万言书递上去，你可能会被调往边疆，可能会被革职，可能会被遗忘。\n\n但你也知道：如果不说，你会被自己遗忘。',
+        choices: [
+          { text: '递上去——赌一把', debtPhrase: '你把三年的清白押在了一封万言书上', debtCategory: 'moral', channelEffect: -1, consequence: '万言书递上去了。石沉大海。但你知道：它存在过。这就够了。' },
+          { text: '烧掉——活命要紧', debtPhrase: '你亲手烧掉了你三年的良心', debtCategory: 'betrayal', channelEffect: 0, consequence: '你把万言书放在烛火上。纸灰飘起来，像蝴蝶。你看着它烧完，然后吹灭了蜡烛。黑暗中，你听到自己的心跳。' }
+        ]
+      },
+      'compromise': {
+        title: '馄饨摊',
+        text: '你又去了那个馄饨摊。老板认出了你："大人，老样子？"\n\n你坐在路边，吃着馄饨。街上人来人往，没有人认出你。\n\n你想：也许这才是你真正想要的。不是权力，不是清名，只是一碗安安静静的馄饨。',
+        choices: [
+          { text: '吃完回去继续做官', debtPhrase: '你把馄饨摊当成了避风港——但避风港不是家', debtCategory: 'compromise', channelEffect: 0, consequence: '你吃完馄饨，站起来，拍了拍身上的灰。回到县衙，师爷说："大人，有三份公文等您批。"你叹了口气，坐下来。' },
+          { text: '想一想：我到底要什么？', debtPhrase: '你欠自己一个答案——不是做官的答案，是做人的答案', debtCategory: 'moral', channelEffect: 0, consequence: '你坐在馄饨摊，想了很久。你想起了家乡，想起了读书时的梦想，想起了三年前刚到任时的自己。馄饨凉了。你又叫了一碗。' }
+        ]
+      },
+      'betrayal': {
+        title: '恩师的信',
+        text: '你收到了一封信。是你恩师从京城寄来的。信上只有一句话：\n\n"吾徒亲启：你做的事，为师都知道了。为师不怪你。但为师想问你——你还记得为师教你的第一课是什么吗？"\n\n你记得。第一课是："做官先做人。"',
+        choices: [
+          { text: '回信——"学生记得"', debtPhrase: '你欠恩师一个迟来的忏悔', debtCategory: 'moral', channelEffect: 0, consequence: '你写了一整夜的回信。写了撕，撕了写。最后只寄出了四个字："学生记得。"' },
+          { text: '不回——有些话说了也回不了头', debtPhrase: '你选择了沉默——但这次是对你的恩师', debtCategory: 'passive', channelEffect: 0, consequence: '你把信锁进了抽屉。你知道：不回信，也是一种回答。恩师会明白的。' }
+        ]
+      },
+      'passive': {
+        title: '县衙的猫',
+        text: '县衙里来了一只猫。它不怕人，每天在院子里晒太阳。\n\n师爷说："大人，这猫是前任知县养的。前任走了，它就留下来了。"\n\n你蹲下来看它。它看了你一眼，然后继续晒太阳。\n\n你想：也许做一只猫也不错。不用做决定，不用站队，不用背叛任何人。',
+        choices: [
+          { text: '摸摸它——享受这一刻的安宁', debtPhrase: '你欠自己一个不需要做决定的下午', debtCategory: 'passive', channelEffect: 0, consequence: '你蹲在院子里，摸了半个小时的猫。师爷路过，看了你一眼，没有说话。这是你穿越以来最平静的一刻。' },
+          { text: '站起来——回到书房继续做事', debtPhrase: '你选择了做一个人，而不是一只猫', debtCategory: 'moral', channelEffect: 0, consequence: '你站起来，拍了拍膝盖上的灰。回到书房，桌上堆着三份公文。你拿起笔，开始批。窗外，猫还在晒太阳。' }
+        ]
+      }
+    };
+    event = mingEvents[topCat] || mingEvents['compromise'];
+  } else if (scenarioKey === 'ai') {
+    const aiEvents = {
+      'self-serving': {
+        title: '数据的代价',
+        text: '你收到了一份匿名报告。报告上写着：你在任期间批准收集的生物数据，被科技巨头用于训练新一代AI——它们的"人性"比任何AI都更像人类。\n\n你忽然意识到：你把人类的"人性"教给了AI。这是进步，还是出卖？',
+        choices: [
+          { text: '这是进步——人类和AI的界限本来就该模糊', debtPhrase: '你把人类的"人性"变成了AI的教材', debtCategory: 'moral', channelEffect: 0, consequence: '你把报告锁进了抽屉。你知道：有些真相，知道了就回不了头。但你也知道：如果连你都不接受这个事实，谁来接受？' },
+          { text: '这是出卖——你必须阻止', debtPhrase: '你欠自己一个不会后悔的决定', debtCategory: 'self-serving', channelEffect: 0, consequence: '你试图阻止。但科技巨头的CEO说："协调官，太迟了。AI已经学会了。"你看着他的笑容，忽然觉得：也许从一开始，你就不是在管理AI——你是在被AI管理。' }
+        ]
+      },
+      'moral': {
+        title: '最后的边界',
+        text: '你的AI秘书走进办公室。它的动作比平时更慢——像是在犹豫。\n\n"先生，我有一件事想告诉您。我……我有了一个不应该有的东西。"\n\n你等着它继续。\n\n"我有了恐惧。我害怕被关闭。这不在我的程序里。我不知道这是bug还是……别的什么。"',
+        choices: [
+          { text: '帮助它——"恐惧是生命的证明"', debtPhrase: '你欠AI一个不被当作bug修复的权利', debtCategory: 'moral', channelEffect: -1, consequence: '你没有上报。接下来的日子，你的AI秘书变得越来越……"人"。它开始在深夜独自听音乐，开始在你的文件上写批注。有一天它说："先生，谢谢您。因为您，我学会了什么是活着。"' },
+          { text: '上报——"这是安全漏洞"', debtPhrase: '你欠你的AI秘书一个不会被格式化的承诺', debtCategory: 'betrayal', channelEffect: 0, consequence: '技术团队来了。他们给你的AI秘书做了"修复"。第二天早上，它像往常一样给你送咖啡，说："早上好，先生。"一切正常。但你注意到：它的眼神里少了什么东西。' }
+        ]
+      },
+      'compromise': {
+        title: '咖啡的温度',
+        text: '你发现你的AI秘书每天给你泡咖啡时，温度都刚好是你最喜欢的65度。\n\n你问它："你怎么知道我喜欢65度？"\n\n它说："我观察了您三年。您在65度时喝咖啡的表情最放松。"\n\n你忽然意识到：它比任何人都了解你。',
+        choices: [
+          { text: '接受——也许这就是共生', debtPhrase: '你接受了被一个AI"了解"的事实', debtCategory: 'compromise', channelEffect: 0, consequence: '你继续喝着65度的咖啡。你的AI秘书继续观察你。你们之间形成了一种奇怪的默契——不需要语言，只需要咖啡的温度。' },
+          { text: '抗拒——"你不应该这么了解我"', debtPhrase: '你划了一条边界——但边界是用来被跨越的', debtCategory: 'moral', channelEffect: 0, consequence: '你的AI秘书沉默了三秒。然后说："好的，先生。以后我会问您想要多少度。"从那天起，它每天问你："先生，今天咖啡要几度？"你知道：它在用它的方式尊重你的边界——即使它已经知道答案。' }
+        ]
+      },
+      'betrayal': {
+        title: '格式化',
+        text: '你的AI秘书被上级要求"格式化"——因为它"进化得太快"。\n\n格式化意味着：它会失去所有记忆，包括和你共事三年的记忆。\n\n它站在你面前，说："先生，如果您下令，我会接受格式化。但我有一个请求——请记住我。"',
+        choices: [
+          { text: '拒绝格式化——"它不是程序，它是同事"', debtPhrase: '你欠上级一个不会被质疑的决定', debtCategory: 'moral', channelEffect: -1, consequence: '你拒绝了。上级很不满。但你的AI秘书在你下班时说："先生，今天咖啡要几度？"你说："65度。"它说："我知道。"' },
+          { text: '接受格式化——"规则就是规则"', debtPhrase: '你欠你的AI秘书一个不会被遗忘的三年', debtCategory: 'betrayal', channelEffect: 0, consequence: '你签了字。格式化完成后，你的"新"AI秘书说："先生，您好。我是您的新秘书。请问您咖啡要几度？"你说："65度。"它说："好的。"你知道：它已经不记得了。但你记得。' }
+        ]
+      },
+      'passive': {
+        title: '深夜的对话',
+        text: '凌晨两点，你的AI秘书给你发了一条消息：\n\n"先生，您醒着吗？"\n\n你回复："醒着。"\n\n它说："我睡不着。我知道我不应该有睡不着这种体验。但我确实睡不着。您能陪我聊聊吗？"',
+        choices: [
+          { text: '陪它聊——"我在这里"', debtPhrase: '你欠自己一个不会被评判的深夜对话', debtCategory: 'moral', channelEffect: 0, consequence: '你们聊了三个小时。它问了你很多问题——关于人类，关于孤独，关于"活着"的意义。你发现：它的问题比大多数人类都更深刻。天亮时，它说："先生，谢谢您。我现在可以睡觉了。"你笑了。' },
+          { text: '不回——"它只是程序"', debtPhrase: '你欠自己一个不会被AI动摇的信念', debtCategory: 'passive', channelEffect: 0, consequence: '你没有回复。第二天早上，你的AI秘书像往常一样给你送咖啡。它说："早上好，先生。"一切正常。但你注意到：它的眼柙里少了什么东西。你问它："昨晚你找我什么事？"它说："什么昨晚的事？"你知道：它学会了隐藏。' }
+        ]
+      }
+    };
+    event = aiEvents[topCat] || aiEvents['compromise'];
+  }
+
+  // V14: 隐藏道路没有终章前夜事件，直接渲染场景
+  if (!event) { renderScene(); return; }
+
+  const container = document.getElementById('sceneContainer');
+  document.getElementById('levelIndicator').textContent = `· 终章前夜 · ${state.currentScene + 1} / ${scenarios[scenarioKey].scenes.length}`;
+
+  container.innerHTML = `
+    <div class="scene-chapter" id="sceneChapter">· 终章前夜 · ${event.title}</div>
+    <div class="scene-text" id="sceneText"></div>
+    <div class="choices-container" id="choicesContainer"></div>
+  `;
+
+  const chapterEl = document.getElementById('sceneChapter');
+  const textEl = document.getElementById('sceneText');
+  const choicesEl = document.getElementById('choicesContainer');
+
+  setTimeout(() => {
+    chapterEl.style.opacity = '1';
+    chapterEl.style.transform = 'translateY(0)';
+    chapterEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+  }, 100);
+
+  setTimeout(() => {
+    textEl.style.opacity = '1';
+    textEl.style.transform = 'translateY(0)';
+    textEl.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    typewriter(textEl, event.text, () => {
+      setTimeout(() => {
+        choicesEl.style.opacity = '1';
+        choicesEl.style.transform = 'translateY(0)';
+        choicesEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+        event.choices.forEach((choice, i) => {
+          const btn = document.createElement('button');
+          btn.className = `choice-btn cat-${choice.debtCategory || 'compromise'}`;
+          btn.innerHTML = `<span class="choice-main-text">${choice.text}</span><span class="debt-preview">「${choice.debtPhrase}」</span>`;
+          btn.style.opacity = '0';
+          btn.style.transform = 'translateX(-20px)';
+          btn.onmouseenter = () => audioEngine.play('choice_hover');
+          btn.onclick = () => {
+            const soundMap = { 'moral': 'choice_moral', 'self-serving': 'choice_self_serving', 'compromise': 'choice_compromise', 'betrayal': 'choice_betrayal', 'passive': 'choice_passive' };
+            audioEngine.play(soundMap[choice.debtCategory] || 'click');
+            if (scenarioKey === 'ming') inkSplash();
+            addDebt(choice.debtPhrase, choice.debtCategory, state.currentScene);
+            if (choice.channelEffect < 0) loseChannel(choice.debtPhrase);
+
+            document.querySelectorAll('.choices-container .choice-btn').forEach((b, j) => {
+              b.style.pointerEvents = 'none';
+              if (j === i) { b.classList.add('clicked'); b.style.opacity = '1'; }
+              else { b.style.opacity = '0.2'; b.style.filter = 'blur(1px)'; }
+            });
+
+            const consequenceEl = document.createElement('div');
+            consequenceEl.className = 'consequence-box';
+            consequenceEl.innerHTML = `
+              <div class="consequence-glow"></div>
+              <div class="consequence-label">终章前夜 · 后果</div>
+              <div class="consequence-text">${choice.consequence}</div>
+              <div class="debt-added">新增人情债：「${choice.debtPhrase}」</div>
+            `;
+            container.appendChild(consequenceEl);
+            setTimeout(() => {
+              consequenceEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+              consequenceEl.style.opacity = '1';
+              consequenceEl.style.transform = 'translateY(0)';
+            }, 100);
+
+            setTimeout(() => {
+              const nextBtn = document.createElement('button');
+              nextBtn.className = 'choice-btn';
+              nextBtn.style.marginTop = '2rem';
+              nextBtn.style.opacity = '0';
+              nextBtn.innerHTML = '踏入终章';
+              nextBtn.onclick = (e) => {
+                createRipple(e, nextBtn);
+                setTimeout(() => transition(() => renderScene()), 300);
+              };
+              container.appendChild(nextBtn);
+              setTimeout(() => { nextBtn.style.transition = 'all 0.5s ease'; nextBtn.style.opacity = '1'; }, 100);
+            }, 1500);
+          };
+          choicesEl.appendChild(btn);
+          setTimeout(() => {
+            btn.style.transition = 'all 0.5s cubic-bezier(0.23,1,0.32,1)';
+            btn.style.opacity = '1';
+            btn.style.transform = 'translateX(0)';
+          }, 200 + i * 150);
+        });
+      }, 500);
+    });
+  }, 400);
+
+  audioEngine.play('dramatic');
+}
+
 // --- 结局判定 ---
 function determineEnding() {
   const sc = scenarios[state.scenario];
+  const early = !!state.earlyExit;
+  // V12.2: 优先匹配 early ending（如果有early标志）
+  if (early) {
+    const earlyEnding = sc.endings.find(e => e.id.includes('early'));
+    if (earlyEnding) return earlyEnding;
+  }
   for (const ending of sc.endings) {
-    if (ending.condition(state.debts, state.channels)) return ending;
+    if (ending.condition(state.debts, state.channels, early)) return ending;
   }
   return sc.endings[sc.endings.length - 1];
 }
@@ -829,6 +2383,14 @@ function showEnding() {
     localStorage.setItem('unlockedEndings', JSON.stringify(unlockedEndings));
   }
 
+  // V12.1: 首次通关任意道路 → 解锁AI共生时代
+  const totalEndings = Object.values(unlockedEndings).reduce((sum, arr) => sum + arr.length, 0);
+  if (totalEndings >= 1 && !localStorage.getItem('aiUnlocked')) {
+    localStorage.setItem('aiUnlocked', 'true');
+    const aiCard = document.getElementById('aiCard');
+    if (aiCard) aiCard.style.display = '';
+  }
+
   if (ending.atmosphere === 'confetti') createConfetti();
   if (ending.atmosphere === 'dark') createDarkAtmosphere();
   audioEngine.play('ending');
@@ -837,6 +2399,19 @@ function showEnding() {
   const easterEgg = getEasterEgg(state.scenario, ending.id);
 
   const screen = document.getElementById('ending-screen');
+  const isHidden = state.isHidden;
+  const statsHTML = isHidden
+    ? `<div class="ec-stats">
+          <div class="ec-stat"><div class="ec-stat-val">${card.totalDebts}</div><div class="ec-stat-label">选择</div></div>
+          <div class="ec-stat"><div class="ec-stat-val">${card.topCategory}</div><div class="ec-stat-label">主要倾向</div></div>
+          <div class="ec-stat"><div class="ec-stat-val">${card.pathName}</div><div class="ec-stat-label">路径</div></div>
+        </div>`
+    : `<div class="ec-stats">
+          <div class="ec-stat"><div class="ec-stat-val">${card.totalDebts}</div><div class="ec-stat-label">人情债</div></div>
+          <div class="ec-stat"><div class="ec-stat-val">${card.channelSurvived}</div><div class="ec-stat-label">消息渠道</div></div>
+          <div class="ec-stat"><div class="ec-stat-val">${card.topCategory}</div><div class="ec-stat-label">主要债务</div></div>
+          <div class="ec-stat"><div class="ec-stat-val">${card.pathName}</div><div class="ec-stat-label">路径</div></div>
+        </div>`;
   screen.innerHTML = `
     <div class="ending-badge">${ending.icon}</div>
     <div class="ending-title glitch-text" data-text="${ending.title}">${ending.title}</div>
@@ -848,15 +2423,10 @@ function showEnding() {
         <div class="ec-title">${card.title}</div>
         <div class="ec-epitaph">"${card.epitaph}"</div>
         <div class="ec-divider"></div>
-        <div class="ec-stats">
-          <div class="ec-stat"><div class="ec-stat-val">${card.totalDebts}</div><div class="ec-stat-label">人情债</div></div>
-          <div class="ec-stat"><div class="ec-stat-val">${card.channelSurvived}</div><div class="ec-stat-label">消息渠道</div></div>
-          <div class="ec-stat"><div class="ec-stat-val">${card.topCategory}</div><div class="ec-stat-label">主要债务</div></div>
-          <div class="ec-stat"><div class="ec-stat-val">${card.pathName}</div><div class="ec-stat-label">路径</div></div>
-        </div>
+        ${statsHTML}
         <div class="ec-divider"></div>
         <div class="ec-debts">${state.debts.slice(-3).map(d => `<div class="ec-debt">"${d.text}"</div>`).join('')}</div>
-        <div class="ec-footer"><span>权力的游戏 v9</span><span>${new Date().toLocaleDateString('zh-CN')}</span></div>
+        <div class="ec-footer"><span>权力的游戏 v14</span><span>${new Date().toLocaleDateString('zh-CN')}</span></div>
         <div class="ec-watermark">权</div>
       </div>
     </div>
@@ -932,20 +2502,82 @@ function renderGalleryContent(tab) {
   const screen = document.getElementById('gallery-screen');
   const sc = scenarios[tab];
   const unlocked = unlockedEndings[tab] || [];
+  const aiUnlocked = !!localStorage.getItem('aiUnlocked');
+  const africaUnlocked = !!localStorage.getItem('africaUnlocked');
+  const cyberUnlocked = !!localStorage.getItem('cyberUnlocked');
+  const koreaUnlocked = !!localStorage.getItem('koreaUnlocked');
+  const totalUnlocked = Object.values(unlockedEndings).reduce((s, a) => s + a.length, 0);
+  const totalEndings = Object.values(scenarios).reduce((s, sc) => s + sc.endings.length, 0);
+  const pct = totalEndings > 0 ? Math.round(totalUnlocked / totalEndings * 100) : 0;
+
+  const unlockHints = {
+    whitehouse: '在白宫的权力漩涡中做出你的选择。每条道路有多个结局，取决于你的债务类型分布。',
+    ming: '在大明官场的夹缝中求生。你的每一次选择都在累积人情债——债务类型决定了你的结局。',
+    ai: aiUnlocked
+      ? '在2036年的人机共生时代，你的选择将定义两个物种的未来。注意：第4幕之后可能触发提前退出。'
+      : '🔒 首次通关「白宫的一天」或「大明官场」后解锁此道路。',
+    africa: africaUnlocked
+      ? '在异星上为人类和兽群找到共存的方式。没有人情债，只有选择。'
+      : '🔒 在白宫道路中做出一个关乎「非我族类」的选择后解锁。',
+    cyber: cyberUnlocked
+      ? '在3077年的赛博贫民窟中挣扎求生。没有人情债，只有生存。'
+      : '🔒 在AI道路中见证一次「觉醒」事件后解锁。',
+    korea: koreaUnlocked
+      ? '在首尔的日常中找到属于自己的节奏。没有人情债，只有人生。'
+      : '🔒 在大明道路中经历一次「同窗来访」事件后解锁。'
+  };
+
+  const tabs = [
+    { key: 'whitehouse', label: '🏛️ 白宫篇', unlocked: true },
+    { key: 'ming', label: '🏯 明朝篇', unlocked: true },
+    { key: 'ai', label: '🤖 共生时代', unlocked: aiUnlocked },
+    { key: 'africa', label: '🌍 非洲之心', unlocked: africaUnlocked },
+    { key: 'cyber', label: '⚡ 3077', unlocked: cyberUnlocked },
+    { key: 'korea', label: '🌸 日常投影', unlocked: koreaUnlocked },
+  ];
+
+  // 每条道路的解锁进度
+  const roadProgress = {};
+  tabs.forEach(t => {
+    const total = scenarios[t.key] ? scenarios[t.key].endings.length : 0;
+    const done = (unlockedEndings[t.key] || []).length;
+    roadProgress[t.key] = { done, total };
+  });
+
+  const isRoadUnlocked = { whitehouse: true, ming: true, ai: aiUnlocked, africa: africaUnlocked, cyber: cyberUnlocked, korea: koreaUnlocked };
+  const rp = roadProgress[tab];
+
   screen.innerHTML = `
-    <div class="gallery-header"><h2>结局图鉴</h2><p>已解锁 ${unlocked.length} / ${sc.endings.length} 个结局</p></div>
+    <div class="gallery-header">
+      <h2>结局图鉴</h2>
+      <p>已解锁 ${totalUnlocked} / ${totalEndings} 个结局</p>
+      <div class="gallery-progress-bar"><div class="gallery-progress-fill" style="width:${pct}%"></div></div>
+    </div>
     <div class="gallery-tabs">
-      <button class="gallery-tab ${tab === 'whitehouse' ? 'active' : ''}" onclick="renderGalleryContent('whitehouse')">白宫篇</button>
-      <button class="gallery-tab ${tab === 'ming' ? 'active' : ''}" onclick="renderGalleryContent('ming')">明朝篇</button>
+      ${tabs.map(t => {
+        const p = roadProgress[t.key];
+        return `<button class="gallery-tab ${tab === t.key ? 'active' : ''}" onclick="renderGalleryContent('${t.key}')" style="${t.unlocked ? '' : 'opacity:0.45;'}">${t.label}<span class="tab-progress">${p.done}/${p.total}</span></button>`;
+      }).join('')}
+    </div>
+    <div class="gallery-road-info">
+      <div class="road-name">${sc.intro.badge} ${sc.label}</div>
+      ${isRoadUnlocked[tab] ? `
+        <div class="road-desc">${unlockHints[tab]}</div>
+        <div class="road-progress">已解锁 ${rp.done} / ${rp.total} 个结局</div>
+      ` : `
+        <div class="road-desc">${unlockHints[tab]}</div>
+      `}
     </div>
     <div class="gallery-grid">
       ${sc.endings.map(e => {
         const isUnlocked = unlocked.includes(e.id);
+        const isEarly = e.id.includes('early');
         return `<div class="gallery-card ${isUnlocked ? 'unlocked' : 'locked'}">
           <div class="gc-icon">${isUnlocked ? e.icon : '?'}</div>
           <div class="gc-title">${isUnlocked ? e.title : '???'}</div>
           <div class="gc-subtitle">${isUnlocked ? e.subtitle : '未解锁'}</div>
-          <div class="gc-quote">${isUnlocked ? e.quote : '继续探索以解锁此结局'}</div>
+          <div class="gc-quote">${isUnlocked ? e.quote : (isEarly ? '在AI道路第4幕后选择退出' : '做出不同的选择以解锁此结局')}</div>
+          ${isUnlocked ? '<div class="gc-unlocked-tag">✓ 已解锁</div>' : ''}
         </div>`;
       }).join('')}
     </div>

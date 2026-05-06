@@ -166,6 +166,42 @@ class AudioEngine {
       choice_hover: () => {
         this._tone(600, 0.04, 'sine', this.sfxGain, 0.15);
       },
+      // V11: 情感分类音效
+      choice_moral: () => {
+        // 道德：清澈上行，如钟鸣
+        this._tone(523, 0.15, 'sine', this.sfxGain, 0.35);
+        setTimeout(() => this._tone(659, 0.15, 'sine', this.sfxGain, 0.25), 80);
+        setTimeout(() => this._tone(784, 0.25, 'sine', this.sfxGain, 0.2), 160);
+      },
+      choice_self_serving: () => {
+        // 利己：金属质感短促，冷硬
+        this._tone(800, 0.08, 'square', this.sfxGain, 0.2);
+        this._tone(1200, 0.05, 'sine', this.sfxGain, 0.15);
+      },
+      choice_compromise: () => {
+        // 折衷：温和和弦，平衡
+        this._tone(392, 0.2, 'triangle', this.sfxGain, 0.25);
+        this._tone(494, 0.2, 'sine', this.sfxGain, 0.15);
+      },
+      choice_betrayal: () => {
+        // 背叛：不协和下行，刺耳
+        this._tone(440, 0.15, 'sawtooth', this.sfxGain, 0.3);
+        setTimeout(() => this._tone(349, 0.2, 'sawtooth', this.sfxGain, 0.25), 100);
+        setTimeout(() => this._tone(261, 0.3, 'sawtooth', this.sfxGain, 0.2), 200);
+        this._delay(261, 0.8, 0.1);
+      },
+      choice_passive: () => {
+        // 沉默：低沉消散，如叹息
+        this._tone(220, 0.4, 'sine', this.sfxGain, 0.2);
+        this._delay(165, 0.8, 0.08);
+      },
+      // V11: 惩罚音效
+      penalty: () => {
+        this._tone(180, 0.5, 'sawtooth', this.sfxGain, 0.35);
+        setTimeout(() => this._tone(130, 0.6, 'square', this.sfxGain, 0.25), 200);
+        setTimeout(() => this._tone(98, 0.8, 'sawtooth', this.sfxGain, 0.2), 400);
+        this._noise(0.3, 0.15);
+      },
       chapter: () => {
         this._tone(261, 0.35, 'sine', this.sfxGain, 0.3);
         setTimeout(() => this._tone(329, 0.35, 'sine', this.sfxGain, 0.25), 200);
@@ -190,24 +226,56 @@ class AudioEngine {
         melody:  [220, 247, 261, 293, 330, 311, 293, 261, 247, 220, 196, 220],
         harmony: [110, 130, 130, 146, 165, 155, 146, 130, 130, 110,  98, 110],
         bass:    [55,  65,  65,  73,  82,  77,  73,  65,  65,  55,  49,  55],
-        wave: 'triangle',
-        harmWave: 'sine',
-        tempo: 2200,
-        melVol: 0.28,
-        harmVol: 0.14,
-        bassVol: 0.18,
+        wave: 'triangle', harmWave: 'sine', tempo: 2200, melVol: 0.28, harmVol: 0.14, bassVol: 0.18,
       },
       ming: {
         // 大明：五声调式，古风，空灵感
         melody:  [261, 293, 329, 392, 440, 523, 440, 392, 329, 293, 261, 220],
         harmony: [130, 146, 165, 196, 220, 261, 220, 196, 165, 146, 130, 110],
         bass:    [65,  73,  82,  98, 110, 130, 110,  98,  82,  73,  65,  55],
-        wave: 'sine',
-        harmWave: 'triangle',
-        tempo: 2600,
-        melVol: 0.25,
-        harmVol: 0.12,
-        bassVol: 0.16,
+        wave: 'sine', harmWave: 'triangle', tempo: 2600, melVol: 0.25, harmVol: 0.12, bassVol: 0.16,
+      },
+      ai: {
+        // AI共生：电子脉冲感，未来感
+        melody:  [440, 523, 659, 784, 880, 784, 659, 523, 440, 349, 392, 440],
+        harmony: [220, 261, 330, 392, 440, 392, 330, 261, 220, 175, 196, 220],
+        bass:    [110, 130, 165, 196, 220, 196, 165, 130, 110,  87,  98, 110],
+        wave: 'sine', harmWave: 'triangle', tempo: 1800, melVol: 0.2, harmVol: 0.1, bassVol: 0.14,
+      },
+      africa: {
+        // 非洲之心：大地鼓点，有机感，五度圈循环
+        melody:  [196, 220, 261, 293, 349, 392, 349, 293, 261, 220, 196, 175],
+        harmony: [98,  110, 130, 146, 175, 196, 175, 146, 130, 110,  98,  87],
+        bass:    [49,  55,  65,  73,  87,  98,  87,  73,  65,  55,  49,  44],
+        wave: 'triangle', harmWave: 'sine', tempo: 2400, melVol: 0.22, harmVol: 0.12, bassVol: 0.2,
+      },
+      cyber: {
+        // 3077：暗色合成器，半音阶下行，电子脉冲
+        melody:  [330, 311, 293, 277, 261, 247, 261, 293, 311, 330, 349, 330],
+        harmony: [165, 155, 146, 139, 130, 124, 130, 146, 155, 165, 175, 165],
+        bass:    [82,  77,  73,  69,  65,  62,  65,  73,  77,  82,  87,  82],
+        wave: 'sawtooth', harmWave: 'square', tempo: 1600, melVol: 0.15, harmVol: 0.08, bassVol: 0.22,
+      },
+      korea: {
+        // 日常投影：温柔吉他感，大调，舒缓
+        melody:  [330, 392, 440, 494, 523, 494, 440, 392, 349, 330, 294, 330],
+        harmony: [165, 196, 220, 247, 261, 247, 220, 196, 175, 165, 147, 165],
+        bass:    [82,  98, 110, 124, 130, 124, 110,  98,  87,  82,  74,  82],
+        wave: 'sine', harmWave: 'triangle', tempo: 2800, melVol: 0.2, harmVol: 0.1, bassVol: 0.14,
+      },
+      encounter: {
+        // 奇遇：紧张急促，戏剧性
+        melody:  [293, 349, 392, 440, 523, 440, 392, 349, 293, 261, 247, 293],
+        harmony: [146, 175, 196, 220, 261, 220, 196, 175, 146, 130, 124, 146],
+        bass:    [73,  87,  98, 110, 130, 110,  98,  87,  73,  65,  62,  73],
+        wave: 'triangle', harmWave: 'sine', tempo: 1400, melVol: 0.3, harmVol: 0.15, bassVol: 0.2,
+      },
+      crisis: {
+        // 渠道危机：紧迫感，不协和
+        melody:  [261, 277, 311, 330, 370, 330, 311, 277, 261, 247, 233, 261],
+        harmony: [130, 139, 155, 165, 185, 165, 155, 139, 130, 124, 117, 130],
+        bass:    [65,  69,  77,  82,  93,  82,  77,  69,  65,  62,  58,  65],
+        wave: 'sawtooth', harmWave: 'triangle', tempo: 1200, melVol: 0.18, harmVol: 0.1, bassVol: 0.22,
       },
     };
     const cfg = configs[style] || configs.whitehouse;
@@ -251,6 +319,38 @@ class AudioEngine {
   stopBGM() {
     this.bgmRunning = false;
     clearTimeout(this._bgmTimer);
+  }
+
+  // --- V10: Landing 页氛围音效 ---
+  playLandingHover(scenario) {
+    if (!this.enabled || !this.ctx) return;
+    if (scenario === 'whitehouse') {
+      // 白宫：紧张的政治氛围，低沉弦乐
+      this._tone(110, 0.4, 'triangle', this.sfxGain, 0.12);
+      setTimeout(() => this._tone(130, 0.3, 'triangle', this.sfxGain, 0.08), 100);
+      setTimeout(() => this._tone(165, 0.5, 'sine', this.sfxGain, 0.06), 200);
+    } else if (scenario === 'ming') {
+      // 大明：古风空灵，五声音阶
+      this._tone(392, 0.5, 'sine', this.sfxGain, 0.1);
+      setTimeout(() => this._tone(440, 0.4, 'sine', this.sfxGain, 0.07), 150);
+      setTimeout(() => this._tone(523, 0.6, 'sine', this.sfxGain, 0.05), 300);
+    } else if (scenario === 'ai') {
+      // AI共生：电子脉冲感
+      this._tone(880, 0.15, 'sine', this.sfxGain, 0.08);
+      setTimeout(() => this._tone(1047, 0.1, 'sine', this.sfxGain, 0.06), 80);
+      setTimeout(() => this._tone(1319, 0.2, 'sine', this.sfxGain, 0.04), 160);
+    }
+  }
+
+  playLandingAmbient() {
+    if (!this.enabled || !this.ctx) return;
+    // 一个低沉的持续音，营造氛围
+    const freqs = [55, 82, 110];
+    freqs.forEach((f, i) => {
+      setTimeout(() => {
+        this._tone(f, 2.0, 'sine', this.sfxGain, 0.04);
+      }, i * 400);
+    });
   }
 
   // --- 底层方法 ---
@@ -317,7 +417,7 @@ function startBGM(style) { audioEngine.startBGM(style); }
 function stopBGM() { audioEngine.stopBGM(); }
 
 // --- 游戏状态 ---
-let state = { scenario: null, currentScene: 0, debts: [], channels: 5, choices: [], history: [] };
+let state = { scenario: null, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [] };
 let unlockedEndings = JSON.parse(localStorage.getItem('unlockedEndings') || '{}');
 
 // --- 屏幕切换 ---
@@ -367,22 +467,38 @@ function screenShake(intensity) {
   setTimeout(() => container.classList.remove(cls), 600);
 }
 
-// --- 粒子爆发 ---
+// --- V12: 粒子爆发（增强版） ---
 function particleBurst(x, y, color, count) {
-  count = count || 12;
+  count = count || 20;
   for (let i = 0; i < count; i++) {
     const p = new Particle();
     p.x = x; p.y = y;
-    p.speedX = (Math.random() - 0.5) * 3;
-    p.speedY = (Math.random() - 0.5) * 3 - 1;
-    p.size = Math.random() * 3 + 1;
-    p.life = 60 + Math.random() * 40;
+    const angle = (Math.PI * 2 / count) * i + Math.random() * 0.5;
+    const speed = 2 + Math.random() * 4;
+    p.speedX = Math.cos(angle) * speed;
+    p.speedY = Math.sin(angle) * speed - 1.5;
+    p.size = Math.random() * 4 + 1.5;
+    p.life = 80 + Math.random() * 60;
     p.maxLife = p.life;
-    p.opacity = 0.8;
+    p.opacity = 0.9;
+    if (color) p.color = color;
     particles.push(p);
   }
-  // 清理多余粒子
-  setTimeout(() => { if (particles.length > 200) particles = particles.slice(-100); }, 3000);
+  // 第二波：更小更密集的粒子
+  for (let i = 0; i < count / 2; i++) {
+    const p = new Particle();
+    p.x = x + (Math.random() - 0.5) * 20;
+    p.y = y + (Math.random() - 0.5) * 20;
+    p.speedX = (Math.random() - 0.5) * 2;
+    p.speedY = -Math.random() * 3 - 1;
+    p.size = Math.random() * 2 + 0.5;
+    p.life = 40 + Math.random() * 30;
+    p.maxLife = p.life;
+    p.opacity = 0.6;
+    if (color) p.color = color;
+    particles.push(p);
+  }
+  setTimeout(() => { if (particles.length > 300) particles = particles.slice(-150); }, 4000);
 }
 
 // --- 全屏闪光 ---
@@ -505,4 +621,139 @@ document.addEventListener('keydown', e => {
     const gs = document.getElementById('game-screen');
     if (gs.classList.contains('active')) confirmExit();
   }
+});
+
+// --- V10: Landing 页交互音效 ---
+document.addEventListener('DOMContentLoaded', () => {
+  // V12.1: 检查AI道路是否已解锁
+  if (localStorage.getItem('aiUnlocked')) {
+    const aiCard = document.getElementById('aiCard');
+    if (aiCard) aiCard.style.display = '';
+  }
+
+  const cards = document.querySelectorAll('.choice-card[data-scenario]');
+  cards.forEach(card => {
+    const scenario = card.dataset.scenario;
+    card.addEventListener('mouseenter', () => {
+      audioEngine.playLandingHover(scenario);
+    });
+    card.addEventListener('click', () => {
+      audioEngine.enable();
+      audioEngine.play('chapter');
+    });
+  });
+
+  // V13: 随机副标题 — 9本书严格引用，5秒轮播 + 淡入淡出 + 严格不相邻同源
+  const subtitles = [
+    { text: '人最大的敌人是自己，天地不限人，人自限于天地', source: '阎真《沧浪之水》' },
+    { text: '原则千万条，利害关系第一条', source: '阎真《沧浪之水》' },
+    { text: '一个人吧，只要他不把自尊看得那么重，放得下脸来，机会还是很多的', source: '阎真《沧浪之水》' },
+    { text: '世人都有一些生活原则，可又都刻意地不按原则行事', source: '阎真《沧浪之水》' },
+    { text: '什么事都是人在做，规则只能限定那些没有办法的人', source: '阎真《沧浪之水》' },
+    { text: '从土里长出过光荣的历史，自然也会受到土的束缚', source: '费孝通《乡土中国》' },
+    { text: '礼是社会公认合式的行为规范', source: '费孝通《乡土中国》' },
+    { text: '在差序格局中，社会关系是逐渐从一个一个人推出去的', source: '费孝通《乡土中国》' },
+    { text: '各人自扫门前雪，莫管他人瓦上霜', source: '费孝通《乡土中国》' },
+    { text: '中国传统社会里一个人为了自己可以牺牲家，为了家可以牺牲党', source: '费孝通《乡土中国》' },
+    { text: '中国的政府事务，不仅在于怎么做，还在于谁来做', source: '兰小欢《置身事内》' },
+    { text: '成功的政策背后是成功的协商和妥协', source: '兰小欢《置身事内》' },
+    { text: '现实世界没有黑白分明的界限，只有复杂的权衡与取舍', source: '兰小欢《置身事内》' },
+    { text: '了解政府认为自己在做什么，是理解政府行为的起点', source: '兰小欢《置身事内》' },
+    { text: '制度设计的关键在于激励机制', source: '兰小欢《置身事内》' },
+    { text: '做官要三思：思危、思退、思变', source: '刘和平《大明王朝1566》' },
+    { text: '任何人答应你的事都不算数，只有你自己能做主的事才算数', source: '刘和平《大明王朝1566》' },
+    { text: '这个世上，真靠得住的就两种人：一种是笨人，一种是直人', source: '刘和平《大明王朝1566》' },
+    { text: '圣人的书是用来读的，用来办事百无一用', source: '刘和平《大明王朝1566》' },
+    { text: '喜怒哀乐之未发，谓之中；发而皆中节，谓之和', source: '子思《中庸》' },
+    { text: '君子之中庸也，君子而时中', source: '子思《中庸》' },
+    { text: '道也者，不可须臾离也；可离，非道也', source: '子思《中庸》' },
+    { text: '博学之，审问之，慎思之，明辨之，笃行之', source: '子思《中庸》' },
+    { text: '极高明而道中庸', source: '子思《中庸》' },
+    { text: '一个大帝国的覆亡，往往不是由于外力的打击，而是由于内部的腐烂', source: '黄仁宇《万历十五年》' },
+    { text: '当一个人口众多的国家，各人行动全凭儒家简单粗浅而又无法固定的原则所限制，而法律又缺乏创造性，则其社会发展的程度，必然受到限制', source: '黄仁宇《万历十五年》' },
+    { text: '道德绝不是万能的，它不能代替技术，更不能代替法律', source: '黄仁宇《万历十五年》' },
+    { text: '以道德代替法治，是中国两千年来一切问题的症结', source: '黄仁宇《万历十五年》' },
+    { text: '君子和而不同，小人同而不和', source: '孔子《论语》' },
+    { text: '己所不欲，勿施于人', source: '孔子《论语》' },
+    { text: '知之为知之，不知为不知，是知也', source: '孔子《论语》' },
+    { text: '不在其位，不谋其政', source: '孔子《论语》' },
+    { text: '过犹不及', source: '孔子《论语》' },
+    { text: '事在四方，要在中央', source: '韩非《韩非子》' },
+    { text: '不期修古，不法常可，论世之事，因为之备', source: '韩非《韩非子》' },
+    { text: '以肉去蚁，蚁愈多；以鱼驱蝇，蝇愈至', source: '韩非《韩非子》' },
+    { text: '被人畏惧比受人爱戴更安全', source: '马基雅维利《君主论》' },
+    { text: '目的总是证明手段是正确的', source: '马基雅维利《君主论》' },
+    { text: '命运是我们行动的半个主宰，但她留下其余一半归我们自己支配', source: '马基雅维利《君主论》' },
+    { text: '在白宫，信息就是权力，而控制信息的人才是真正的决策者', source: '《白宫幕僚》' },
+    { text: '总统的每一个决定都是政治，但不是每个政治决定都是正确的', source: '《白宫幕僚》' },
+    { text: '真正危险的不是敌人，而是你以为是朋友的那些人', source: '《白宫幕僚》' },
+  ];
+  // V13: 生成队列 — 洗牌后修复相邻同源，保证无相邻重复
+  let lastQueueLastSource = '';
+  function buildSubtitleQueue() {
+    const n = subtitles.length;
+    const indices = Array.from({length: n}, (_, i) => i);
+    // Fisher-Yates 洗牌
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    // 确保首项不与上一轮末项同源
+    if (lastQueueLastSource && subtitles[indices[0]].source === lastQueueLastSource) {
+      // 找一个不同源的交换到首位
+      for (let k = 1; k < n; k++) {
+        if (subtitles[indices[k]].source !== lastQueueLastSource) {
+          [indices[0], indices[k]] = [indices[k], indices[0]];
+          break;
+        }
+      }
+    }
+    // 修复相邻同源：向后扫描，发现相邻同源就与下一个不同源的交换
+    for (let i = 0; i < n - 1; i++) {
+      if (subtitles[indices[i]].source === subtitles[indices[i+1]].source) {
+        for (let k = i + 2; k < n; k++) {
+          if (subtitles[indices[k]].source !== subtitles[indices[i]].source) {
+            // 确保交换后 indices[k] 也不会和 indices[i+2] 冲突
+            if (k === n - 1 || subtitles[indices[k]].source !== subtitles[indices[i+2]].source || i + 2 >= n) {
+              [indices[i+1], indices[k]] = [indices[k], indices[i+1]];
+              break;
+            }
+            // 即使可能冲突，也先交换，后续循环会继续修复
+            [indices[i+1], indices[k]] = [indices[k], indices[i+1]];
+            break;
+          }
+        }
+      }
+    }
+    // 记录本轮末项来源，用于下轮首项去重
+    lastQueueLastSource = subtitles[indices[indices.length - 1]].source;
+    return indices;
+  }
+  let subtitleQueue = buildSubtitleQueue();
+  let subtitleQueuePos = 0;
+  const subtitleEl = document.getElementById('landingSubtitle');
+  const subtitleSourceEl = subtitleEl ? subtitleEl.querySelector('.subtitle-source') : null;
+  function showNextSubtitle() {
+    if (!subtitleEl) return;
+    const idx = subtitleQueue[subtitleQueuePos % subtitleQueue.length];
+    const item = subtitles[idx];
+    subtitleEl.innerHTML = `<span class="subtitle-text">"${item.text}"</span><span class="subtitle-source">—— ${item.source}</span>`;
+    subtitleQueuePos++;
+    if (subtitleQueuePos >= subtitleQueue.length) {
+      subtitleQueue = buildSubtitleQueue();
+      subtitleQueuePos = 0;
+    }
+  }
+  showNextSubtitle();
+  setInterval(() => {
+    if (subtitleEl) {
+      subtitleEl.classList.add('subtitle-fade-out');
+      setTimeout(() => {
+        showNextSubtitle();
+        subtitleEl.classList.remove('subtitle-fade-out');
+        subtitleEl.classList.add('subtitle-fade-in');
+        setTimeout(() => subtitleEl.classList.remove('subtitle-fade-in'), 600);
+      }, 400);
+    }
+  }, 5000);
 });
