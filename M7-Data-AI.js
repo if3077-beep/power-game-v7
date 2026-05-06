@@ -120,7 +120,7 @@ const aiData = {
         const moral = d.filter(x => x.category === 'moral').length;
         const compromise = d.filter(x => x.category === 'compromise').length;
         return moral >= 2 && compromise >= 2;
-      }, verdict: '你没有让任何一方完全满意，但你让双方都活了下来。在人机共生的历史上，你是第一个"造桥者"。桥不漂亮，但能走人。', analysis: '「置身事内」：成功的政策背后是成功的协商和妥协。你在两个物种之间找到了共同的地面。', quote: '「极高明而道中庸。」——《中庸》', atmosphere: 'confetti', epitaph: '在两个物种之间架起第一座桥的人' },
+      }, verdict: '你没有让任何一方完全满意，但你让双方都活了下来。在人机共生的历史上，你是第一个"造桥者"。桥不漂亮，但能走人。\n\n——\n判定理念：此结局需要你同时在道德和折衷之间找到平衡（各2次以上）。游戏之所以不给"全道德"一条通路，是因为在权力场中——尤其是跨物种的权力场——纯粹和有效之间存在永恒的张力。你做出的每一个折衷不是为了取悦任何一方，而是为了让桥梁的两端都能承受得住对岸的重量。', analysis: '「置身事内」：成功的政策背后是成功的协商和妥协。你在两个物种之间找到了共同的地面。', quote: '「极高明而道中庸。」——《中庸》', atmosphere: 'confetti', epitaph: '在两个物种之间架起第一座桥的人' },
     { id: 'ai_advocate', title: 'AI代言人', subtitle: '你选择了站在未来这边', icon: '⚡', condition: (d, ch) => {
         const moral = d.filter(x => x.category === 'moral').length;
         return moral >= 4;
