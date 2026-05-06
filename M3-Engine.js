@@ -71,17 +71,17 @@ class AudioEngine {
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     this.ctx.resume();
     this.master = this.ctx.createGain();
-    this.master.gain.value = 0.35;
+    this.master.gain.value = 0.8;
     this.master.connect(this.ctx.destination);
     this.bgmGain = this.ctx.createGain();
-    this.bgmGain.gain.value = 0.18;
+    this.bgmGain.gain.value = 0.55;
     this.bgmGain.connect(this.master);
     this.sfxGain = this.ctx.createGain();
-    this.sfxGain.gain.value = 0.5;
+    this.sfxGain.gain.value = 0.9;
     this.sfxGain.connect(this.master);
     // 延迟混响（模拟空间感）
     this.reverbGain = this.ctx.createGain();
-    this.reverbGain.gain.value = 0.15;
+    this.reverbGain.gain.value = 0.25;
     this.reverbGain.connect(this.master);
   }
 
@@ -107,70 +107,70 @@ class AudioEngine {
     const t = this.ctx.currentTime;
     const sounds = {
       click: () => {
-        this._tone(1200, 0.04, 'sine', this.sfxGain, 0.12);
-        this._tone(1800, 0.03, 'sine', this.sfxGain, 0.06);
+        this._tone(1200, 0.06, 'sine', this.sfxGain, 0.4);
+        this._tone(1800, 0.04, 'sine', this.sfxGain, 0.2);
       },
       debt: () => {
-        this._tone(280, 0.3, 'triangle', this.sfxGain, 0.18);
-        setTimeout(() => this._tone(220, 0.25, 'triangle', this.sfxGain, 0.12), 150);
-        setTimeout(() => this._tone(165, 0.35, 'triangle', this.sfxGain, 0.08), 300);
+        this._tone(280, 0.35, 'triangle', this.sfxGain, 0.5);
+        setTimeout(() => this._tone(220, 0.3, 'triangle', this.sfxGain, 0.35), 150);
+        setTimeout(() => this._tone(165, 0.4, 'triangle', this.sfxGain, 0.2), 300);
       },
       scene: () => {
-        this._tone(392, 0.2, 'sine', this.sfxGain, 0.1);
-        setTimeout(() => this._tone(523, 0.25, 'sine', this.sfxGain, 0.08), 120);
-        this._delay(392, 0.4, 0.06);
+        this._tone(392, 0.25, 'sine', this.sfxGain, 0.35);
+        setTimeout(() => this._tone(523, 0.3, 'sine', this.sfxGain, 0.25), 120);
+        this._delay(392, 0.5, 0.15);
       },
       ending: () => {
-        this._tone(392, 0.4, 'sine', this.sfxGain, 0.15);
-        setTimeout(() => this._tone(523, 0.4, 'sine', this.sfxGain, 0.12), 300);
-        setTimeout(() => this._tone(659, 0.5, 'sine', this.sfxGain, 0.1), 600);
-        setTimeout(() => this._tone(784, 0.8, 'sine', this.sfxGain, 0.08), 900);
-        this._delay(523, 1.2, 0.05);
+        this._tone(392, 0.5, 'sine', this.sfxGain, 0.45);
+        setTimeout(() => this._tone(523, 0.5, 'sine', this.sfxGain, 0.35), 300);
+        setTimeout(() => this._tone(659, 0.6, 'sine', this.sfxGain, 0.3), 600);
+        setTimeout(() => this._tone(784, 1.0, 'sine', this.sfxGain, 0.25), 900);
+        this._delay(523, 1.5, 0.15);
       },
       ink: () => {
-        this._noise(0.3, 0.1);
-        this._tone(120, 0.4, 'sawtooth', this.sfxGain, 0.06);
+        this._noise(0.3, 0.25);
+        this._tone(120, 0.45, 'sawtooth', this.sfxGain, 0.2);
       },
       success: () => {
-        this._tone(523, 0.15, 'sine', this.sfxGain, 0.12);
-        setTimeout(() => this._tone(659, 0.15, 'sine', this.sfxGain, 0.1), 100);
-        setTimeout(() => this._tone(784, 0.3, 'sine', this.sfxGain, 0.08), 200);
+        this._tone(523, 0.2, 'sine', this.sfxGain, 0.4);
+        setTimeout(() => this._tone(659, 0.2, 'sine', this.sfxGain, 0.3), 100);
+        setTimeout(() => this._tone(784, 0.35, 'sine', this.sfxGain, 0.25), 200);
       },
       fail: () => {
-        this._tone(330, 0.35, 'sawtooth', this.sfxGain, 0.1);
-        setTimeout(() => this._tone(220, 0.5, 'sawtooth', this.sfxGain, 0.08), 200);
-        this._delay(220, 0.8, 0.04);
+        this._tone(330, 0.4, 'sawtooth', this.sfxGain, 0.35);
+        setTimeout(() => this._tone(220, 0.55, 'sawtooth', this.sfxGain, 0.25), 200);
+        this._delay(220, 1.0, 0.12);
       },
       scroll: () => {
-        this._noise(0.15, 0.04);
-        this._tone(180, 0.12, 'triangle', this.sfxGain, 0.06);
+        this._noise(0.15, 0.12);
+        this._tone(180, 0.15, 'triangle', this.sfxGain, 0.2);
       },
       channelLost: () => {
-        this._tone(180, 0.6, 'sawtooth', this.sfxGain, 0.1);
-        setTimeout(() => this._tone(130, 0.8, 'sawtooth', this.sfxGain, 0.07), 300);
-        this._delay(130, 1.0, 0.04);
+        this._tone(180, 0.7, 'sawtooth', this.sfxGain, 0.35);
+        setTimeout(() => this._tone(130, 0.9, 'sawtooth', this.sfxGain, 0.25), 300);
+        this._delay(130, 1.2, 0.12);
       },
       zhongyong: () => {
-        this._tone(523, 0.25, 'sine', this.sfxGain, 0.08);
-        setTimeout(() => this._tone(440, 0.3, 'sine', this.sfxGain, 0.07), 200);
-        setTimeout(() => this._tone(392, 0.35, 'sine', this.sfxGain, 0.06), 400);
-        setTimeout(() => this._tone(349, 0.5, 'sine', this.sfxGain, 0.05), 600);
-        this._delay(392, 0.8, 0.04);
+        this._tone(523, 0.3, 'sine', this.sfxGain, 0.3);
+        setTimeout(() => this._tone(440, 0.35, 'sine', this.sfxGain, 0.25), 200);
+        setTimeout(() => this._tone(392, 0.4, 'sine', this.sfxGain, 0.2), 400);
+        setTimeout(() => this._tone(349, 0.55, 'sine', this.sfxGain, 0.18), 600);
+        this._delay(392, 1.0, 0.12);
       },
       dramatic: () => {
-        this._tone(110, 0.5, 'sawtooth', this.sfxGain, 0.1);
-        this._tone(165, 0.4, 'square', this.sfxGain, 0.04);
-        setTimeout(() => this._tone(220, 0.4, 'triangle', this.sfxGain, 0.08), 250);
-        this._delay(110, 1.0, 0.05);
+        this._tone(110, 0.6, 'sawtooth', this.sfxGain, 0.35);
+        this._tone(165, 0.5, 'square', this.sfxGain, 0.15);
+        setTimeout(() => this._tone(220, 0.5, 'triangle', this.sfxGain, 0.25), 250);
+        this._delay(110, 1.2, 0.15);
       },
       choice_hover: () => {
-        this._tone(600, 0.03, 'sine', this.sfxGain, 0.04);
+        this._tone(600, 0.04, 'sine', this.sfxGain, 0.15);
       },
       chapter: () => {
-        this._tone(261, 0.3, 'sine', this.sfxGain, 0.08);
-        setTimeout(() => this._tone(329, 0.3, 'sine', this.sfxGain, 0.06), 200);
-        setTimeout(() => this._tone(392, 0.5, 'sine', this.sfxGain, 0.05), 400);
-        this._delay(329, 0.8, 0.03);
+        this._tone(261, 0.35, 'sine', this.sfxGain, 0.3);
+        setTimeout(() => this._tone(329, 0.35, 'sine', this.sfxGain, 0.25), 200);
+        setTimeout(() => this._tone(392, 0.55, 'sine', this.sfxGain, 0.2), 400);
+        this._delay(329, 1.0, 0.1);
       },
     };
     (sounds[type] || sounds.click)();
@@ -193,9 +193,9 @@ class AudioEngine {
         wave: 'triangle',
         harmWave: 'sine',
         tempo: 2200,
-        melVol: 0.06,
-        harmVol: 0.03,
-        bassVol: 0.04,
+        melVol: 0.28,
+        harmVol: 0.14,
+        bassVol: 0.18,
       },
       ming: {
         // 大明：五声调式，古风，空灵感
@@ -205,9 +205,9 @@ class AudioEngine {
         wave: 'sine',
         harmWave: 'triangle',
         tempo: 2600,
-        melVol: 0.05,
-        harmVol: 0.025,
-        bassVol: 0.035,
+        melVol: 0.25,
+        harmVol: 0.12,
+        bassVol: 0.16,
       },
     };
     const cfg = configs[style] || configs.whitehouse;

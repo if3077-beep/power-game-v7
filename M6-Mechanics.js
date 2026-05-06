@@ -429,24 +429,17 @@ function renderScene() {
   ambient.className = `ambient-glow ${state.scenario}`;
   requestAnimationFrame(() => ambient.classList.add('active'));
 
-  // 收集本场景所有选项的书摘
-  const bookQuotes = scene.choices.map(c => c.bookQuote).filter(Boolean);
-
   container.innerHTML = `
     <div class="scene-chapter" id="sceneChapter">${scene.chapter} · ${scene.title}</div>
     <div class="scene-text" id="sceneText"></div>
     <div class="scene-narrator" id="sceneNarrator"></div>
     <div class="choices-container" id="choicesContainer"></div>
-    <div class="scene-book-quotes" id="sceneBookQuotes">
-      ${bookQuotes.map(q => `<div class="scene-bq-item">${q}</div>`).join('')}
-    </div>
   `;
 
   const chapterEl = document.getElementById('sceneChapter');
   const textEl = document.getElementById('sceneText');
   const narratorEl = document.getElementById('sceneNarrator');
   const choicesEl = document.getElementById('choicesContainer');
-  const quotesEl = document.getElementById('sceneBookQuotes');
 
   setTimeout(() => {
     chapterEl.style.opacity = '1';
@@ -473,7 +466,9 @@ function renderScene() {
           const btn = document.createElement('button');
           btn.className = `choice-btn cat-${choice.debtCategory || 'compromise'}`;
           const hintHTML = choice.hint ? `<span class="choice-hint">${choice.hint}</span>` : '';
-          btn.innerHTML = `${choice.text}<span class="debt-preview">「${choice.debtPhrase}」</span>${hintHTML}`;
+          // V9: 书摘作为浮动卡片嵌入选项
+          const quoteHTML = choice.bookQuote ? `<div class="choice-book-quote">${choice.bookQuote}</div>` : '';
+          btn.innerHTML = `<span class="choice-main-text">${choice.text}</span><span class="debt-preview">「${choice.debtPhrase}」</span>${hintHTML}${quoteHTML}`;
           btn.style.opacity = '0';
           btn.style.transform = 'translateX(-20px)';
           btn.onmouseenter = () => audioEngine.play('choice_hover');
@@ -486,12 +481,6 @@ function renderScene() {
           }, 200 + i * 150);
         });
       }, 800);
-      // 书摘在选项之后淡入
-      setTimeout(() => {
-        quotesEl.style.opacity = '1';
-        quotesEl.style.transform = 'translateY(0)';
-        quotesEl.style.transition = 'all 0.8s ease';
-      }, 1200);
     });
   }, 400);
 
@@ -614,7 +603,12 @@ function makeChoice(index) {
       setTimeout(() => {
         if (state.currentScene < sc.scenes.length - 1) {
           state.currentScene++;
-          transition(() => renderScene());
+          // V9: 40% 概率触发随机事件
+          if (Math.random() < 0.4 && state.currentScene < sc.scenes.length - 1) {
+            transition(() => renderRandomEvent());
+          } else {
+            transition(() => renderScene());
+          }
         } else {
           transition(() => showEnding());
         }
@@ -623,6 +617,173 @@ function makeChoice(index) {
     container.appendChild(nextBtn);
     setTimeout(() => { nextBtn.style.transition = 'all 0.5s ease'; nextBtn.style.opacity = '1'; }, 100);
   }, 2000);
+}
+
+// --- V9: 随机事件系统 ---
+const randomEvents = {
+  whitehouse: [
+    {
+      title: '走廊偶遇',
+      text: '你在走廊里遇到了国防部长。他看起来心事重重，欲言又止。',
+      choices: [
+        { text: '主动打招呼', debtPhrase: '你欠国防部长一次私下交心', debtCategory: 'compromise', channelEffect: 0, consequence: '他告诉你一个内幕消息——明早的内阁会议有人要发难。你多了一小时准备时间。' },
+        { text: '装没看见', debtPhrase: '国防部长记住了你的冷漠', debtCategory: 'passive', channelEffect: -1, consequence: '他看着你走过去，什么都没说。但你知道，他以后也不会主动告诉你什么了。' }
+      ]
+    },
+    {
+      title: '深夜电话',
+      text: '凌晨两点，你的手机响了。是一个你存了号码但从没打过的号码——最高法院大法官的私人电话。',
+      choices: [
+        { text: '接听', debtPhrase: '你欠大法官一个守口如瓶的承诺', debtCategory: 'self-serving', channelEffect: 0, consequence: '他只是想确认一件事：明天的判决不会让你意外。你多了一个信息源，但也多了一个秘密。' },
+        { text: '不接', debtPhrase: '大法官的电话再也不会来了', debtCategory: 'moral', channelEffect: -1, consequence: '电话响了七声，停了。你翻了个身，但再也睡不着了。你永远不知道他想说什么。' }
+      ]
+    },
+    {
+      title: '推特风暴',
+      text: '你的实习生发了一条推文，用了你的官方账号。内容是一条关于气候变化的激进言论。现在已经有五万次转发了。',
+      choices: [
+        { text: '删掉并道歉', debtPhrase: '你的实习生明天会被辞退', debtCategory: 'compromise', channelEffect: 0, consequence: '推文删了，声明发了。但截图已经传遍了。你的支持者分裂了——一半说你怂了，一半说你做得对。' },
+        { text: '不管它', debtPhrase: '你欠自己一个不会失控的社交媒体团队', debtCategory: 'passive', channelEffect: 0, consequence: '二十四小时后，另一个丑闻盖过了你的。但你的团队发现：以后发推文，没人敢用自己的判断了。' }
+      ]
+    },
+    {
+      title: '意外访客',
+      text: '你的前任幕僚长突然来访。他现在是游说公司的合伙人。他说只是"顺路来看看老朋友"。',
+      choices: [
+        { text: '热情接待', debtPhrase: '你欠他一个"老朋友"的面子', debtCategory: 'self-serving', channelEffect: 0, consequence: '他走的时候留下了一个信封。里面是一份关于下周投票的内部民调。你多了一张底牌——但也欠了一个人情。' },
+        { text: '礼貌回绝', debtPhrase: '你的前任幕僚长在圈内说了你的"清高"', debtCategory: 'moral', channelEffect: 0, consequence: '他微笑着走了。三天后，你听说他在一个私人晚宴上说："他变了。以前他不这样。"' }
+      ]
+    },
+  ],
+  ming: [
+    {
+      title: '街头见闻',
+      text: '你微服出巡，看到一个老妇人在街边卖菜。她的菜被衙役踢翻了——因为她的摊位挡了王员外家的路。',
+      choices: [
+        { text: '上前制止', debtPhrase: '衙役回去告了你一状——"大人多管闲事"', debtCategory: 'moral', channelEffect: -1, consequence: '衙役当街跪下。围观的百姓窃窃私语。你的"亲民"名声传开了，但衙门里的人开始提防你。' },
+        { text: '默默走开', debtPhrase: '你欠那个老妇人一声道歉', debtCategory: 'passive', channelEffect: 0, consequence: '你走过去了。但你回头看了三次。师爷说："大人，这种事每天都有。"你说："我知道。"但你还是回头了。' }
+      ]
+    },
+    {
+      title: '书房密信',
+      text: '深夜，有人往你书房塞了一封信。信上没有署名，只写了一句话："河道银子，三成入了知府的口袋。"',
+      choices: [
+        { text: '暗中调查', debtPhrase: '你欠写信的人一个保护', debtCategory: 'self-serving', channelEffect: 0, consequence: '你发现信是真的。但你也发现：知府的人已经开始查是谁泄的密了。你现在手里有一把刀——但不知道该往哪里捅。' },
+        { text: '烧掉信', debtPhrase: '真相被你亲手烧掉了', debtCategory: 'passive', channelEffect: 0, consequence: '你把信放在烛火上。纸灰飘起来，像蝴蝶。你知道了一件你本不该知道的事——然后你选择了遗忘。' }
+      ]
+    },
+    {
+      title: '上司来访',
+      text: '你的上司——知府大人突然到访你的县衙。他说是"例行巡查"，但你注意到他带了六个随从，比平时多了一倍。',
+      choices: [
+        { text: '盛情款待', debtPhrase: '你欠知府一顿像样的接风宴', debtCategory: 'compromise', channelEffect: 0, consequence: '知府很满意。他走的时候说："你比你前任懂事。"你知道这是夸奖——也是警告。' },
+        { text: '公事公办', debtPhrase: '知府记住了你的"不懂规矩"', debtCategory: 'moral', channelEffect: -1, consequence: '知府的笑容僵了一秒。他说："年轻人，有原则是好事。"你听出了弦外之音。下个月的考评，你被评了个"中下"。' }
+      ]
+    },
+    {
+      title: '老友来访',
+      text: '你当年的同窗来县里看你。他现在是京城某部的主事。酒过三巡，他说："兄台，要不要我帮你在上面说几句好话？"',
+      choices: [
+        { text: '接受好意', debtPhrase: '你欠同窗一个回报的承诺', debtCategory: 'self-serving', channelEffect: 0, consequence: '三个月后，你的考评升了一等。但你知道，这不是因为你的政绩——是因为有人替你说了话。' },
+        { text: '婉言谢绝', debtPhrase: '同窗觉得你"不通人情"', debtCategory: 'moral', channelEffect: 0, consequence: '他笑了笑，没再说什么。第二天他走了，留下一句话："你还是老样子。"你不知道这是夸你还是骂你。' }
+      ]
+    },
+  ]
+};
+
+function renderRandomEvent() {
+  const events = randomEvents[state.scenario];
+  if (!events || events.length === 0) { renderScene(); return; }
+  const event = events[Math.floor(Math.random() * events.length)];
+
+  const container = document.getElementById('sceneContainer');
+  document.getElementById('levelIndicator').textContent = `随机事件 · ${state.currentScene + 1} / ${scenarios[state.scenario].scenes.length}`;
+
+  container.innerHTML = `
+    <div class="scene-chapter" id="sceneChapter">· 插曲 · ${event.title}</div>
+    <div class="scene-text" id="sceneText"></div>
+    <div class="choices-container" id="choicesContainer"></div>
+  `;
+
+  const chapterEl = document.getElementById('sceneChapter');
+  const textEl = document.getElementById('sceneText');
+  const choicesEl = document.getElementById('choicesContainer');
+
+  setTimeout(() => {
+    chapterEl.style.opacity = '1';
+    chapterEl.style.transform = 'translateY(0)';
+    chapterEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+  }, 100);
+
+  setTimeout(() => {
+    textEl.style.opacity = '1';
+    textEl.style.transform = 'translateY(0)';
+    textEl.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    typewriter(textEl, event.text, () => {
+      setTimeout(() => {
+        choicesEl.style.opacity = '1';
+        choicesEl.style.transform = 'translateY(0)';
+        choicesEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+        event.choices.forEach((choice, i) => {
+          const btn = document.createElement('button');
+          btn.className = `choice-btn cat-${choice.debtCategory || 'compromise'}`;
+          btn.innerHTML = `<span class="choice-main-text">${choice.text}</span><span class="debt-preview">「${choice.debtPhrase}」</span>`;
+          btn.style.opacity = '0';
+          btn.style.transform = 'translateX(-20px)';
+          btn.onmouseenter = () => audioEngine.play('choice_hover');
+          btn.onclick = () => {
+            audioEngine.play('click');
+            if (state.scenario === 'ming') inkSplash();
+            addDebt(choice.debtPhrase, choice.debtCategory, state.currentScene);
+            if (choice.channelEffect < 0) loseChannel(choice.debtPhrase);
+
+            document.querySelectorAll('.choices-container .choice-btn').forEach((b, j) => {
+              b.style.pointerEvents = 'none';
+              if (j === i) { b.classList.add('clicked'); b.style.opacity = '1'; }
+              else { b.style.opacity = '0.2'; b.style.filter = 'blur(1px)'; }
+            });
+
+            const consequenceEl = document.createElement('div');
+            consequenceEl.className = 'consequence-box';
+            consequenceEl.innerHTML = `
+              <div class="consequence-glow"></div>
+              <div class="consequence-label">插曲 · 后果</div>
+              <div class="consequence-text">${choice.consequence}</div>
+              <div class="debt-added">新增人情债：「${choice.debtPhrase}」</div>
+            `;
+            container.appendChild(consequenceEl);
+            setTimeout(() => {
+              consequenceEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+              consequenceEl.style.opacity = '1';
+              consequenceEl.style.transform = 'translateY(0)';
+            }, 100);
+
+            setTimeout(() => {
+              const nextBtn = document.createElement('button');
+              nextBtn.className = 'choice-btn';
+              nextBtn.style.marginTop = '2rem';
+              nextBtn.style.opacity = '0';
+              nextBtn.innerHTML = '继续';
+              nextBtn.onclick = (e) => {
+                createRipple(e, nextBtn);
+                setTimeout(() => transition(() => renderScene()), 300);
+              };
+              container.appendChild(nextBtn);
+              setTimeout(() => { nextBtn.style.transition = 'all 0.5s ease'; nextBtn.style.opacity = '1'; }, 100);
+            }, 1500);
+          };
+          choicesEl.appendChild(btn);
+          setTimeout(() => {
+            btn.style.transition = 'all 0.5s cubic-bezier(0.23,1,0.32,1)';
+            btn.style.opacity = '1';
+            btn.style.transform = 'translateX(0)';
+          }, 200 + i * 150);
+        });
+      }, 500);
+    });
+  }, 400);
+
+  audioEngine.play('scene');
 }
 
 // --- 结局判定 ---
@@ -695,7 +856,7 @@ function showEnding() {
         </div>
         <div class="ec-divider"></div>
         <div class="ec-debts">${state.debts.slice(-3).map(d => `<div class="ec-debt">"${d.text}"</div>`).join('')}</div>
-        <div class="ec-footer"><span>权力的游戏 v8</span><span>${new Date().toLocaleDateString('zh-CN')}</span></div>
+        <div class="ec-footer"><span>权力的游戏 v9</span><span>${new Date().toLocaleDateString('zh-CN')}</span></div>
         <div class="ec-watermark">权</div>
       </div>
     </div>
