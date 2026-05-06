@@ -60,8 +60,9 @@ class AudioEngine {
   }
 
   init() {
-    if (this.ctx) return;
+    if (this.ctx) { this.ctx.resume(); return; }
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    this.ctx.resume();
     this.master = this.ctx.createGain();
     this.master.gain.value = 0.4;
     this.master.connect(this.ctx.destination);
@@ -71,6 +72,13 @@ class AudioEngine {
     this.sfxGain = this.ctx.createGain();
     this.sfxGain.gain.value = 0.5;
     this.sfxGain.connect(this.master);
+  }
+
+  enable() {
+    this.init();
+    this.enabled = true;
+    const btn = document.getElementById('audioBtn');
+    if (btn) btn.classList.remove('muted');
   }
 
   toggle() {

@@ -109,5 +109,36 @@
 - [x] 将 v4-output 文件夹内容复制回 5.3 项目目录
 - [x] 本地测试完整游戏流程（Playwright 端到端验证通过）
 - [x] 验证 AnalysisEngine 集成是否正常（选择后正确显示洞察）
-- [ ] 部署到可访问的 URL
+- [x] 部署到可访问的 URL（https://if3077-beep.github.io/power-game-survival/）
+- [x] v4 升级：音频引擎 + 书摘位置 + 分析框架 + 事件联动 + 结局彩蛋
 - [ ] 清理旧的 v3 文件和临时截图
+
+---
+
+## v4 升级反思（2026-05-06）
+
+### 做了什么
+基于用户反馈对 v4 进行全面升级：
+1. **音频系统重写**：散装函数 → AudioEngine 类，分离 BGM/SFX 增益，不同路线不同主题曲
+2. **书摘位置调整**：从选项按钮内移至场景底部，不再干扰选项阅读
+3. **分析引擎扩展**：8 框架 → 23 框架，新增制度分析、叙事权、网络理论、信任动力学等
+4. **事件联动系统**：historyFlags 追踪关键选择，前期决策影响后期场景文本
+5. **结局彩蛋**：72 条随机文案（总统密档/万历帝朱批 + 幕僚日志/同僚日记）
+6. **选项提示**：hover 显示 hint 文字，帮助玩家理解每个选择的深层含义
+
+### 技术决策
+- **AudioEngine vs 散装函数**：类结构更易维护，BGM/SFX 分离增益控制更精细
+- **historyFlags vs 数值系统**：布尔标记比数值更轻量，不会影响结局判定逻辑
+- **applyHistoryEffects 深拷贝**：避免修改原始数据，JSON.parse(JSON.stringify()) 简单可靠
+- **彩蛋文案池**：每个结局 3 条随机文案，增加重玩价值
+
+### 踩坑
+- **transition 期间误触**：Playwright 测试时，transition overlay 淡出期间点击可能穿透到选项按钮。生产环境用户不会遇到（动画太快），但测试时需注意
+- **browser session 断开**：Playwright MCP 的浏览器会话可能因超时断开，需要重新 navigate
+
+### 参考版本的价值
+`C:\Users\29343\Desktop\权力的游戏\` 的参考版本提供了：
+- AudioEngine 的 BGM 音阶设计（tension: 半音阶、chinese: 五声调式）
+- SocialScience 的 6 个社会学框架（差序格局、人情面子、影响力六原则等）
+- 选项结构的 hint/analysis/effects 字段设计
+- StatsEngine 的隐藏数值系统（本版本未采用，保留人情债+渠道的简洁设计）
