@@ -1068,7 +1068,7 @@ const preludeData = {
 let currentPrelude = null;
 function renderPrelude(scenarioKey) {
   const events = preludeData[scenarioKey];
-  if (!events || events.length === 0 || Math.random() > 0.6) {
+  if (!events || events.length === 0 || Math.random() > 0.5) {
     showIntro(scenarioKey);
     return;
   }
@@ -1147,10 +1147,10 @@ function showIntro(scenarioKey) {
   const sc = scenarios[scenarioKey];
   const intro = sc.intro;
   const screen = document.getElementById('intro-screen');
-  const desc = intro.descVariants && intro.descVariants.length > 0 && Math.random() < 0.5
+  const desc = intro.descVariants && intro.descVariants.length > 0 && Math.random() < 0.8
     ? intro.descVariants[Math.floor(Math.random() * intro.descVariants.length)]
     : intro.desc;
-  const situation = intro.situationVariants && intro.situationVariants.length > 0 && Math.random() < 0.5
+  const situation = intro.situationVariants && intro.situationVariants.length > 0 && Math.random() < 0.8
     ? intro.situationVariants[Math.floor(Math.random() * intro.situationVariants.length)]
     : intro.situation;
   // V14.3: 部分道路支持明亮主题变体
@@ -1268,9 +1268,9 @@ function renderScene() {
     const allTexts = [scene.text, ...scene.textVariants];
     scene.text = allTexts[Math.floor(Math.random() * allTexts.length)];
   }
-  if (scene.narratorVariants && scene.narratorVariants.length > 0) {
-    const allNarrators = [scene.narrator, ...scene.narratorVariants];
-    scene.narrator = allNarrators[Math.floor(Math.random() * allNarrators.length)];
+  // V14.3: narratorVariants 30%概率替换（判定理念不每次都出现）
+  if (scene.narratorVariants && scene.narratorVariants.length > 0 && Math.random() < 0.3) {
+    scene.narrator = scene.narratorVariants[Math.floor(Math.random() * scene.narratorVariants.length)];
   }
   const container = document.getElementById('sceneContainer');
   document.getElementById('levelIndicator').textContent = `${state.currentScene + 1} / ${sc.scenes.length}`;
