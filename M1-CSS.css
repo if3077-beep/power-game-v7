@@ -23,13 +23,14 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 #landing h1{font-family:'Noto Serif SC',serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:900;letter-spacing:0.1em;margin-bottom:0.5rem;background:linear-gradient(135deg,var(--text),var(--accent-w));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeUp 1.2s ease-out;}
 #landing .subtitle{font-size:clamp(0.9rem,2vw,1.2rem);color:var(--muted);margin-bottom:2rem;animation:fadeUp 1.2s ease-out 0.3s both;transition:opacity 0.5s ease,transform 0.5s ease;line-height:1.8;min-height:5em;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 /* V14.3: 混沌入口 — 精巧标题附近链接 */
-.chaos-entry{display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:2rem;padding:0.6rem 1.5rem;background:linear-gradient(135deg,rgba(184,169,212,0.1),rgba(201,169,110,0.08));border:1px solid rgba(184,169,212,0.3);border-radius:2rem;cursor:pointer;transition:all 0.4s ease;animation:fadeUp 1.2s ease-out 0.5s both;}
-.chaos-entry:hover{background:linear-gradient(135deg,rgba(184,169,212,0.18),rgba(201,169,110,0.14));border-color:rgba(184,169,212,0.6);transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,169,212,0.15);}
-.chaos-entry-icon{font-size:1.3rem;animation:chaosEntrySpin 4s ease-in-out infinite;}
-@keyframes chaosEntrySpin{0%,100%{transform:rotate(0deg);}30%{transform:rotate(15deg);}70%{transform:rotate(-10deg);}}
-.chaos-entry-text{font-family:'Noto Serif SC',serif;font-size:0.9rem;color:var(--text);letter-spacing:0.08em;}
-.chaos-entry-arrow{font-size:0.8rem;color:var(--muted);transition:transform 0.3s ease;}
-.chaos-entry:hover .chaos-entry-arrow{transform:translateX(4px);color:var(--accent-w);}
+.chaos-entry{display:flex;align-items:center;gap:0;margin:0.5rem auto 2rem;padding:0;cursor:pointer;transition:all 0.5s ease;animation:fadeUp 1.2s ease-out 0.6s both;max-width:360px;position:relative;}
+.chaos-entry::before,.chaos-entry::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(184,169,212,0.3),transparent);transition:all 0.5s ease;}
+.chaos-entry:hover::before,.chaos-entry:hover::after{background:linear-gradient(90deg,transparent,rgba(184,169,212,0.6),transparent);}
+.chaos-entry-icon{font-size:1.2rem;margin:0 1rem;opacity:0.7;transition:all 0.5s ease;}
+.chaos-entry:hover .chaos-entry-icon{opacity:1;transform:scale(1.15);}
+.chaos-entry-text{font-family:'Noto Serif SC',serif;font-size:0.78rem;color:var(--muted);letter-spacing:0.15em;white-space:nowrap;transition:color 0.4s ease;}
+.chaos-entry:hover .chaos-entry-text{color:var(--accent-w);}
+.chaos-entry-arrow{display:none;}
 .subtitle-source{display:block;font-size:0.72rem;color:rgba(201,169,110,0.5);margin-top:0.4rem;font-style:italic;letter-spacing:0.1em;transition:opacity 0.3s ease 0.2s;}
 .subtitle-text{display:inline;transition:opacity 0.3s ease;}
 .subtitle-fade-out{opacity:0;transform:translateY(12px);}
@@ -225,8 +226,9 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 .gallery-header p{color:var(--muted);font-size:0.85rem;}
 .gallery-progress-bar{width:100%;max-width:400px;height:4px;background:var(--glass);border-radius:2px;margin:0.8rem auto 0;overflow:hidden;}
 .gallery-progress-fill{height:100%;background:var(--accent-w);border-radius:2px;transition:width 0.6s ease;}
-.gallery-tabs{display:flex;gap:0;justify-content:center;margin-bottom:1.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;scrollbar-width:none;}
+.gallery-tabs{display:flex;gap:0;justify-content:flex-start;margin-bottom:1.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;scrollbar-width:none;scroll-snap-type:x proximity;padding:0 0.5rem;flex-wrap:nowrap;}
 .gallery-tabs::-webkit-scrollbar{display:none;}
+.gallery-tab{scroll-snap-align:start;flex-shrink:0;}
 .gallery-tab{padding:0.5rem 1.2rem;background:transparent;border:1px solid var(--card-border);color:var(--muted);font-family:'Noto Serif SC',serif;font-size:0.8rem;cursor:pointer;transition:all 0.3s;white-space:nowrap;position:relative;}
 .gallery-tab.active{border-color:var(--accent-w);color:var(--text);background:rgba(201,169,110,0.08);}
 .gallery-tab:hover{border-color:var(--accent-w);}
