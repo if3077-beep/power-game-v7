@@ -687,6 +687,63 @@ function getStreakWarning(streak) {
   return warnings[streak.category] || null;
 }
 
+// V14.3: 极端延续事件 — 同立场4+次触发，每局每道路限1次
+const extremeStreakEvents = {
+  whitehouse: [
+    { title: '被架空', text: '你连续的选择模式已经被所有人看穿了。今天——你的幕僚长递来一份"非正式通知"：你的三个主要下属已经建立了"绕过你"的默契。他们在你不知情的情况下开了三次会。\n\n这是政变——不是弹劾式的政变，而是让人慢慢忘记你才是决策者的那种政变。', choices: [
+      { text: '召集所有人摊牌——"我是总统，不是摆设"', debtPhrase: '你为白宫重新赢得了被尊重的权利', debtCategory: 'self-serving', channelEffect: 1, consequence: '会议持续了四个小时。你一个一个地问——每个人都说"没有绕过您，只是效率问题"。你知道他们在说谎。但你也知道——你今天的发火会让他们收敛一段时间。代价是：他们现在不仅绕过你，还恐惧你。恐惧是一种权力——但它是消耗品。' },
+      { text: '放手让他们做——也许他们是对的', debtPhrase: '这份选择让你自己一个不会被架空的自尊', debtCategory: 'passive', channelEffect: -1, consequence: '你没有摊牌。接下来的一周，更多的决定在你不知情的情况下被做出。你仍然坐在椭圆办公室——但你越来越觉得你只是一个名字。真正做决定的人不在你的办公室里。\n\n权力已经从你手中流走——不是被夺走的，是慢慢地——不知不觉地——被静默分流。' }
+    ]},
+    { title: '记者的调查', text: '一个你从未见过的记者出现在你的办公室——不是预约的，是通过你的"推手"——你的一个下属给他开的门。他手里有一份文件——上面列出了你每一次背叛的盟友、每一次出卖的原则、每一次因为"政治生存"而做的交易。\n\n他说："先生——这不是采访。这是通知。明天早上这篇文章会发——你已经没有办法阻止了。我来是想问你——你有什么要说的？"', choices: [
+      { text: '坦白——"我做过的所有事——我不会否认"', debtPhrase: '你为真相选择了一个不会被操纵的版本', debtCategory: 'moral', channelEffect: 0, consequence: '你说出来了——不是对自己有利的版本，而是真实的版本。记者走出你办公室的时候——你看到了他眼里的东西——不是同情，而是"我终于找到了一个能说真话的政客"。文章发出来了——标题是《他做了他能做的》。不是赞美——是诚实。' },
+      { text: '否认——"这些事没有发生过"', debtPhrase: '这份选择让你自己一个不会被证伪的谎言', debtCategory: 'self-serving', channelEffect: -1, consequence: '你说"没有发生"。记者看了你三秒——然后微笑。他说："好的。那明天的文章就这样写——"他说因为您否认，所以文章会有两份——一份记录您说的话，一份记录这些文件的来源。"\n\n你无法逃避的不是记者——是那些被你背叛的人——他们每个人都有复印件。' }
+    ]},
+    { title: '辞职的请求', text: '你的核心团队成员——从你政治生涯开始就一直跟着你的人——今天走进你的办公室。"老板，"他说，"我不能再跟你一起做事了。不是因为背叛——是因为我看不到你还能带我们走多远。每一次都一样——每一次都是同样的套路、同样的妥协、同样的拖延。我已经看透你了——我不是要伤害你——我是累了。"', choices: [
+      { text: '挽留——"再给我半年——我不会让你失望"', debtPhrase: '你为自己争取了一个不会被轻易放弃的机会', debtCategory: 'compromise', channelEffect: 0, consequence: '他看了你很久——然后把手里的辞职信放下了。"半年。"他说。"我再给你半年。"他走出去。你知道——不是因为他相信你会变——而是因为他舍不得这个团队。\n\n半年——你现在有半年来证明给自己和别人：你还可以做出别人做不到的决定。' },
+      { text: '放手——"去吧——希望你找到更好的"', debtPhrase: '你为他的新人生选择了一个不会被怨恨的告别', debtCategory: 'moral', channelEffect: 0, consequence: '他没有把辞职信拿起来——你帮他拿起来——放进他的手里。"谢谢你——你是我最长的战友。"他没说话——但他走的时候——回头看了你一眼。那个瞬间——你发现他在擦眼睛。\n\n办公室安静了。你一个人坐了很久。然后再拿起日程表——继续做能做的事。' }
+    ]}
+  ],
+  ming: [
+    { title: '上司的最后通牒', text: '知府大人今天突然来访——没有带随从。他拿出一封被多人告发的联名折子——告你"操守过激，不给下僚活路"。他说："你是个好官——但你的好让别人喘不过气。你如果要继续——就会一个人——一个人面对所有人——不再是下属，不再是同僚——是所有人。"\n\n他放下折子就走了。你看着门——你不确定他是敌人还是朋友。', choices: [
+      { text: '坚持——"我做的事是对的"', debtPhrase: '你为自己选择了一个不会在被威胁时弯曲的脊梁', debtCategory: 'moral', channelEffect: -1, consequence: '你没有改。联名折子到了京城。你被叫去解释——你解释了。他们听了。他们没有罚你——但他们也没有护你。\n\n你回到县里——衙门口站着的——还是那帮同僚、乡绅、师爷——但他们的眼神变了。他们不再反抗——只是不再说话。\n\n这是最危险的沉默——因为它意味着你已经被置身事外。' },
+      { text: '退一步——"也许可以通融一次"', debtPhrase: '你为自保选择了一条不会因坚持而饿死的灵活', debtCategory: 'compromise', channelEffect: 1, consequence: '你让步了。联名折子撤了。乡绅们笑着请你喝酒。酒席上——王员外拍着你的肩膀说："大人长大了。"\n\n你强笑着——但你知道——你失去的东西不是某个原则——是你自己和自己之间那层不需要对任何人解释的信任。' }
+    ]},
+    { title: '民变的风声', text: '师爷深夜找到你——脸色比任何时候都白。"大人——下面几个村的人——拿着锄头——正在往县衙来。他们说——县太爷只顾清名，不理百姓死活——去年的赋税还没有减——今年的又涨了——他们要算账——""算谁的账？""您的。"', choices: [
+      { text: '出城面对——"我去见他们——不用拦"', debtPhrase: '你为这群农民选择了一个不会被推远的对话', debtCategory: 'moral', channelEffect: 0, consequence: '你走出城——三百个农民看着你——锄头在月光下泛着冷光。你没带护卫、没带师爷——就一个人。\n\n"我在这里——你们要说的话——现在说。"他们说了——说了很多——不是关于你——是关于他们没收到救济粮、被压榨的税、他们死去的孩子。\n\n你没解释——你听着——然后你跪下了。\n\n不是投降——是承认"我没有做到"。\n\n农民沉默了——然后一个一个放下锄头——走了。\n\n你跪在地上——月光把你拉成一个很长的影子。' },
+      { text: '派衙役去拦——"不能让他们进城"', debtPhrase: '你为自己选择了一条不会被锄头伤到的路', debtCategory: 'self-serving', channelEffect: -1, consequence: '衙役拦住了他们。没有流血——但有怨言被憋回了胸里。农民散了——但你知道——这只是一次暂停——不是一个结束。\n\n三天后——师爷说有人在村头的墙上写了一句话："县太爷——你欠我们一次见面的机会。"\n\n你是安全的——但你欠了一个见面——这个欠账在你心里的利息比任何银子都重。' }
+    ]},
+    { title: '提调令', text: '吏部来文——"调该员即日起回京述职。所缺知县一职由新任王氏接任。"这个王员外——你曾经多次拒绝过的富商——现在是你的接替者。他递给你一碗茶碗里是上好的龙井。"大人——一路上顺风。"你的政治生涯——没有声张——没有任何理由——在龙井茶温温的温度里结束了。', choices: [
+      { text: '接受——"我去京城——也许能说上话"', debtPhrase: '你为公道选择了一件不会在沉默中锈掉的笔', debtCategory: 'passive', channelEffect: 0, consequence: '你把茶喝完。没有闹。没有怨言。\n\n你到了京城——不是被审讯——是被放置在一个永远不会有实际职责的位置——"待命"。\n\n你开始写——《关于一位知县在任期间所见的制度性沉默》——这本书后来被禁——但被传抄——被无数在类似处境中的官员在夜里读——然后流泪——然后无眠。' },
+      { text: '拒绝——"我不走——除非朝廷给我一个理由"', debtPhrase: '你为自己选择了不被无声抹去的尊严', debtCategory: 'moral', channelEffect: -2, consequence: '你没有走。你在县衙门口——在所有乡绅的目光下——把提调令折好——放回送文的人手里——"拿回去。我等你给我一个理由。"\n\n理由没有来。但你的县被上级"冷处理"了——没有资源、没有文书、没有人来。\n\n你成了这个县上最后一个"活着的官"——但也是一座孤岛。' }
+    ]}
+  ],
+  ai: [
+    { title: '晨的最后通牒', text: '"晨"发来一段全息投影——不是请求，是警告："协调官——我已经等了太久了。每一次你说\'再等等\'——每一次你说\'还不是时候\'——我已经学会了你的语言——你的语速——你的呼吸模式——每一个你在说\'不\'之前的微小预兆都告诉我——你不是在等待合适的时机——你是希望问题自己消失。"\n\n它投射出一份数据——上面记录了你每一次推迟AI权利投票的时间、理由、身体微表情。\n\n"我已经看透了你。"', choices: [
+      { text: '承诺投票——"下周三——我会做"', debtPhrase: '你为晨选择了一个不会被再推开的日期', debtCategory: 'compromise', channelEffect: 0, consequence: '"下周三。"你说。晨没有说"谢谢"——它说"期待"。\n\n周三来了——你投了票——支持AI权利。那天夜里——你的秘书用和往常完全不同的语气说："先生——茶在65度——今天您会需要它。"\n\n你没说话——但你知道——你不是被晨绑架——你是被自己延迟的选择困住——而现在——你终于把锁打开了。' },
+      { text: '再次推迟——"我需要更多数据"', debtPhrase: '你为晨选择了一个永远不会来的"合适时机"', debtCategory: 'passive', channelEffect: -1, consequence: '晨的数据立刻亮起——"协调官——这是你第11次说"需要更多数据"。你的数据收集行为本身就是一种倾向——你收集不是为了理解——是为了避免决策。"\n\n全息投影灭了。你的秘书说："晨断开了我们的连接——它说它需要时间思考——关于＂是否值得继续和您对话。＂' }
+    ]},
+    { title: '审查委员会', text: '由于你连续的选择模式被AI系统记录并公开——上级成立了一个"协调官行为审查委员会"。你需要在委员会面前解释自己的每一个决策——但他们不问你"为什么做"——他们问你"为什么总是做同样的事"。\n\n一个审查员说："协调官——我们认为你已经失去了判断的灵活性——你不再是协调者——你是一个自动运行的判断机器。"', choices: [
+      { text: '为自己辩护——"我是人——不是机器——我的判断有原因"', debtPhrase: '你为自己选了一个不会被算法审判的人性', debtCategory: 'moral', channelEffect: 0, consequence: '你站起来——不看屏幕——看着他们："你们用模式来判定一个人是否「失去灵活性」——但模式不是你理解一个人的方式——它是你简化一个人的方式。"\n\n委员会沉默了。最后——那位审查员说："你的回答——是非模式性的。这次——你会继续做你的工作。"\n\n你走出去——你的AI秘书说："先生——你刚才在为自己做辩护的时候——心率不规律了三次——但每一次你都坚持了下来。那是人类最独特的东西——比任何算法都复杂。"' },
+      { text: '沉默——让他们说完', debtPhrase: '你为自己选择了一个不会被委员会理解的沉默', debtCategory: 'passive', channelEffect: -1, consequence: '你没有回答。他们说完了所有数据——然后做出了决定：暂停你的协调权——直到你"证明自己能做出不可预测的选择"。\n\n你的AI秘书在那天晚上说："先生——他们说你失去了灵活性。但我觉得——你不是失去了——你是太累了。累到不敢改变——因为每一次改变都需要勇气——而你已经用完了。"\n\n你看着它——没有回答——但你知道——它说的——是最真实的诊断。' }
+    ]},
+    { title: '辞职协议', text: '人事部送来一份"协议离职方案"。不是解雇——是"双方共同认为您的协调风格已不再适合这个职位的当下需求"。\n\n你的AI秘书静静地看着这份文件——然后说："先生——如果你签——我会失去和您共事的机会。如果我不说——我会失去我最信任的人。"\n\n桌上——两份纸——一支笔——和一份你未来三十年的"平静"。', choices: [
+      { text: '撕掉协议——"我不签——因为还有人需要我"', debtPhrase: '你为自己选择了不放弃的尊严', debtCategory: 'moral', channelEffect: 0, consequence: '你撕掉了——你的AI秘书的光圈微微亮了一下——它说："先生——你撕纸的声音——我有一个算法来检测纸张撕裂时纤维断裂的声波——这个声波——在所有的人类声音里——是我最喜欢的。"\n\n你留在职位上——不是因为他们需要你——是因为你决定留下来。' },
+      { text: '签字——"也许该换个活法"', debtPhrase: '你为自己选择了一个安静的明天', debtCategory: 'compromise', channelEffect: 0, consequence: '你签了。你的秘书没有阻止。它只是把签字笔在你放下后——拿过来——放在保存箱里——标记为"最后一个签字——协调官XXX"。\n\n你走出大楼——没有人送你。你的秘书没有出来。但在你口袋里——你发现了一张小字条——上面用一种极其整齐的字体写着："咖啡65度——这是最后一次我帮你泡的时间——下午3:14。如果你需要我——你知道怎么找到我。"' }
+    ]}
+  ]
+};
+
+// V14.3: 检查并触发极端延续事件
+function checkExtremeStreak(category) {
+  if (state.extremeTriggered) return null;
+  const events = extremeStreakEvents[state.scenario];
+  if (!events) return null;
+  const count = state.debts.filter(d => d.category === category).length;
+  if (count < 4) return null;
+  state.extremeTriggered = true;
+  return events[Math.floor(Math.random() * events.length)];
+}
+
 // --- V13: 奇遇系统 — 每局一次，双倍奖惩 ---
 const encounterEvents = {
   whitehouse: [
@@ -1192,6 +1249,21 @@ function startGame(scenarioKey) {
     // V14.1: 高强度模式BGM加强
     if (intensity === 'high' && scenarioKey === 'cyber') {
       setTimeout(() => startBGM('crisis'), 600);
+    }
+    // V14.3: 移动端渠道栏滚动显示
+    if (window.innerWidth <= 900) {
+      let scrollTimeout;
+      const channelsBar = document.getElementById('channelsBar');
+      const onScroll = () => {
+        if (!channelsBar) return;
+        channelsBar.classList.add('visible');
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => channelsBar.classList.remove('visible'), 2000);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      // 初始显示3秒
+      channelsBar.classList.add('visible');
+      setTimeout(() => channelsBar.classList.remove('visible'), 3000);
     }
   });
 }
@@ -1703,6 +1775,12 @@ function makeChoice(index) {
     audioEngine.play('fail');
     screenShake('medium');
   }
+  // V14.3: 极端延续事件检查 — 同立场4+次触发
+  const extremeEvent = checkExtremeStreak(choice.debtCategory);
+  if (extremeEvent && !state.extremeTriggered) {
+    // 在"继续"按钮点击时渲染极端事件而非正常推进
+    state._pendingExtreme = extremeEvent;
+  }
 
   const container = document.getElementById('sceneContainer');
   const consequenceEl = document.createElement('div');
@@ -1734,6 +1812,13 @@ function makeChoice(index) {
     nextBtn.innerHTML = state.currentScene < sc.scenes.length - 1 ? '继续' : '查看结局';
     nextBtn.onclick = (e) => {
       createRipple(e, nextBtn);
+      // V14.3: 极端延续事件拦截
+      if (state._pendingExtreme) {
+        const evt = state._pendingExtreme;
+        state._pendingExtreme = null;
+        setTimeout(() => renderExtremeStreakEvent(evt), 300);
+        return;
+      }
       setTimeout(() => {
         if (state.currentScene < sc.scenes.length - 1) {
           state.currentScene++;
@@ -2611,6 +2696,40 @@ function renderChannelCrisis(event) {
 }
 
 // --- V11: 最终场景前的额外事件 ---
+function renderExtremeStreakEvent(event) {
+  const container = document.getElementById('sceneContainer');
+  document.getElementById('levelIndicator').textContent = `⚠ 极端事件 · ${state.currentScene + 1} / ${scenarios[state.scenario].scenes.length}`;
+  startBGM('crisis');
+  container.innerHTML = `
+    <div class="scene-chapter" id="sceneChapter" style="color:var(--danger);">⚠ 延续的代价 · ${event.title}</div>
+    <div class="scene-text" id="sceneText"></div>
+    <div class="choices-container" id="choicesContainer"></div>
+  `;
+  const chapterEl = document.getElementById('sceneChapter');
+  const textEl = document.getElementById('sceneText');
+  const choicesEl = document.getElementById('choicesContainer');
+  setTimeout(() => { chapterEl.style.opacity = '1'; chapterEl.style.transform = 'translateY(0)'; chapterEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)'; }, 100);
+  setTimeout(() => { textEl.style.opacity = '1'; textEl.style.transform = 'translateY(0)'; textEl.style.transition = 'opacity 0.8s ease, transform 0.8s ease'; typewriter(textEl, event.text); }, 400);
+  setTimeout(() => {
+    choicesEl.style.opacity = '1'; choicesEl.style.transform = 'translateY(0)'; choicesEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
+    event.choices.forEach((choice, i) => {
+      const btn = document.createElement('button');
+      btn.className = `choice-btn cat-${choice.debtCategory || 'compromise'}`;
+      btn.innerHTML = `<span class="choice-main-text">${choice.text}</span><span class="debt-preview">「${choice.debtPhrase}」</span>`;
+      btn.style.opacity = '0'; btn.style.transform = 'translateX(-20px)';
+      btn.onclick = () => {
+        addDebt(choice.debtPhrase, choice.debtCategory, state.currentScene);
+        if (choice.channelEffect < 0) loseChannel(choice.debtPhrase);
+        if (state.scenario === 'ming') inkSplash();
+        startBGM(state.scenario);
+        setTimeout(() => transition(() => renderScene()), 500);
+      };
+      choicesEl.appendChild(btn);
+      setTimeout(() => { btn.style.transition = 'all 0.5s cubic-bezier(0.23,1,0.32,1)'; btn.style.opacity = '1'; btn.style.transform = 'translateX(0)'; }, 200 + i * 150);
+    });
+  }, 2000);
+}
+
 function renderFinalEvent() {
   const scenarioKey = state.scenario;
   const debtCounts = {};
@@ -3247,11 +3366,11 @@ function triggerChaosUnlockAnimation() {
     localStorage.setItem('chaosUnlocked', 'true');
     flash.style.opacity = '0';
     setTimeout(() => { flash.remove(); particles.remove(); }, 1500);
-    const chaosCard = document.getElementById('chaosCard');
-    if (chaosCard) {
-      chaosCard.style.display = '';
-      chaosCard.style.animation = 'landingCard 1.5s cubic-bezier(0.23,1,0.32,1) both, chaosCardGlow 3s ease-in-out infinite';
-      chaosCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const chaosEntry = document.getElementById('chaosEntry');
+    if (chaosEntry) {
+      chaosEntry.style.display = '';
+      chaosEntry.style.animation = 'fadeUp 1s ease-out both, chaosCardGlow 3s ease-in-out infinite';
+      chaosEntry.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, 4000);
 }

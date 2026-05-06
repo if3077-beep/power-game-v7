@@ -37,6 +37,12 @@
   <h1>权 力 的 游 戏</h1>
   <p class="subtitle" id="landingSubtitle"></p>
   <div class="divider-line"></div>
+  <div class="chaos-entry" id="chaosEntry" style="display:none;" onclick="renderPrelude('chaos')">
+    <span class="chaos-entry-line"></span>
+    <span class="chaos-entry-icon">🌀</span>
+    <span class="chaos-entry-label">时空之渊</span>
+    <span class="chaos-entry-line"></span>
+  </div>
   <div class="choice-cards">
     <div class="choice-card" data-scenario="whitehouse" onclick="renderPrelude('whitehouse')">
       <div class="card-atmosphere"></div>
@@ -79,12 +85,6 @@
       <div class="card-era">Chapter VI — 日常</div>
       <h2>日常投影</h2>
       <p>首尔，25岁，大学毕业两年。换了三份工作，目前在咖啡店打工。<br><br>你不是在闯关——你是在过自己的人生。</p>
-    <div class="choice-card hidden-road-card chaos-card" data-scenario="chaos" id="chaosCard" onclick="renderPrelude('chaos')" style="display:none;">
-      <div class="card-atmosphere"></div>
-      <span class="card-icon">🌀</span>
-      <div class="card-era">Chapter Ω — 混沌</div>
-      <h2>时空之渊</h2>
-      <p>古人与未来人同坐一席，大明的奏折与AI的数据流同时抵达。<br><br>这不是历史，不是预言——是一面镜子，照出权力的永恒面孔。</p>
     </div>
     </div>
   </div>
@@ -160,9 +160,9 @@
     }
   }
   // 混沌道路——通过全解锁动画后显示
-  const chaosCard = document.getElementById('chaosCard');
-  if (chaosCard && localStorage.getItem('chaosUnlocked')) {
-    chaosCard.style.display = '';
+  const chaosEntry = document.getElementById('chaosEntry');
+  if (chaosEntry && localStorage.getItem('chaosUnlocked')) {
+    chaosEntry.style.display = '';
   }
 })();
 </script>

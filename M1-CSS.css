@@ -23,14 +23,13 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 #landing h1{font-family:'Noto Serif SC',serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:900;letter-spacing:0.1em;margin-bottom:0.5rem;background:linear-gradient(135deg,var(--text),var(--accent-w));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeUp 1.2s ease-out;}
 #landing .subtitle{font-size:clamp(0.9rem,2vw,1.2rem);color:var(--muted);margin-bottom:2rem;animation:fadeUp 1.2s ease-out 0.3s both;transition:opacity 0.5s ease,transform 0.5s ease;line-height:1.8;min-height:5em;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 /* V14.3: 混沌入口 — 精巧标题附近链接 */
-.chaos-entry{display:flex;align-items:center;gap:0;margin:0.5rem auto 2rem;padding:0;cursor:pointer;transition:all 0.5s ease;animation:fadeUp 1.2s ease-out 0.6s both;max-width:360px;position:relative;}
-.chaos-entry::before,.chaos-entry::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(184,169,212,0.3),transparent);transition:all 0.5s ease;}
-.chaos-entry:hover::before,.chaos-entry:hover::after{background:linear-gradient(90deg,transparent,rgba(184,169,212,0.6),transparent);}
-.chaos-entry-icon{font-size:1.2rem;margin:0 1rem;opacity:0.7;transition:all 0.5s ease;}
-.chaos-entry:hover .chaos-entry-icon{opacity:1;transform:scale(1.15);}
-.chaos-entry-text{font-family:'Noto Serif SC',serif;font-size:0.78rem;color:var(--muted);letter-spacing:0.15em;white-space:nowrap;transition:color 0.4s ease;}
-.chaos-entry:hover .chaos-entry-text{color:var(--accent-w);}
-.chaos-entry-arrow{display:none;}
+.chaos-entry{display:flex;align-items:center;justify-content:center;gap:0.8rem;margin:0 auto 2rem;padding:0.5rem 1rem;cursor:pointer;transition:all 0.5s ease;animation:fadeUp 1.2s ease-out 0.6s both;max-width:320px;position:relative;}
+.chaos-entry-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(184,169,212,0.25),transparent);transition:all 0.5s ease;}
+.chaos-entry:hover .chaos-entry-line{background:linear-gradient(90deg,transparent,rgba(184,169,212,0.5),transparent);}
+.chaos-entry-icon{font-size:1.1rem;opacity:0.6;transition:all 0.5s ease;}
+.chaos-entry:hover .chaos-entry-icon{opacity:1;transform:rotate(25deg) scale(1.2);}
+.chaos-entry-label{font-family:'Noto Serif SC',serif;font-size:0.75rem;color:var(--muted);letter-spacing:0.2em;transition:color 0.4s ease;}
+.chaos-entry:hover .chaos-entry-label{color:var(--accent-w);}
 .subtitle-source{display:block;font-size:0.72rem;color:rgba(201,169,110,0.5);margin-top:0.4rem;font-style:italic;letter-spacing:0.1em;transition:opacity 0.3s ease 0.2s;}
 .subtitle-text{display:inline;transition:opacity 0.3s ease;}
 .subtitle-fade-out{opacity:0;transform:translateY(12px);}
@@ -75,12 +74,12 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 
 /* GAME */
 #game-screen{padding:0;}
-.game-header{position:fixed;top:0;left:0;width:100%;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;z-index:100;background:linear-gradient(180deg,var(--bg) 60%,transparent);}
-.game-header .scenario-label{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent-w);}
-.game-header .level-indicator{font-size:0.75rem;color:var(--muted);letter-spacing:0.15em;}
-.game-header .back-btn{position:absolute;top:1rem;right:2rem;padding:0.4rem 1rem;background:transparent;border:1px solid var(--glass-border);color:var(--muted);font-size:0.7rem;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;}
+.game-header{position:fixed;top:0;left:0;width:100%;padding:0.7rem 1.5rem;display:flex;align-items:center;z-index:100;background:linear-gradient(180deg,var(--bg) 60%,transparent);gap:0.8rem;}
+.game-header .scenario-label{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent-w);flex-shrink:0;}
+.game-header .level-indicator{font-size:0.75rem;color:var(--muted);letter-spacing:0.15em;margin-right:auto;}
+.game-header .back-btn{padding:0.35rem 0.8rem;background:transparent;border:1px solid var(--glass-border);color:var(--muted);font-size:0.7rem;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;order:3;white-space:nowrap;}
 .game-header .back-btn:hover{color:var(--text);border-color:var(--accent-w);}
-.game-header .audio-btn{position:absolute;top:1rem;right:8rem;padding:0.4rem 0.8rem;background:transparent;border:1px solid var(--glass-border);color:var(--muted);font-size:0.7rem;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;}
+.game-header .audio-btn{padding:0.35rem 0.6rem;background:transparent;border:1px solid var(--glass-border);color:var(--muted);font-size:0.7rem;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;order:2;white-space:nowrap;}
 .game-header .audio-btn:hover{color:var(--text);border-color:var(--accent-w);}
 .game-header .audio-btn.muted{opacity:0.4;}
 
