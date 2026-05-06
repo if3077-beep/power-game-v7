@@ -51,7 +51,18 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 .intro-desc{font-family:'Noto Serif SC',serif;font-size:1rem;line-height:2.2;color:var(--text);margin-bottom:1.5rem;text-align:left;padding:1.5rem;background:var(--glass);border:1px solid var(--glass-border);}
 .intro-situation{font-size:0.85rem;color:var(--muted);line-height:1.8;margin-bottom:3rem;text-align:left;padding:1.5rem;background:var(--glass);border:1px solid var(--glass-border);}
 .intro-btn{padding:1rem 3rem;background:transparent;border:1px solid var(--accent-w);color:var(--text);font-family:'Noto Serif SC',serif;font-size:1rem;cursor:pointer;transition:all 0.4s ease;letter-spacing:0.1em;}
-.intro-btn:hover{background:rgba(201,169,110,0.1);}
+.intro-btn:hover{background:rgba(201,169,110,0.1);transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,169,110,0.1);}
+.intro-divider{text-align:center;margin:1.5rem 0;color:var(--accent-w);font-size:0.8rem;letter-spacing:0.3em;}
+.intro-ambient-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle at center,rgba(201,169,110,0.06),transparent 60%);pointer-events:none;animation:introGlowPulse 3s ease-in-out infinite;}
+@keyframes introGlowPulse{0%,100%{opacity:0.3;transform:translate(-50%,-50%) scale(0.9);}50%{opacity:0.7;transform:translate(-50%,-50%) scale(1.1);}}
+/* V14.1: 隐藏道路入场动画 */
+body.theme-africa .intro-badge{animation:africaBadgeFloat 2s ease-in-out infinite;}
+@keyframes africaBadgeFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+body.theme-cyber .intro-name{font-family:'Share Tech Mono',monospace;letter-spacing:0.1em;text-shadow:0 0 20px rgba(255,107,107,0.3);}
+body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;border-left:2px solid #9b8ec4;}
+/* V14.1: 奇遇惩罚事件样式 */
+.channel-crisis-penalty{border-left-color:var(--danger) !important;}
+.channel-crisis-penalty .scene-chapter{color:var(--danger) !important;}
 
 /* GAME */
 #game-screen{padding:0;}

@@ -437,6 +437,7 @@ function transition(callback) {
   overlay.style.pointerEvents = 'all';
   overlay.classList.add('active');
   setTimeout(() => {
+    window.scrollTo(0, 0);
     callback();
     setTimeout(() => {
       overlay.classList.remove('active');
