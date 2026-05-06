@@ -476,6 +476,7 @@ function renderScene() {
           btn.innerHTML = `${choice.text}<span class="debt-preview">「${choice.debtPhrase}」</span>${hintHTML}`;
           btn.style.opacity = '0';
           btn.style.transform = 'translateX(-20px)';
+          btn.onmouseenter = () => audioEngine.play('choice_hover');
           btn.onclick = () => makeChoice(i);
           choicesEl.appendChild(btn);
           setTimeout(() => {
@@ -494,7 +495,7 @@ function renderScene() {
     });
   }, 400);
 
-  audioEngine.play('scene');
+  audioEngine.play('chapter');
 }
 
 // --- 做出选择 ---
@@ -694,7 +695,7 @@ function showEnding() {
         </div>
         <div class="ec-divider"></div>
         <div class="ec-debts">${state.debts.slice(-3).map(d => `<div class="ec-debt">"${d.text}"</div>`).join('')}</div>
-        <div class="ec-footer"><span>权力的游戏 v7</span><span>${new Date().toLocaleDateString('zh-CN')}</span></div>
+        <div class="ec-footer"><span>权力的游戏 v8</span><span>${new Date().toLocaleDateString('zh-CN')}</span></div>
         <div class="ec-watermark">权</div>
       </div>
     </div>

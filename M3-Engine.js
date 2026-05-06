@@ -50,17 +50,20 @@ document.addEventListener('mousemove', e => {
   glow.style.top = e.clientY + 'px';
 });
 
-// --- 音频系统（AudioEngine） ---
+// --- 音频系统（AudioEngine）V8 ---
 class AudioEngine {
   constructor() {
     this.ctx = null;
     this.master = null;
     this.bgmGain = null;
     this.sfxGain = null;
+    this.reverbNode = null;
+    this.reverbGain = null;
     this.enabled = false;
-    this.bgmNodes = [];
     this.bgmRunning = false;
     this._bgmTimer = null;
+    this._bgmStep = 0;
+    this._bgmStyle = null;
   }
 
   init() {
@@ -68,14 +71,18 @@ class AudioEngine {
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     this.ctx.resume();
     this.master = this.ctx.createGain();
-    this.master.gain.value = 0.4;
+    this.master.gain.value = 0.35;
     this.master.connect(this.ctx.destination);
     this.bgmGain = this.ctx.createGain();
-    this.bgmGain.gain.value = 0.15;
+    this.bgmGain.gain.value = 0.18;
     this.bgmGain.connect(this.master);
     this.sfxGain = this.ctx.createGain();
     this.sfxGain.gain.value = 0.5;
     this.sfxGain.connect(this.master);
+    // 延迟混响（模拟空间感）
+    this.reverbGain = this.ctx.createGain();
+    this.reverbGain.gain.value = 0.15;
+    this.reverbGain.connect(this.master);
   }
 
   enable() {
@@ -94,74 +101,205 @@ class AudioEngine {
     return this.enabled;
   }
 
-  // 音效
+  // --- V8: 增强音效 ---
   play(type) {
     if (!this.enabled || !this.ctx) return;
+    const t = this.ctx.currentTime;
     const sounds = {
-      click:    () => this._tone(800, 0.06, 'sine', this.sfxGain),
-      debt:     () => { this._tone(300, 0.25, 'triangle', this.sfxGain); setTimeout(() => this._tone(250, 0.2, 'triangle', this.sfxGain), 120); },
-      scene:    () => { this._tone(440, 0.15, 'sine', this.sfxGain); setTimeout(() => this._tone(550, 0.15, 'sine', this.sfxGain), 100); },
-      ending:   () => { this._tone(523, 0.3, 'sine', this.sfxGain); setTimeout(() => this._tone(659, 0.3, 'sine', this.sfxGain), 250); setTimeout(() => this._tone(784, 0.5, 'sine', this.sfxGain), 500); },
-      ink:      () => this._tone(150, 0.3, 'sawtooth', this.sfxGain, 0.08),
-      success:  () => { this._tone(523, 0.2, 'sine', this.sfxGain); setTimeout(() => this._tone(784, 0.3, 'sine', this.sfxGain), 150); },
-      fail:     () => { this._tone(330, 0.3, 'sawtooth', this.sfxGain, 0.1); setTimeout(() => this._tone(220, 0.4, 'sawtooth', this.sfxGain, 0.1), 200); },
-      scroll:   () => this._tone(200, 0.15, 'sawtooth', this.sfxGain, 0.06),
-      channelLost: () => { this._tone(180, 0.5, 'sawtooth', this.sfxGain, 0.12); setTimeout(() => this._tone(120, 0.8, 'sawtooth', this.sfxGain, 0.08), 300); },
-      zhongyong: () => { this._tone(392, 0.2, 'sine', this.sfxGain, 0.1); setTimeout(() => this._tone(330, 0.3, 'sine', this.sfxGain, 0.08), 200); setTimeout(() => this._tone(294, 0.4, 'sine', this.sfxGain, 0.06), 400); },
-      dramatic: () => { this._tone(196, 0.4, 'sawtooth', this.sfxGain, 0.12); setTimeout(() => this._tone(261, 0.3, 'triangle', this.sfxGain, 0.1), 200); },
+      click: () => {
+        this._tone(1200, 0.04, 'sine', this.sfxGain, 0.12);
+        this._tone(1800, 0.03, 'sine', this.sfxGain, 0.06);
+      },
+      debt: () => {
+        this._tone(280, 0.3, 'triangle', this.sfxGain, 0.18);
+        setTimeout(() => this._tone(220, 0.25, 'triangle', this.sfxGain, 0.12), 150);
+        setTimeout(() => this._tone(165, 0.35, 'triangle', this.sfxGain, 0.08), 300);
+      },
+      scene: () => {
+        this._tone(392, 0.2, 'sine', this.sfxGain, 0.1);
+        setTimeout(() => this._tone(523, 0.25, 'sine', this.sfxGain, 0.08), 120);
+        this._delay(392, 0.4, 0.06);
+      },
+      ending: () => {
+        this._tone(392, 0.4, 'sine', this.sfxGain, 0.15);
+        setTimeout(() => this._tone(523, 0.4, 'sine', this.sfxGain, 0.12), 300);
+        setTimeout(() => this._tone(659, 0.5, 'sine', this.sfxGain, 0.1), 600);
+        setTimeout(() => this._tone(784, 0.8, 'sine', this.sfxGain, 0.08), 900);
+        this._delay(523, 1.2, 0.05);
+      },
+      ink: () => {
+        this._noise(0.3, 0.1);
+        this._tone(120, 0.4, 'sawtooth', this.sfxGain, 0.06);
+      },
+      success: () => {
+        this._tone(523, 0.15, 'sine', this.sfxGain, 0.12);
+        setTimeout(() => this._tone(659, 0.15, 'sine', this.sfxGain, 0.1), 100);
+        setTimeout(() => this._tone(784, 0.3, 'sine', this.sfxGain, 0.08), 200);
+      },
+      fail: () => {
+        this._tone(330, 0.35, 'sawtooth', this.sfxGain, 0.1);
+        setTimeout(() => this._tone(220, 0.5, 'sawtooth', this.sfxGain, 0.08), 200);
+        this._delay(220, 0.8, 0.04);
+      },
+      scroll: () => {
+        this._noise(0.15, 0.04);
+        this._tone(180, 0.12, 'triangle', this.sfxGain, 0.06);
+      },
+      channelLost: () => {
+        this._tone(180, 0.6, 'sawtooth', this.sfxGain, 0.1);
+        setTimeout(() => this._tone(130, 0.8, 'sawtooth', this.sfxGain, 0.07), 300);
+        this._delay(130, 1.0, 0.04);
+      },
+      zhongyong: () => {
+        this._tone(523, 0.25, 'sine', this.sfxGain, 0.08);
+        setTimeout(() => this._tone(440, 0.3, 'sine', this.sfxGain, 0.07), 200);
+        setTimeout(() => this._tone(392, 0.35, 'sine', this.sfxGain, 0.06), 400);
+        setTimeout(() => this._tone(349, 0.5, 'sine', this.sfxGain, 0.05), 600);
+        this._delay(392, 0.8, 0.04);
+      },
+      dramatic: () => {
+        this._tone(110, 0.5, 'sawtooth', this.sfxGain, 0.1);
+        this._tone(165, 0.4, 'square', this.sfxGain, 0.04);
+        setTimeout(() => this._tone(220, 0.4, 'triangle', this.sfxGain, 0.08), 250);
+        this._delay(110, 1.0, 0.05);
+      },
+      choice_hover: () => {
+        this._tone(600, 0.03, 'sine', this.sfxGain, 0.04);
+      },
+      chapter: () => {
+        this._tone(261, 0.3, 'sine', this.sfxGain, 0.08);
+        setTimeout(() => this._tone(329, 0.3, 'sine', this.sfxGain, 0.06), 200);
+        setTimeout(() => this._tone(392, 0.5, 'sine', this.sfxGain, 0.05), 400);
+        this._delay(329, 0.8, 0.03);
+      },
     };
     (sounds[type] || sounds.click)();
   }
 
-  // BGM: 不同路线不同主题
+  // --- V8: BGM — 多声部 + 和声进行 ---
   startBGM(style) {
-    if (!this.enabled || !this.ctx || this.bgmRunning) return;
+    if (!this.enabled || !this.ctx) return;
+    if (this.bgmRunning) this.stopBGM();
     this.bgmRunning = true;
-    const scales = {
-      whitehouse: [261, 277, 329, 349, 370, 349, 329, 277],   // tension: 半音阶，紧张感
-      ming:       [261, 293, 329, 392, 440, 523, 440, 392],   // chinese: 五声调式，古风
-      ambient:    [261, 293, 329, 392, 440, 392, 329, 293],
-      dramatic:   [196, 233, 261, 293, 329, 293, 261, 233],
+    this._bgmStyle = style;
+    this._bgmStep = 0;
+
+    const configs = {
+      whitehouse: {
+        // 白宫：小调式，紧张感，弦乐质感
+        melody:  [220, 247, 261, 293, 330, 311, 293, 261, 247, 220, 196, 220],
+        harmony: [110, 130, 130, 146, 165, 155, 146, 130, 130, 110,  98, 110],
+        bass:    [55,  65,  65,  73,  82,  77,  73,  65,  65,  55,  49,  55],
+        wave: 'triangle',
+        harmWave: 'sine',
+        tempo: 2200,
+        melVol: 0.06,
+        harmVol: 0.03,
+        bassVol: 0.04,
+      },
+      ming: {
+        // 大明：五声调式，古风，空灵感
+        melody:  [261, 293, 329, 392, 440, 523, 440, 392, 329, 293, 261, 220],
+        harmony: [130, 146, 165, 196, 220, 261, 220, 196, 165, 146, 130, 110],
+        bass:    [65,  73,  82,  98, 110, 130, 110,  98,  82,  73,  65,  55],
+        wave: 'sine',
+        harmWave: 'triangle',
+        tempo: 2600,
+        melVol: 0.05,
+        harmVol: 0.025,
+        bassVol: 0.035,
+      },
     };
-    const notes = scales[style] || scales.ambient;
-    let i = 0;
-    const playNote = () => {
+    const cfg = configs[style] || configs.whitehouse;
+    const len = cfg.melody.length;
+
+    const step = () => {
       if (!this.bgmRunning || !this.enabled) return;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = style === 'ming' ? 'triangle' : 'sine';
-      osc.frequency.value = notes[i % notes.length];
-      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.8);
-      osc.connect(gain);
-      gain.connect(this.bgmGain);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 2);
-      this.bgmNodes.push(osc);
-      i++;
-      this._bgmTimer = setTimeout(playNote, 1800);
+      const i = this._bgmStep % len;
+      const now = this.ctx.currentTime;
+
+      // 主旋律
+      this._bgmOsc(cfg.melody[i], cfg.wave, cfg.melVol, cfg.tempo / 1000);
+      // 和声（低八度）
+      this._bgmOsc(cfg.harmony[i], cfg.harmWave, cfg.harmVol, cfg.tempo / 1000);
+      // 低音
+      this._bgmOsc(cfg.bass[i], 'sine', cfg.bassVol, cfg.tempo / 1000 + 0.5);
+
+      this._bgmStep++;
+      this._bgmTimer = setTimeout(step, cfg.tempo);
     };
-    playNote();
+    step();
+  }
+
+  _bgmOsc(freq, type, vol, dur) {
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    const now = this.ctx.currentTime;
+    g.gain.setValueAtTime(0.001, now);
+    g.gain.linearRampToValueAtTime(vol, now + 0.1);
+    g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+    o.connect(g);
+    g.connect(this.bgmGain);
+    // 同时送一点到混响
+    g.connect(this.reverbGain);
+    o.start(now);
+    o.stop(now + dur + 0.1);
   }
 
   stopBGM() {
     this.bgmRunning = false;
     clearTimeout(this._bgmTimer);
-    this.bgmNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-    this.bgmNodes = [];
   }
 
+  // --- 底层方法 ---
   _tone(freq, dur, type, dest, vol) {
     const o = this.ctx.createOscillator();
     const g = this.ctx.createGain();
     o.type = type;
     o.frequency.value = freq;
-    g.gain.setValueAtTime(vol || 0.15, this.ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+    const now = this.ctx.currentTime;
+    g.gain.setValueAtTime(vol || 0.15, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + dur);
     o.connect(g);
     g.connect(dest || this.sfxGain);
-    o.start();
-    o.stop(this.ctx.currentTime + dur);
+    o.start(now);
+    o.stop(now + dur + 0.01);
+  }
+
+  _delay(freq, dur, vol) {
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = 'sine';
+    o.frequency.value = freq;
+    const now = this.ctx.currentTime;
+    g.gain.setValueAtTime(0.001, now);
+    g.gain.linearRampToValueAtTime(vol || 0.03, now + 0.3);
+    g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+    o.connect(g);
+    g.connect(this.reverbGain);
+    o.start(now);
+    o.stop(now + dur + 0.01);
+  }
+
+  _noise(dur, vol) {
+    const bufSize = this.ctx.sampleRate * dur;
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+    const g = this.ctx.createGain();
+    const filt = this.ctx.createBiquadFilter();
+    filt.type = 'lowpass';
+    filt.frequency.value = 2000;
+    g.gain.setValueAtTime(vol || 0.05, this.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+    src.connect(filt);
+    filt.connect(g);
+    g.connect(this.sfxGain);
+    src.start();
   }
 }
 
