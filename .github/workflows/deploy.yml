@@ -18,3 +18,15 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
           force_orphan: true
+          exclude_files: |
+            TrendRadar/**
+            mirofish-*/
+            .github/**
+            .learnings/**
+            .playwright-mcp/**
+            .claude/**
+            *.png
+            *.zip
+            narrative-core.js
+            analysis-demo.html
+            demo.html
