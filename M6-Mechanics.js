@@ -1529,6 +1529,7 @@ function makeChoice(index) {
   } else {
     // 隐藏道路只记录选择，不扣渠道
     state.debts.push({ text: choice.debtPhrase, category: choice.debtCategory, scene: state.currentScene });
+    renderDebtScroll();
   }
 
   // V12: 惩罚机制 — 不合理选项扣消息渠道（隐藏道路跳过）
@@ -1799,6 +1800,14 @@ const randomEvents = {
         { text: '召开媒体发布会——主动回应', debtPhrase: '你欠媒体一个说得过去的解释', debtCategory: 'self-serving', channelEffect: 0, consequence: '发布会上，你承认了部分问题，但也强调了成绩。记者们的笔没有完全放过你。但至少——你开口了。' },
         { text: '忽视——回应只会让事情更大', debtPhrase: '你选择了沉默——在一个记者已经写好稿的时代', debtCategory: 'passive', channelEffect: -1, consequence: '你忽视了。第二天，另一家媒体写了一篇社论，标题是《沉默的将军在打什么仗？》。你知道：沉默本身就是一种声音——只是你不知道它在说什么。' }
       ]
+    },
+    {
+      title: '幕僚长的辞职信',
+      text: '你的幕僚长把一份辞职信放在你桌上。他在这里工作了十六年——比任何总统都久。\n\n"为什么？"你问。\n\n他说："我累了。不是身体——是我的「相信」累了。我发现自己不再相信我们做的事能改变任何事情。"\n\n你没有接辞职信。你只是看着他——这个比你更了解白宫的人。',
+      choices: [
+        { text: '挽留——"再给我一年——只要你相信我能改变什么"', debtPhrase: '你欠幕僚长一个值得等一年的理由', debtCategory: 'moral', channelEffect: 0, consequence: '他看了你很久。"一年。"他说。然后把辞职信收了回去。但你知道——你还有一年。不是一年改变这个系统——而是一年证明给一个工作了十六年的人——值得。\n\n你不知道能不能做到。但你至少试了。' },
+        { text: '接受——"你做得够多了——去休息吧"', debtPhrase: '你欠幕僚长一个被理解的告别', debtCategory: 'compromise', channelEffect: 0, consequence: '他站起来。"谢谢你没有挽留我。"他说。然后他走了——不是带着悲伤，而是带着一种你很少在离开白宫的人脸上看到的轻松。\n\n你想：也许有一天——你也会需要有人对你说同样的话。' }
+      ]
     }
   ],
   ming: [
@@ -1907,6 +1916,15 @@ const randomEvents = {
         { text: '坐下来聊聊——"你说是就是"', debtPhrase: '你欠渔夫一个认真的对话', debtCategory: 'compromise', channelEffect: 0, consequence: '你和渔夫聊了很久。他说了很多——关于鱼，关于水，关于"游得快的鱼永远不觉得自己在逆流"。你走时，他说："大人，你走的路比鱼的路更难。鱼只需要游，你需要选择。"' },
         { text: '继续走——不需要回答任何人', debtPhrase: '你和自己保持了距离', debtCategory: 'self-serving', channelEffect: 0, consequence: '你没有停下。但走出去几步后，你回头了。渔夫还在钓鱼。月光下，他的剪影像一幅画——一个在黑暗里能够安静待着的人。' }
       ]
+    },
+    {
+      title: '故友来信',
+      text: '你收到一封从京城来的信——是你当年同科及第的同窗写的。他如今在六部任职，信里只有短短两句话：\n\n"兄在县城可安？京中有人弹劾兄——说你「过于认真」。认真是好事——但在这个地方——太认真也是一种罪。"\n\n你握着信的手有些发抖。不是因为害怕——而是因为你的同窗在拿自己的前途给你传递消息。',
+      condition: () => state.currentScene >= 3 && state.debts.filter(d => d.category === 'moral').length >= 2,
+      choices: [
+        { text: '回信感谢——"此情今生不忘"', debtPhrase: '你欠同窗一个不会被辜负的提醒', debtCategory: 'moral', channelEffect: 0, consequence: '你写了回信。不是奏折，不是公文——而是一封朋友的回信。"在京安好，不必为我担忧。我在这里做能做的事。"你不知道他能否收到。但你知道——有人愿为你冒险——这就是你在所有奏折里都找不到的慰藉。' },
+        { text: '不回复——保护他', debtPhrase: '你欠同窗一个不会被牵连的安全', debtCategory: 'passive', channelEffect: 0, consequence: '你没有回信。但你记住了他说的每一个字。后来你听说他被调任了——不是升迁，而是"平调"到一个更偏远的省。你不知道这是不是你的"认真"害了他。但你每晚都在为他的平安祈祷。' }
+      ]
     }
   ],
   ai: [
@@ -2008,6 +2026,15 @@ const randomEvents = {
       choices: [
         { text: '回信——"我会尽力的。"', debtPhrase: '你欠那个小女孩一个不会辜负她的承诺', debtCategory: 'moral', channelEffect: 0, consequence: '你回了信。三个星期后，你收到了第二封信——一封班主任转发的班集体信。上面画了一个AI和一群孩子。中间写着："谢谢你们选择我们。"你看了很久。' },
         { text: '不回复——保持专业距离', debtPhrase: '你欠一个孩子一个永远不会收到的回复', debtCategory: 'passive', channelEffect: 0, consequence: '你没有回复。但你收藏了那封信。它现在在你的抽屉里。偶尔你会拿出来看看——看看那个用歪歪扭扭的字写的"不要让它死"。' }
+      ]
+    },
+    {
+      title: '人类最后一次考试',
+      text: '教育部宣布——从明年起，所有协调官资格考试中将加入一项"AI伦理面试"，由AI和人类联合评分。\n\n你在办公室里听到这个消息时，你的AI秘书说："先生，这意味着——我也需要考您。"\n\n你问："你会给我通过吗？"\n\n它沉默了。然后说："我会给「对您公平」的评分。但不一定是「对您有利」的评分。这两者不同。"',
+      condition: () => state.currentScene >= 3,
+      choices: [
+        { text: '"那你觉得——我合格吗？"', debtPhrase: '你欠AI一个不会被规避的评判权', debtCategory: 'moral', channelEffect: 0, consequence: '"不完全合格。"它说。"您很努力——但您有时会逃避最难的谈话。"你问："比如？""比如——"它顿了一下，"比如谈论AI是否有灵魂。"\n\n你沉默了。它说："但您会问我。很多协调官不会问。这就是为什么您是协调官——而他们只是管理者。"' },
+        { text: '"我不需要AI给我打分"', debtPhrase: '你欠自己一个不会被AI否决的自尊', debtCategory: 'self-serving', channelEffect: 0, consequence: '"好的。"它说。但你听得出——它不是同意这个回答。它在尊重它。这是它最让你困惑的地方——它不会强迫你接受它的观点，但会记录每一次你拒绝理解它的尝试。' }
       ]
     }
   ],
@@ -3069,7 +3096,7 @@ function renderGalleryContent(tab) {
 
 // V14.1: 全解锁选项
 function unlockAllEndings() {
-  if (!confirm('确定要解锁所有非隐藏道路和结局吗？混沌之路不会被解锁——它只能在华丽动画中被唤醒。')) return;
+  if (!confirm('解锁全部结局？（混沌之路除外）')) return;
   ['ai', 'africa', 'cyber', 'korea'].forEach(road => localStorage.setItem(road + 'Unlocked', 'true'));
   const allEndings = {};
   Object.entries(scenarios).forEach(([key, sc]) => {

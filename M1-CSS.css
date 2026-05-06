@@ -298,7 +298,12 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 .game-mobile-debt .debt-scroll-mobile{max-height:200px;overflow-y:auto;}
 @media(max-width:768px){
   .choice-cards{flex-direction:column;align-items:center;}.choice-card{width:100%;max-width:360px;}
-  .game-header{padding:0.8rem 1rem;}.scene-container{padding:4rem 1rem 3rem;}
+  .game-header{padding:0.6rem 0.8rem;flex-wrap:wrap;gap:0.3rem;}
+  .game-header .scenario-label{font-size:0.6rem;letter-spacing:0.15em;}
+  .game-header .level-indicator{font-size:0.65rem;}
+  .game-header .audio-btn{position:static;padding:0.3rem 0.5rem;font-size:0.65rem;order:2;}
+  .game-header .back-btn{position:static;padding:0.3rem 0.6rem;font-size:0.65rem;order:3;}
+  .scene-container{padding:4rem 1rem 3rem;}
   .echo-card{width:100%;padding:2rem 1.5rem;}
   .gallery-grid{grid-template-columns:1fr;gap:0.8rem;}
   .gallery-card{padding:1rem 0.8rem;}
@@ -316,6 +321,9 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
   .gallery-header p{font-size:0.78rem;}
   .gallery-progress-bar{max-width:280px;}
   #gallery-screen{padding:2rem 1rem;}
+  .channels-bar{padding:0.4rem 0.8rem;top:auto;margin-top:0.3rem;}
+  .channels-bar .ch-label{font-size:0.55rem;}
+  .channels-bar .ch-status{font-size:0.6rem;}
 }
 
 /* ====== V7: 涟漪效果 ====== */
