@@ -142,24 +142,40 @@
 <script src="M3-Engine.js"></script>
 <script src="M6-Mechanics.js"></script>
 <script>
-// V14.2: 页面加载时检查隐藏道路解锁状态
+// V14.3: 隐藏道路解锁状态 — 未解锁时显示锁定占位卡
 (function() {
-  const hidden = ['africa','cyber','korea'];
-  hidden.forEach(road => {
+  const lockInfo = {
+    ai: { hint: '🔒 通关「白宫」或「大明」后解锁', fullText: '共生时代 · 2036年。解锁后：在人类与AI之间搭建信任的桥梁。' },
+    africa: { hint: '🔒 在白宫道路做出「非我族类」的选择', fullText: '非洲之心 · 异星大地。解锁后：成为人类与兽群的双语使者。' },
+    cyber: { hint: '🔒 在AI道路见证一次「觉醒」事件', fullText: '3077 · 赛博贫民窟。解锁后：在机器的世界里守住人性。' },
+    korea: { hint: '🔒 在大明道路经历「同窗来访」', fullText: '日常投影 · 首尔。解锁后：在咖啡店的日常里，过自己的人生。' },
+  };
+  Object.entries(lockInfo).forEach(([road, info]) => {
+    const card = document.getElementById(road + 'Card');
+    if (!card) return;
     if (localStorage.getItem(road + 'Unlocked')) {
-      const card = document.getElementById(road + 'Card');
-      if (card) card.style.display = '';
+      card.style.display = '';
+      const lockEl = card.querySelector('.card-lock');
+      if (lockEl) lockEl.remove();
+    } else if (road === 'ai' && Math.random() < 0.3) {
+      card.style.display = '';
+      localStorage.setItem('aiUnlocked', 'true');
+      const lockEl = card.querySelector('.card-lock');
+      if (lockEl) lockEl.remove();
+    } else {
+      // 显示锁定占位卡
+      card.style.display = '';
+      card.classList.add('locked-road');
+      card.setAttribute('onclick', '');
+      card.style.cursor = 'default';
+      const p = card.querySelector('p');
+      if (p) p.innerHTML = info.fullText;
+      // 移除点击事件，添加锁定标识
+      const era = card.querySelector('.card-era');
+      if (era) era.textContent = info.hint;
     }
   });
-  // AI道路——已解锁或30%概率直接出现
-  const aiCard = document.getElementById('aiCard');
-  if (aiCard) {
-    if (localStorage.getItem('aiUnlocked') || Math.random() < 0.3) {
-      aiCard.style.display = '';
-      if (!localStorage.getItem('aiUnlocked')) localStorage.setItem('aiUnlocked', 'true');
-    }
-  }
-  // 混沌道路——通过全解锁动画后显示
+  // 混沌道路
   const chaosEntry = document.getElementById('chaosEntry');
   if (chaosEntry && localStorage.getItem('chaosUnlocked')) {
     chaosEntry.style.display = '';
