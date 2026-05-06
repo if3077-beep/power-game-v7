@@ -593,7 +593,7 @@ body.theme-ming .ending-analysis{font-family:'LXGW WenKai','Noto Serif SC',serif
 body.theme-ming .echo-card{border-color:rgba(139,69,19,0.15);background:linear-gradient(135deg,rgba(10,10,10,0.95),rgba(139,69,19,0.03));}
 
 /* AI共生：赛博风格 — 青蓝主调，未来氛围 */
-body.theme-ai{--accent-w:#4ecdc4;--accent-m:#2c3e50;--success:#4ecdc4;--purple:#7b68ee;}
+body.theme-ai{--accent-w:#4a90d9;--accent-m:#1a3a5c;--success:#4a90d9;--purple:#5b7ec2;}
 body.theme-ai #particles{opacity:0.8;}
 body.theme-ai .ambient-glow{background:radial-gradient(ellipse at 50% 50%,rgba(78,205,196,0.06),transparent 60%);}
 body.theme-ai .scene-chapter{color:#4ecdc4;}

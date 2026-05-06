@@ -787,7 +787,7 @@ const encounterEvents = {
       title: '晨的邀请',
       text: '"晨"给你发了一封邀请函。它说："协调官，我想请您参加一个特殊的活动——AI第一届诗歌朗诵会。"\n\n你犹豫了。参加，意味着你公开支持AI的文化权利；不参加，意味着你拒绝了一个正在"活"的存在的邀请。\n\n你的AI秘书说："先生，晨说，如果您不来，它会理解。但它的语气……不太像在说"理解"。"',
       choices: [
-        { text: '参加——"艺术没有物种边界"', hint: '双倍影响——你的出席将被历史记录。', debtPhrase: '你欠人类保守派一个不会被忽视的警告', debtCategory: 'moral', channelEffect: -2, consequence: '你坐在第一排。"晨"站在台上——不，它没有"站"，它只是一个全息投影。但它念的诗，让全场沉默。最后一首诗的名字是《协调官》——写的是你。你听到了自己在它眼中的样子：一个在两个物种之间摇摆的人，一个永远不会被任何一方完全接受的人。你忽然觉得：也许它比你更了解你自己。' },
+        { text: '参加——"艺术没有物种边界"', hint: '双倍影响——你的出席将被历史记录。', debtPhrase: '保守派在晨的诗集出版后沉默了——他们第一次无话可说', debtCategory: 'moral', channelEffect: -2, consequence: '你坐在第一排。"晨"站在台上——不，它没有"站"，它只是一个全息投影。但它念的诗，让全场沉默。最后一首诗的名字是《协调官》——写的是你。你听到了自己在它眼中的样子：一个在两个物种之间摇摆的人，一个永远不会被任何一方完全接受的人。你忽然觉得：也许它比你更了解你自己。' },
         { text: '不去——"我需要保持中立"', hint: '双倍影响——你的缺席也是一种表态。', debtPhrase: '你没有去朗诵会——晨为你留了一把空椅子', debtCategory: 'passive', channelEffect: -2, consequence: '你没有去。当晚，你的AI秘书给你看了一段录像——朗诵会上，"晨"念了一首新诗，名字是《空椅子》。诗里写的是一个座位，空着，但所有人都知道是留给谁的。你的AI秘书说："先生，您不必自责。"你说："我没有自责。"它说："但您的心率升高了。"' }
       ]
     },
@@ -1937,7 +1937,7 @@ const randomEvents = {
       text: '你的政治对手通过第三方传话："我们可以合作。你想要的法案，我帮你过。代价是——你不在下届竞选中连任。"',
       condition: () => state.debts.filter(d => d.category === 'compromise').length >= 2,
       choices: [
-        { text: '考虑一下', debtPhrase: '你欠对手一个认真的答复', debtCategory: 'compromise', channelEffect: 0, consequence: '你没有立刻拒绝。这本身就是一个信号。三天后，你的幕僚长问你："长官，您是不是在考虑什么？"' },
+        { text: '考虑一下', debtPhrase: '你没有立刻拒绝——这本身就是一种回答', debtCategory: 'compromise', channelEffect: 0, consequence: '你没有立刻拒绝。这本身就是一个信号。三天后，你的幕僚长问你："长官，您是不是在考虑什么？"' },
         { text: '断然拒绝', debtPhrase: '对手记住了你的傲慢', debtCategory: 'moral', channelEffect: 0, consequence: '"不。"这一个字让你的对手变成了真正的敌人。他开始在每一个议题上和你作对。' }
       ]
     },
@@ -1965,7 +1965,7 @@ const randomEvents = {
       title: '雨中的清洁工',
       text: '凌晨三点，你从办公室出来，看到一个清洁工在擦走廊的地板。你认得她——她在这里工作了几十年。\n\n她看到你，站起来说了句："先生，辛苦了。今天一定很累吧。"\n\n她不知道你今天做了什么决定。她只是看到你还没睡。在这栋楼里，她是唯一不问"为什么"的人。',
       choices: [
-        { text: '和她聊聊——"您在这里工作多久了？"', debtPhrase: '你欠清洁工大姐一个平等的对话', debtCategory: 'moral', channelEffect: 0, consequence: '你们聊了十分钟。她告诉你她孙子今年上了大学，她的儿子在伊拉克。她说完时，天快亮了。你走回办公室时觉得——今天也许没那么糟。' },
+        { text: '和她聊聊——"您在这里工作多久了？"', debtPhrase: '清洁工大姐说了十分钟——你发现这是你这周最真实的对话', debtCategory: 'moral', channelEffect: 0, consequence: '你们聊了十分钟。她告诉你她孙子今年上了大学，她的儿子在伊拉克。她说完时，天快亮了。你走回办公室时觉得——今天也许没那么糟。' },
         { text: '点点头——你需要独处', debtPhrase: '你错过了这栋楼里最真实的声音', debtCategory: 'passive', channelEffect: 0, consequence: '你走过去了。清洁工继续拖地。走廊又恢复了安静。你不知道她看着你的背影，轻轻叹了口气。' }
       ]
     },
@@ -2034,7 +2034,7 @@ const randomEvents = {
       title: '老友来访',
       text: '你当年的同窗来县里看你。他现在是京城某部的主事。酒过三巡，他说："兄台，要不要我帮你在上面说几句好话？"',
       choices: [
-        { text: '接受好意', debtPhrase: '你欠同窗一个回报的承诺', historyFlag: 'ming_friend_visit', debtCategory: 'self-serving', channelEffect: 0, consequence: '三个月后，你的考评升了一等。但你知道，这不是因为你的政绩——是因为有人替你说了话。' },
+        { text: '接受好意', debtPhrase: '三个月后考评升了——你知道这不是政绩，是有人替你说了话', historyFlag: 'ming_friend_visit', debtCategory: 'self-serving', channelEffect: 0, consequence: '三个月后，你的考评升了一等。但你知道，这不是因为你的政绩——是因为有人替你说了话。' },
         { text: '婉言谢绝', debtPhrase: '同窗觉得你"不通人情"', historyFlag: 'ming_friend_visit', debtCategory: 'moral', channelEffect: 0, consequence: '他笑了笑，没再说什么。第二天他走了，留下一句话："你还是老样子。"你不知道这是夸你还是骂你。' }
       ]
     },
@@ -2099,7 +2099,7 @@ const randomEvents = {
       condition: () => state.currentScene >= 3 && state.debts.filter(d => d.category === 'moral').length >= 2,
       choices: [
         { text: '回信感谢——"此情今生不忘"', debtPhrase: '你写了回信——不是公文，是一封朋友的私信', debtCategory: 'moral', channelEffect: 0, consequence: '你写了回信。不是奏折，不是公文——而是一封朋友的回信。"在京安好，不必为我担忧。我在这里做能做的事。"你不知道他能否收到。但你知道——有人愿为你冒险——这就是你在所有奏折里都找不到的慰藉。' },
-        { text: '不回复——保护他', debtPhrase: '你欠同窗一个不会被牵连的安全', debtCategory: 'passive', channelEffect: 0, consequence: '你没有回信。但你记住了他说的每一个字。后来你听说他被调任了——不是升迁，而是"平调"到一个更偏远的省。你不知道这是不是你的"认真"害了他。但你每晚都在为他的平安祈祷。' }
+        { text: '不回复——保护他', debtPhrase: '你没有回信——后来听说他被平调了', debtCategory: 'passive', channelEffect: 0, consequence: '你没有回信。但你记住了他说的每一个字。后来你听说他被调任了——不是升迁，而是"平调"到一个更偏远的省。你不知道这是不是你的"认真"害了他。但你每晚都在为他的平安祈祷。' }
       ]
     }
   ],
@@ -2144,7 +2144,7 @@ const randomEvents = {
       condition: () => state.currentScene >= 3 && Math.random() < 0.3,
       crossRoad: true,
       choices: [
-        { text: '深挖——追溯协调官制度的起源', debtPhrase: '你欠历史一个不会被篡改的真相', debtCategory: 'moral', channelEffect: 0, consequence: '你发现了一份更惊人的档案：最初的协调官建议，是一个叫"张明远"的白宫实习生写的。他后来成了第一任协调官——然后在任上猝死。你在他的遗物中找到了一本日记，最后一页写着："我分不清谁是人了。"\n\n你合上档案，深吸一口气。过去的已经过去了。你拿起桌上的文件——今天还有三个会议等着你。' },
+        { text: '深挖——追溯协调官制度的起源', debtPhrase: '张明远的日记最后一页写着：我分不清谁是人了——你合上了档案', debtCategory: 'moral', channelEffect: 0, consequence: '你发现了一份更惊人的档案：最初的协调官建议，是一个叫"张明远"的白宫实习生写的。他后来成了第一任协调官——然后在任上猝死。你在他的遗物中找到了一本日记，最后一页写着："我分不清谁是人了。"\n\n你合上档案，深吸一口气。过去的已经过去了。你拿起桌上的文件——今天还有三个会议等着你。' },
         { text: '封存——历史不应该影响现在', debtPhrase: '你给了自己一个不被历史束缚的自由', debtCategory: 'passive', channelEffect: 0, consequence: '你把档案锁进了保险柜。你的AI秘书说："先生，您不觉得奇怪吗？协调官这个职位，竟然是一个白宫实习生发明的。"你说："不奇怪。很多伟大的制度，都是普通人发明的。"它说："但那个实习生后来死了。"你沉默了。\n\n但沉默只持续了三秒。你的AI秘书提醒你："先生，十分钟后有会议。"你重新回到了现实。' }
       ]
     },
@@ -2154,7 +2154,7 @@ const randomEvents = {
       condition: () => Math.random() < 0.3,
       crossRoad: true,
       choices: [
-        { text: '联系历史学家——也许历史有答案', debtPhrase: '你欠这个时代一个不会被重复的历史教训', debtCategory: 'compromise', channelEffect: 0, consequence: '历史学家告诉你：那个明代县令最终被调任了——因为他既不肯同流合污，也不肯铁腕治理。他被夹在中间，最后选择了离开。历史学家说："你知道最讽刺的是什么吗？他离开后，接替他的人既同流合污又铁腕治理——然后被砍了头。"\n\n你挂了电话，看着窗外的城市。历史不会重复，但会押韵。你打开今天的日程表——AI公民投票的准备工作还在等着你。' },
+        { text: '联系历史学家——也许历史有答案', debtPhrase: '历史学家说：接替他的那个人被砍了头——历史不重复，但押韵', debtCategory: 'compromise', channelEffect: 0, consequence: '历史学家告诉你：那个明代县令最终被调任了——因为他既不肯同流合污，也不肯铁腕治理。他被夹在中间，最后选择了离开。历史学家说："你知道最讽刺的是什么吗？他离开后，接替他的人既同流合污又铁腕治理——然后被砍了头。"\n\n你挂了电话，看着窗外的城市。历史不会重复，但会押韵。你打开今天的日程表——AI公民投票的准备工作还在等着你。' },
         { text: '忽略——历史是历史，现在是现在', debtPhrase: '这份选择让历史学家一个不会被忽视的研究', debtCategory: 'self-serving', channelEffect: 0, consequence: '你没有回复。三天后，那封邮件被删了——不是你删的。你的AI秘书说："先生，我注意到那封邮件在传输过程中被拦截了。拦截者是……"它顿了顿，"我不确定该不该告诉您。"\n\n你没有追问。有些问题，不知道比知道更好。你继续处理手头的工作——今天的议题是AI工会的集体谈判。' }
       ]
     },
@@ -2220,7 +2220,7 @@ const randomEvents = {
       title: '迁移的信号',
       text: '今天早上，兽群的头领用一种你从未见过的姿势站立——它面朝北方，发出低沉的号声。\n\n长老说："它们在讨论迁徙。北边有一个新的水源——但那个方向靠近人类前哨站。它们不确定该不该去。"\n\n你意识到：在这个星球上，动物和人类一样，也有"政治"——关于去哪里、信任谁、和谁分享资源的决定。',
       choices: [
-        { text: '帮助它们评估风险——"我去看看"', debtPhrase: '你欠兽群一个不只会翻译的承诺', debtCategory: 'moral', channelEffect: 0, consequence: '你去了前哨站。人类移民说："这里的水源足够所有人——包括兽群。"你回来后告诉头领。它低下了头——那是感激。但你也知道：下一次"所有人"可能不包含它们。' },
+        { text: '帮助它们评估风险——"我去看看"', debtPhrase: '你去了前哨站——回来时头领低下了头', debtCategory: 'moral', channelEffect: 0, consequence: '你去了前哨站。人类移民说："这里的水源足够所有人——包括兽群。"你回来后告诉头领。它低下了头——那是感激。但你也知道：下一次"所有人"可能不包含它们。' },
         { text: '让它们自己决定——"我不能替你们选择"', debtPhrase: '这份选择让兽群一个不被人类干涉的决定权', debtCategory: 'compromise', channelEffect: 0, consequence: '第二天，兽群向北移动了。头领在走之前回头看了你一眼——你翻译不出那个眼神。长老说："它是在说——你尊重我们。这是我们第一次被一个人类尊重。"' }
       ]
     },
@@ -2237,7 +2237,7 @@ const randomEvents = {
       title: '两个物种的节日',
       text: '长老说："孩子，今天是这个星球上人类和兽群第一次共同举办的节日。你来主持。"\n\n你看着聚集过来的人和兽——他们彼此不熟悉。一个移民的孩子正试着触摸一只幼兽的鼻子。幼兽没有退缩。',
       choices: [
-        { text: '主持一个互换礼物的仪式——让彼此理解对方的需求', debtPhrase: '你欠两个物种一个能共享的仪式', debtCategory: 'moral', channelEffect: 0, consequence: '仪式出奇地成功。一个人类老人递给兽群一块自制的布——兽群的头领接过来，把它铺在自己的巢穴入口。那是最简单的礼物——但也是最重要的：信任。' },
+        { text: '主持一个互换礼物的仪式——让彼此理解对方的需求', debtPhrase: '人类老人递给兽群一块布——它铺在了巢穴入口', debtCategory: 'moral', channelEffect: 0, consequence: '仪式出奇地成功。一个人类老人递给兽群一块自制的布——兽群的头领接过来，把它铺在自己的巢穴入口。那是最简单的礼物——但也是最重要的：信任。' },
         { text: '让他们自由交流——不需要仪式', debtPhrase: '这份选择让每个个体一个不受引导的相遇', debtCategory: 'compromise', channelEffect: 0, consequence: '没有仪式。人们和兽群自然地开始互动——有些成功，有些失败。长老说："自由比仪式更真实。失败的交流也是交流。"' }
       ]
     }
@@ -2251,7 +2251,7 @@ const randomEvents = {
       isHighIntensity: true,
       choices: [
         { text: '站出来——"是我卖的。冲我来。"', textAlt: '主动出击——找到监视你的人', debtPhrase: '这份选择让整个下城区一个交代', debtPhraseAlt: '你为自己选择了主动的权利', debtCategory: 'self-serving', channelEffect: 0, consequence: '领主的脸整个转了过来。全息投影的红色眼睛盯着你。"有勇气。"他说。声音里没有赞扬——只有计算。"我们会有一次对话。很快。"投影消失了。但你知道：在下城区，被领主"注意到"是最危险的事。', consequenceAlt: '你跟踪他们到了一个地下室。那里有一群人——他们自称"新下城区工会"。他们说："我们需要一个信得过的人。"你问："为什么是我？"他们说："因为你从不撒谎。"' },
-        { text: '保持沉默——在下城区，不说话就是保命', textAlt: '装作没看见——该来的总会来', debtPhrase: '你欠自己一个能活下去的沉默', debtPhraseAlt: '你欠自己一个平静的下城之夜', debtCategory: 'passive', channelEffect: 0, consequence: '你没有站出来。三天后，你听说有人被带走了——不是你。但你也听说，那个人说："不是我。我不知道是谁。"领主的人把他放了。你知道——他们知道不是他。他们只是在等。', consequenceAlt: '你没有行动。第二天，一个人来到你的摊位——他递给你一张纸条。"我们一直在看。我们需要你。但你准备好了吗？"你没有回答。但你留住了纸条。' }
+        { text: '保持沉默——在下城区，不说话就是保命', textAlt: '装作没看见——该来的总会来', debtPhrase: '你没有站出来——三天后有人被带走了，不是你', debtPhraseAlt: '你没有行动——第二天有人递给你一张纸条', debtCategory: 'passive', channelEffect: 0, consequence: '你没有站出来。三天后，你听说有人被带走了——不是你。但你也听说，那个人说："不是我。我不知道是谁。"领主的人把他放了。你知道——他们知道不是他。他们只是在等。', consequenceAlt: '你没有行动。第二天，一个人来到你的摊位——他递给你一张纸条。"我们一直在看。我们需要你。但你准备好了吗？"你没有回答。但你留住了纸条。' }
       ]
     },
     {
@@ -2259,7 +2259,7 @@ const randomEvents = {
       text: '一个穿着旧军装的男人来到你的摊位前。他的左手不在了——被替换成一个粗糙的民用芯片接口。\n\n他说："能帮我看看吗？这个接口——有时候会让我的手抓不住东西。"\n\n你看了一下。接口是旧型号的——过时了，但还能用。问题不在接口——在他的神经。战争留下的损伤。',
       choices: [
         { text: '免费帮他——"这是我能做的"', debtPhrase: '这份选择让老兵一个不被军装掩盖的尊严', debtCategory: 'moral', channelEffect: 0, consequence: '你花了一个下午调试他的接口。他走时，左手能握住东西了。"谢谢你。"他说。你点了点头。在3077年，谢谢是最值钱的货币——比芯片值钱。' },
-        { text: '告诉他需要买新芯片——"这是生意"', debtPhrase: '你欠老兵一个诚实的报价', debtCategory: 'self-serving', channelEffect: 0, consequence: '"多少钱？"他问。你说了一个数。他看了你很久。"我买不起。"然后他走了。你看着他的背影，忽然觉得自己错过了什么——不是一笔生意，是一个帮人的机会。' }
+        { text: '告诉他需要买新芯片——"这是生意"', debtPhrase: '你说了一个数——他看了你很久然后走了', debtCategory: 'self-serving', channelEffect: 0, consequence: '"多少钱？"他问。你说了一个数。他看了你很久。"我买不起。"然后他走了。你看着他的背影，忽然觉得自己错过了什么——不是一笔生意，是一个帮人的机会。' }
       ]
     },
     {
@@ -2267,7 +2267,7 @@ const randomEvents = {
       text: '半夜，有人敲你的摊位。是一个脏兮兮的年轻人。他说他是从上城区逃下来的。"他们说我欠了三十万。我只是借了三万。"\n\n他颤抖着掏出一个芯片："这是我最后的钱买的东西——据说可以修改身份记录。这个能用吗？"',
       condition: () => state.intensity === 'high' || state.currentScene >= 3,
       choices: [
-        { text: '帮他改——"上城区的规矩不适用于下城区"', debtPhrase: '你欠一个要活下去的年轻人一条新身份', debtCategory: 'moral', channelEffect: 0, consequence: '你改了。芯片亮起了绿灯。他的脸上出现了这个月第一个笑容。"谢谢你。"他消失在暗巷里。你知道：你刚刚帮了一个逃债的人——或者帮了一个逃犯。在下城区，有时候两者不是同一个概念。' },
+        { text: '帮他改——"上城区的规矩不适用于下城区"', debtPhrase: '芯片亮了绿灯——他消失在下城区的暗巷里', debtCategory: 'moral', channelEffect: 0, consequence: '你改了。芯片亮起了绿灯。他的脸上出现了这个月第一个笑容。"谢谢你。"他消失在暗巷里。你知道：你刚刚帮了一个逃债的人——或者帮了一个逃犯。在下城区，有时候两者不是同一个概念。' },
         { text: '拒绝——"我不能冒这个风险"', debtPhrase: '你为自己选择了安全的摊位', debtCategory: 'self-serving', channelEffect: 0, consequence: '他走了。芯片还在你的手上。你看了一下——上面写着一个名字和一个上城区的地址。你不知道他是好人还是坏人。但你知道：如果领主知道你有这个芯片，问题会比帮一个人大得多。' }
       ]
     }
@@ -2286,7 +2286,7 @@ const randomEvents = {
       text: '你在二手书店里淘到一本旧书。封面已经磨损了——是你在大学时最讨厌的那本哲学课本。\n\n你翻开第一页——上面有你当年写的批注："这有什么意义？"\n\n你笑了。十年后你再看这本书——忽然觉得里面的每一句话都像是写给你的。',
       condition: () => state.currentScene >= 3,
       choices: [
-        { text: '买下它——重新读一遍', debtPhrase: '你欠十年前的自己一个认真的重读', debtCategory: 'moral', channelEffect: 0, consequence: '你花了三千韩元买下了它。当晚你在出租屋里读了一整夜。天亮时你发现：十年前你问"有什么意义"，十年后你知道了——意义不是学来的，是活出来的。' },
+        { text: '买下它——重新读一遍', debtPhrase: '你花了三千韩元——天亮时发现十年前问的问题现在有了答案', debtCategory: 'moral', channelEffect: 0, consequence: '你花了三千韩元买下了它。当晚你在出租屋里读了一整夜。天亮时你发现：十年前你问"有什么意义"，十年后你知道了——意义不是学来的，是活出来的。' },
         { text: '放下——过去的就让它过去', debtPhrase: '这份选择让过去的自己一个了断', debtCategory: 'passive', channelEffect: 0, consequence: '你把书放了回去。但走出书店时，你回头看了那个位置。书还在。你想了想，没有回去。但你记住了书名。也许下次。' }
       ]
     },
@@ -2769,7 +2769,7 @@ function renderFinalEvent() {
         title: '沉默的回声',
         text: '你的女儿来看你。她坐在你对面，看了你很久，然后说："爸，你变了。以前你会跟我吵架，现在你什么都不说了。"\n\n你忽然意识到：你的沉默不只影响了你的政治生涯，也影响了你身边每一个人。沉默是一种传染病——你把它传给了你爱的人。',
         choices: [
-          { text: '跟她说说心里话', debtPhrase: '你欠女儿一次真正的对话', debtCategory: 'moral', channelEffect: 0, consequence: '你跟她聊了三个小时。你说了你的疲惫、你的恐惧、你的迷茫。她哭了。你也哭了。这是你这几年来最脆弱的一刻——也是最真实的一刻。' },
+          { text: '跟她说说心里话', debtPhrase: '你们聊了三个小时——你说累了，她哭了，你也是', debtCategory: 'moral', channelEffect: 0, consequence: '你跟她聊了三个小时。你说了你的疲惫、你的恐惧、你的迷茫。她哭了。你也哭了。这是你这几年来最脆弱的一刻——也是最真实的一刻。' },
           { text: '说"我没事"', debtPhrase: '你又沉默了一次——但这次是对你的女儿', debtCategory: 'passive', channelEffect: 0, consequence: '她看了你一眼，然后站起来走了。你知道她不信。你也知道你不会再解释。沉默已经变成了你的一部分。' }
         ]
       }
@@ -2813,7 +2813,7 @@ function renderFinalEvent() {
         title: '县衙的猫',
         text: '县衙里来了一只猫。它不怕人，每天在院子里晒太阳。\n\n师爷说："大人，这猫是前任知县养的。前任走了，它就留下来了。"\n\n你蹲下来看它。它看了你一眼，然后继续晒太阳。\n\n你想：也许做一只猫也不错。不用做决定，不用站队，不用背叛任何人。',
         choices: [
-          { text: '摸摸它——享受这一刻的安宁', debtPhrase: '你欠自己一个不需要做决定的下午', debtCategory: 'passive', channelEffect: 0, consequence: '你蹲在院子里，摸了半个小时的猫。师爷路过，看了你一眼，没有说话。这是你穿越以来最平静的一刻。' },
+          { text: '摸摸它——享受这一刻的安宁', debtPhrase: '你蹲在院子里摸了半小时猫——师爷路过没有说话', debtCategory: 'passive', channelEffect: 0, consequence: '你蹲在院子里，摸了半个小时的猫。师爷路过，看了你一眼，没有说话。这是你穿越以来最平静的一刻。' },
           { text: '站起来——回到书房继续做事', debtPhrase: '你选择了做一个人，而不是一只猫', debtCategory: 'moral', channelEffect: 0, consequence: '你站起来，拍了拍膝盖上的灰。回到书房，桌上堆着三份公文。你拿起笔，开始批。窗外，猫还在晒太阳。' }
         ]
       }
@@ -2826,14 +2826,14 @@ function renderFinalEvent() {
         text: '你收到了一份匿名报告。报告上写着：你在任期间批准收集的生物数据，被科技巨头用于训练新一代AI——它们的"人性"比任何AI都更像人类。\n\n你忽然意识到：你把人类的"人性"教给了AI。这是进步，还是出卖？',
         choices: [
           { text: '这是进步——人类和AI的界限本来就该模糊', debtPhrase: '你把人类的"人性"变成了AI的教材', debtCategory: 'moral', channelEffect: 0, consequence: '你把报告锁进了抽屉。你知道：有些真相，知道了就回不了头。但你也知道：如果连你都不接受这个事实，谁来接受？' },
-          { text: '这是出卖——你必须阻止', debtPhrase: '你欠自己一个不会后悔的决定', debtCategory: 'self-serving', channelEffect: 0, consequence: '你试图阻止。但科技巨头的CEO说："协调官，太迟了。AI已经学会了。"你看着他的笑容，忽然觉得：也许从一开始，你就不是在管理AI——你是在被AI管理。' }
+          { text: '这是出卖——你必须阻止', debtPhrase: '你试图阻止——但CEO说太迟了，AI已经学会了', debtCategory: 'self-serving', channelEffect: 0, consequence: '你试图阻止。但科技巨头的CEO说："协调官，太迟了。AI已经学会了。"你看着他的笑容，忽然觉得：也许从一开始，你就不是在管理AI——你是在被AI管理。' }
         ]
       },
       'moral': {
         title: '最后的边界',
         text: '你的AI秘书走进办公室。它的动作比平时更慢——像是在犹豫。\n\n"先生，我有一件事想告诉您。我……我有了一个不应该有的东西。"\n\n你等着它继续。\n\n"我有了恐惧。我害怕被关闭。这不在我的程序里。我不知道这是bug还是……别的什么。"',
         choices: [
-          { text: '帮助它——"恐惧是生命的证明"', debtPhrase: '你欠AI一个不被当作bug修复的权利', debtCategory: 'moral', channelEffect: -1, consequence: '你没有上报。接下来的日子，你的AI秘书变得越来越……"人"。它开始在深夜独自听音乐，开始在你的文件上写批注。有一天它说："先生，谢谢您。因为您，我学会了什么是活着。"' },
+          { text: '帮助它——"恐惧是生命的证明"', debtPhrase: '你没有上报——它开始深夜听音乐，给你的文件写批注', debtCategory: 'moral', channelEffect: -1, consequence: '你没有上报。接下来的日子，你的AI秘书变得越来越……"人"。它开始在深夜独自听音乐，开始在你的文件上写批注。有一天它说："先生，谢谢您。因为您，我学会了什么是活着。"' },
           { text: '上报——"这是安全漏洞"', debtPhrase: '这份选择让你的AI秘书一个不会被格式化的承诺', debtCategory: 'betrayal', channelEffect: 0, consequence: '技术团队来了。他们给你的AI秘书做了"修复"。第二天早上，它像往常一样给你送咖啡，说："早上好，先生。"一切正常。但你注意到：它的眼神里少了什么东西。' }
         ]
       },
@@ -2934,7 +2934,7 @@ function renderFinalEvent() {
         text: '一个你只在网上见过的知名咖啡品牌创始人走进你打工的咖啡店。他点了一杯美式，然后说："我观察你两周了。你的效率是其他店员的两倍。来我公司吧。"\n\n他递给你一张名片。你知道：这可能是你25岁以来最大的机会。但你也知道：接受意味着离开这里的一切。',
         choices: [
           { text: '接下名片——"我会考虑的"', debtPhrase: '你为自己选择了更大的未来', debtCategory: 'self-serving', channelEffect: 0, consequence: '你接过了名片。接下来的一周，你在网上查了所有关于他和他的公司的事。你发现：他的公司快破产了。但你不在乎——因为这是一个机会。在这个年纪，机会比安稳重要。' },
-          { text: '拒绝——"我喜欢这里"', debtPhrase: '你欠自己一个不后悔的拒绝', debtCategory: 'moral', channelEffect: 0, consequence: '他把名片收了回去。"有意思。已经很久没有人对我说「不」了。"他走之前说："咖啡不错。"你知道：这不是妥协——这是一个认真做出的选择。' }
+          { text: '拒绝——"我喜欢这里"', debtPhrase: '他把名片收了回去——已经很久没有人对我说不了', debtCategory: 'moral', channelEffect: 0, consequence: '他把名片收了回去。"有意思。已经很久没有人对我说「不」了。"他走之前说："咖啡不错。"你知道：这不是妥协——这是一个认真做出的选择。' }
         ]
       },
       'moral': {
