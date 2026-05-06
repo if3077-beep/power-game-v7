@@ -1024,35 +1024,57 @@ function startGame(scenarioKey) {
   audioEngine.enable();
 
   const isHidden = ['africa', 'cyber', 'korea'].includes(scenarioKey);
-  state = { scenario: scenarioKey, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [], encounterUsed: false, encounterScene: Math.floor(Math.random() * 4) + 2, isHidden, crisisHistory: [], crisisCooldown: 0, crisisStrikes: 0 };
+  // V14.1: 隐藏道路随机难度 — 40%高强度, 60%普通
+  const intensity = isHidden ? (Math.random() < 0.4 ? 'high' : 'normal') : 'normal';
+  state = { scenario: scenarioKey, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [], encounterUsed: false, encounterScene: Math.floor(Math.random() * 4) + 2, isHidden, crisisHistory: [], crisisCooldown: 0, crisisStrikes: 0, intensity };
   resetFlags();
   renderChannels();
   renderDebtScroll();
   // 设置道路主题
   document.body.className = `theme-${scenarioKey}`;
+  // V14.1: 主题底图层
+  let bgLayer = document.querySelector('.theme-bg-layer');
+  if (!bgLayer) { bgLayer = document.createElement('div'); bgLayer.className = 'theme-bg-layer'; document.body.prepend(bgLayer); }
   transition(() => {
     showScreen('game-screen');
-    // V14: 隐藏道路隐藏债务面板和渠道栏
+    // V14: 隐藏道路隐藏债务面板和渠道栏 — V14.1: 改为显示改名后的面板
     const debtPanel = document.getElementById('debtPanel');
     const debtToggle = document.getElementById('debtToggle');
     const channelsBar = document.getElementById('channelsBar');
     const mobileDebt = document.getElementById('mobileDebt');
+    const debtPanelTitle = document.querySelector('.debt-panel-title');
+    const mobileDebtTitle = document.querySelector('.debt-panel-title-mobile, .game-mobile-debt .debt-panel-title');
+    // V14.1: 隐藏道路重命名面板标签
+    const recordLabels = { africa: '选择轨迹', cyber: '生存日志', korea: '日常记录' };
     if (isHidden) {
-      if (debtPanel) debtPanel.style.display = 'none';
-      if (debtToggle) debtToggle.style.display = 'none';
+      if (debtPanel) { debtPanel.style.display = ''; }
+      if (debtToggle) { debtToggle.style.display = ''; debtToggle.textContent = recordLabels[scenarioKey] || '记录'; }
       if (channelsBar) channelsBar.classList.remove('visible');
-      if (mobileDebt) mobileDebt.style.display = 'none';
+      if (mobileDebt) mobileDebt.style.display = '';
+      if (debtPanelTitle) debtPanelTitle.textContent = recordLabels[scenarioKey] || '选择记录';
+      if (mobileDebtTitle) mobileDebtTitle.textContent = recordLabels[scenarioKey] || '选择记录';
     } else {
       if (debtPanel) debtPanel.style.display = '';
       if (debtToggle) debtToggle.style.display = '';
+      if (debtToggle) debtToggle.textContent = '卷 轴';
       channelsBar.classList.add('visible');
       if (mobileDebt) mobileDebt.style.display = '';
+      if (debtPanelTitle) debtPanelTitle.textContent = '人情债记录本';
     }
     document.getElementById('scenarioLabel').textContent = scenarios[scenarioKey].label;
     document.getElementById('vignette').classList.toggle('active', scenarioKey === 'ming');
     document.getElementById('scanline').classList.toggle('active', scenarioKey === 'ming');
+    // V14.1: 3077高强度模式 — 额外冲突氛围
+    if (scenarioKey === 'cyber' && intensity === 'high') {
+      document.getElementById('scanline').classList.add('active');
+      document.getElementById('vignette').classList.add('active');
+    }
     renderScene();
     startBGM(scenarioKey);
+    // V14.1: 高强度模式BGM加强
+    if (intensity === 'high' && scenarioKey === 'cyber') {
+      setTimeout(() => startBGM('crisis'), 600);
+    }
   });
 }
 
@@ -1973,6 +1995,91 @@ const randomEvents = {
         { text: '不回复——保持专业距离', debtPhrase: '你欠一个孩子一个永远不会收到的回复', debtCategory: 'passive', channelEffect: 0, consequence: '你没有回复。但你收藏了那封信。它现在在你的抽屉里。偶尔你会拿出来看看——看看那个用歪歪扭扭的字写的"不要让它死"。' }
       ]
     }
+  ],
+  // V14.1: 隐藏道路随机事件
+  africa: [
+    {
+      title: '迁移的信号',
+      text: '今天早上，兽群的头领用一种你从未见过的姿势站立——它面朝北方，发出低沉的号声。\n\n长老说："它们在讨论迁徙。北边有一个新的水源——但那个方向靠近人类前哨站。它们不确定该不该去。"\n\n你意识到：在这个星球上，动物和人类一样，也有"政治"——关于去哪里、信任谁、和谁分享资源的决定。',
+      choices: [
+        { text: '帮助它们评估风险——"我去看看"', debtPhrase: '你欠兽群一个不只会翻译的承诺', debtCategory: 'moral', channelEffect: 0, consequence: '你去了前哨站。人类移民说："这里的水源足够所有人——包括兽群。"你回来后告诉头领。它低下了头——那是感激。但你也知道：下一次"所有人"可能不包含它们。' },
+        { text: '让它们自己决定——"我不能替你们选择"', debtPhrase: '你欠兽群一个不被人类干涉的决定权', debtCategory: 'compromise', channelEffect: 0, consequence: '第二天，兽群向北移动了。头领在走之前回头看了你一眼——你翻译不出那个眼神。长老说："它是在说——你尊重我们。这是我们第一次被一个人类尊重。"' }
+      ]
+    },
+    {
+      title: '地球的记忆',
+      text: '你在整理货物时发现了一个旧箱子——里面是一张地球的照片。蓝色的海洋，绿色的陆地。你盯着它看了很久。\n\n一个念头浮上来：你还会回去吗？你想回去吗？',
+      condition: () => state.currentScene >= 3,
+      choices: [
+        { text: '把它放好——这是珍贵的记忆', debtPhrase: '你欠地球一个不会忘记的承诺', debtCategory: 'moral', channelEffect: 0, consequence: '你把照片放在帐篷最显眼的位置。每当有人来做交易，他们都会看到那张照片。"那是你的家？"一个移民问。你想了想："曾经是。现在这里也是。"' },
+        { text: '扔掉——不要回头看', debtPhrase: '你选择了向前看——但忘记也是一种选择', debtCategory: 'self-serving', channelEffect: 0, consequence: '你把它放进了箱子底层。长老看到了，没说什么。晚上，你梦见地球——蓝色的海洋和绿色的陆地。醒来时，你的脸上是湿的。' }
+      ]
+    },
+    {
+      title: '两个物种的节日',
+      text: '长老说："孩子，今天是这个星球上人类和兽群第一次共同举办的节日。你来主持。"\n\n你看着聚集过来的人和兽——他们彼此不熟悉。一个移民的孩子正试着触摸一只幼兽的鼻子。幼兽没有退缩。',
+      choices: [
+        { text: '主持一个互换礼物的仪式——让彼此理解对方的需求', debtPhrase: '你欠两个物种一个能共享的仪式', debtCategory: 'moral', channelEffect: 0, consequence: '仪式出奇地成功。一个人类老人递给兽群一块自制的布——兽群的头领接过来，把它铺在自己的巢穴入口。那是最简单的礼物——但也是最重要的：信任。' },
+        { text: '让他们自由交流——不需要仪式', debtPhrase: '你欠每个个体一个不受引导的相遇', debtCategory: 'compromise', channelEffect: 0, consequence: '没有仪式。人们和兽群自然地开始互动——有些成功，有些失败。长老说："自由比仪式更真实。失败的交流也是交流。"' }
+      ]
+    }
+  ],
+  cyber: [
+    // V14.1: 3077冲突事件 — 高强度模式触发更危险的事件
+    {
+      title: '领主的眼睛',
+      textHi: '你的摊位前出现了一个全息投影——领主本人。他的声音在整个下城区回荡："有人在我的网络里开了一个后门。交出那个人，否则所有摊位都会被关闭。"\n\n你看到了那个芯片——你卖出去的芯片。现在所有人都在找使用它的人。包括你。',
+      textLo: '你注意到最近几天有人在暗中监视你的摊位。不是领主的人——领主不会这么低调。\n\n你问左右摊位的人，没人承认。但你注意到：每次你一看来，他们就避开眼神。',
+      isHighIntensity: true,
+      choices: [
+        { text: '站出来——"是我卖的。冲我来。"', textAlt: '主动出击——找到监视你的人', debtPhrase: '你欠整个下城区一个交代', debtPhraseAlt: '你欠自己一个主动的权利', debtCategory: 'self-serving', channelEffect: 0, consequence: '领主的脸整个转了过来。全息投影的红色眼睛盯着你。"有勇气。"他说。声音里没有赞扬——只有计算。"我们会有一次对话。很快。"投影消失了。但你知道：在下城区，被领主"注意到"是最危险的事。', consequenceAlt: '你跟踪他们到了一个地下室。那里有一群人——他们自称"新下城区工会"。他们说："我们需要一个信得过的人。"你问："为什么是我？"他们说："因为你从不撒谎。"' },
+        { text: '保持沉默——在下城区，不说话就是保命', textAlt: '装作没看见——该来的总会来', debtPhrase: '你欠自己一个能活下去的沉默', debtPhraseAlt: '你欠自己一个平静的下城之夜', debtCategory: 'passive', channelEffect: 0, consequence: '你没有站出来。三天后，你听说有人被带走了——不是你。但你也听说，那个人说："不是我。我不知道是谁。"领主的人把他放了。你知道——他们知道不是他。他们只是在等。', consequenceAlt: '你没有行动。第二天，一个人来到你的摊位——他递给你一张纸条。"我们一直在看。我们需要你。但你准备好了吗？"你没有回答。但你留住了纸条。' }
+      ]
+    },
+    {
+      title: '老兵的芯片',
+      text: '一个穿着旧军装的男人来到你的摊位前。他的左手不在了——被替换成一个粗糙的民用芯片接口。\n\n他说："能帮我看看吗？这个接口——有时候会让我的手抓不住东西。"\n\n你看了一下。接口是旧型号的——过时了，但还能用。问题不在接口——在他的神经。战争留下的损伤。',
+      choices: [
+        { text: '免费帮他——"这是我能做的"', debtPhrase: '你欠老兵一个不被军装掩盖的尊严', debtCategory: 'moral', channelEffect: 0, consequence: '你花了一个下午调试他的接口。他走时，左手能握住东西了。"谢谢你。"他说。你点了点头。在3077年，谢谢是最值钱的货币——比芯片值钱。' },
+        { text: '告诉他需要买新芯片——"这是生意"', debtPhrase: '你欠老兵一个诚实的报价', debtCategory: 'self-serving', channelEffect: 0, consequence: '"多少钱？"他问。你说了一个数。他看了你很久。"我买不起。"然后他走了。你看着他的背影，忽然觉得自己错过了什么——不是一笔生意，是一个帮人的机会。' }
+      ]
+    },
+    {
+      title: '偷渡客的请求',
+      text: '半夜，有人敲你的摊位。是一个脏兮兮的年轻人。他说他是从上城区逃下来的。"他们说我欠了三十万。我只是借了三万。"\n\n他颤抖着掏出一个芯片："这是我最后的钱买的东西——据说可以修改身份记录。这个能用吗？"',
+      condition: () => state.intensity === 'high' || state.currentScene >= 3,
+      choices: [
+        { text: '帮他改——"上城区的规矩不适用于下城区"', debtPhrase: '你欠一个要活下去的年轻人一条新身份', debtCategory: 'moral', channelEffect: 0, consequence: '你改了。芯片亮起了绿灯。他的脸上出现了这个月第一个笑容。"谢谢你。"他消失在暗巷里。你知道：你刚刚帮了一个逃债的人——或者帮了一个逃犯。在下城区，有时候两者不是同一个概念。' },
+        { text: '拒绝——"我不能冒这个风险"', debtPhrase: '你欠自己一个安全的摊位', debtCategory: 'self-serving', channelEffect: 0, consequence: '他走了。芯片还在你的手上。你看了一下——上面写着一个名字和一个上城区的地址。你不知道他是好人还是坏人。但你知道：如果领主知道你有这个芯片，问题会比帮一个人大得多。' }
+      ]
+    }
+  ],
+  korea: [
+    {
+      title: '前同事的邀请',
+      text: '你的手机震了一下。是前同事发来的——他在第三家公司和你一起工作过。他现在自己开了家小公司，正在找人。\n\n"兄弟，来不来？虽然小——但至少你不用给客人道歉了。"\n\n你笑了。你知道他在调侃你——你在咖啡店做错了一次订单，客人投诉了。但也对——不用再道歉了，听起来确实不错。',
+      choices: [
+        { text: '答应面试——"什么时候见面？"', debtPhrase: '你欠自己一个试试看的勇气', debtCategory: 'self-serving', channelEffect: 0, consequence: '"下周三。"他说。你挂了电话。接下来的几天，你发现自己在用不一样的心泡咖啡——因为你知道：这可能真的是最后几杯了。也可能是——一个新的开始之前的最后几杯。' },
+        { text: '婉拒——"我再想想"', debtPhrase: '你欠前同事一个不会等太久的回复', debtCategory: 'compromise', channelEffect: 0, consequence: '"不急。"他说。但你知道他会等的。因为你了解他——他不随便找人。他把你看成是他信任的人。而你还没准备好告诉他：你信任自己吗？' }
+      ]
+    },
+    {
+      title: '一本旧书',
+      text: '你在二手书店里淘到一本旧书。封面已经磨损了——是你在大学时最讨厌的那本哲学课本。\n\n你翻开第一页——上面有你当年写的批注："这有什么意义？"\n\n你笑了。十年后你再看这本书——忽然觉得里面的每一句话都像是写给你的。',
+      condition: () => state.currentScene >= 3,
+      choices: [
+        { text: '买下它——重新读一遍', debtPhrase: '你欠十年前的自己一个认真的重读', debtCategory: 'moral', channelEffect: 0, consequence: '你花了三千韩元买下了它。当晚你在出租屋里读了一整夜。天亮时你发现：十年前你问"有什么意义"，十年后你知道了——意义不是学来的，是活出来的。' },
+        { text: '放下——过去的就让它过去', debtPhrase: '你欠过去的自己一个了断', debtCategory: 'passive', channelEffect: 0, consequence: '你把书放了回去。但走出书店时，你回头看了那个位置。书还在。你想了想，没有回去。但你记住了书名。也许下次。' }
+      ]
+    },
+    {
+      title: '午夜的便利店',
+      text: '凌晨一点，你走进便利店。只有一个收银员在打盹。你拿了一瓶水——然后注意到一个老人在靠窗的位置坐着，面前放着一杯没喝的饮料。\n\n你问他："大叔，需要帮忙吗？"\n\n他说："不用。我只是在享受——享受没什么需要帮忙的时刻。"',
+      choices: [
+        { text: '坐下來——"我也来享受"', debtPhrase: '你欠自己一个什么都不做的凌晨', debtCategory: 'moral', channelEffect: 0, consequence: '你们没有说话。收银员还在打盹。钟在走——但好像走得比平时慢。老人喝完最后一口饮料，站起来说："年轻人，你能停下来，就不算太坏。"他走了。你也走了。但你觉得今晚睡得会很好。' },
+        { text: '离开——明天还要上班', debtPhrase: '你欠自己一个不止是凌晨的休息', debtCategory: 'passive', channelEffect: 0, consequence: '"我也是。"你说。然后你走了。但老人的话跟着你——"享受没什么需要帮忙的时刻。"你躺在床上，想着这句话。你觉得：也许他说的不是午夜——也许他说的是人生。' }
+      ]
+    }
   ]
 };
 
@@ -2002,6 +2109,24 @@ function renderRandomEvent() {
     pool = conditionalEvents.length > 0 ? conditionalEvents : unconditionalEvents;
   }
   const event = pool[Math.floor(Math.random() * pool.length)];
+  // V14.1: 3077高强度模式 — 动态文本切换
+  if (event.isHighIntensity && state.intensity === 'high') {
+    event.text = event.textHi || event.text;
+    event.choices = event.choices.map(c => ({
+      ...c,
+      text: c.text, // 保持高强度文案
+      debtPhrase: c.debtPhrase,
+      consequence: c.consequence
+    }));
+  } else if (event.isHighIntensity) {
+    event.text = event.textLo || event.text;
+    event.choices = event.choices.map(c => ({
+      ...c,
+      text: c.textAlt || c.text,
+      debtPhrase: c.debtPhraseAlt || c.debtPhrase,
+      consequence: c.consequenceAlt || c.consequence
+    }));
+  }
   // 标记为已使用
   if (!state.usedEvents) state.usedEvents = [];
   state.usedEvents.push(event.title);
@@ -2238,7 +2363,9 @@ function renderChannelCrisis(event) {
   state.crisisHistory.push(event.title);
   state.crisisStrikes++;
   state.crisisCooldown = 2;
-  startBGM('crisis');
+  // V14.1: 惩罚事件使用更强烈的BGM
+  const isPenalty = Object.values(crisisPenaltyEvents).some(e => e.title === event.title);
+  startBGM(isPenalty ? 'penalty' : 'crisis');
   const container = document.getElementById('sceneContainer');
   document.getElementById('levelIndicator').textContent = `· 渠道危机 · ${state.currentScene + 1} / ${scenarios[state.scenario].scenes.length}`;
 

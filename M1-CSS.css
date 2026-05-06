@@ -533,12 +533,16 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 
 /* ====== V12.1: 三条道路独立视觉风格 ====== */
 
-/* 白宫：金权风格 — 金色主调，政治氛围 */
+/* 白宫：金权风格 — 金色主调，政治氛围，Playfair Display 标题 */
 body.theme-whitehouse{--accent-w:#c9a96e;--accent-m:#8b4513;}
 body.theme-whitehouse #particles{opacity:0.6;}
 body.theme-whitehouse .ambient-glow{background:radial-gradient(ellipse at 30% 40%,rgba(201,169,110,0.05),transparent 60%);}
 body.theme-whitehouse .scene-chapter::before,body.theme-whitehouse .scene-chapter::after{background:var(--accent-w);}
 body.theme-whitehouse .choice-btn::after{background:var(--accent-w);}
+body.theme-whitehouse .scene-text{font-family:'Playfair Display','Noto Serif SC',serif;line-height:2.2;letter-spacing:0.02em;}
+body.theme-whitehouse .scene-chapter{font-family:'Playfair Display','Noto Serif SC',serif;letter-spacing:0.1em;}
+body.theme-whitehouse .intro-name{font-family:'Playfair Display','Noto Serif SC',serif;letter-spacing:0.08em;}
+body.theme-whitehouse .ending-title{font-family:'Playfair Display','Noto Serif SC',serif;}
 
 /* V13 大明：水墨风格 — 赭石主调，古风氛围，LXGW WenKai */
 body.theme-ming{--accent-w:#b8860b;--accent-m:#8b4513;}
@@ -719,7 +723,7 @@ body.theme-korea .prelude-bg-text{color:#9b8ec4;text-shadow:0 0 40px rgba(155,14
 .choice-cards .choice-card:nth-child(6){animation:landingCard 0.8s cubic-bezier(0.23,1,0.32,1) 1.6s both;}
 .choice-cards .choice-card:nth-child(7){animation:landingCard 0.8s cubic-bezier(0.23,1,0.32,1) 1.8s both;}
 
-/* ====== V14: 非洲之心道路主题 ====== */
+/* ====== V14: 非洲之心道路主题 — Cormorant Garamond 正文，大地色系，有机感 ====== */
 body.theme-africa{--accent-w:#6b8f71;--accent-m:#2d5a3d;--success:#6b8f71;}
 body.theme-africa #particles{opacity:0.5;}
 body.theme-africa .ambient-glow{background:radial-gradient(ellipse at 40% 50%,rgba(107,143,113,0.06),transparent 60%);}
@@ -731,34 +735,44 @@ body.theme-africa .debt-panel-title{color:#6b8f71;}
 body.theme-africa .echo-card{border-color:rgba(107,143,113,0.15);background:linear-gradient(135deg,rgba(10,10,10,0.95),rgba(107,143,113,0.03));}
 body.theme-africa .echo-card .ec-title{color:#6b8f71;}
 body.theme-africa .intro-badge{border-color:#6b8f71;}
+body.theme-africa .scene-text{font-family:'Cormorant Garamond','Noto Serif SC',serif;line-height:2.4;letter-spacing:0.03em;}
+body.theme-africa .scene-chapter{font-family:'Cormorant Garamond','Noto Serif SC',serif;letter-spacing:0.12em;}
+body.theme-africa .intro-name{font-family:'Cormorant Garamond','Noto Serif SC',serif;letter-spacing:0.08em;}
+body.theme-africa .intro-desc{font-family:'Cormorant Garamond','Noto Serif SC',serif;line-height:2.4;letter-spacing:0.03em;}
+body.theme-africa .intro-situation{font-family:'Cormorant Garamond','Noto Serif SC',serif;line-height:2.2;letter-spacing:0.03em;}
+body.theme-africa .ending-title{font-family:'Cormorant Garamond','Noto Serif SC',serif;}
+body.theme-africa .ending-verdict{font-family:'Cormorant Garamond','Noto Serif SC',serif;line-height:2.2;}
+body.theme-africa .consequence-text{font-family:'Cormorant Garamond','Noto Serif SC',serif;line-height:2;}
 
-/* ====== V14: 3077赛博朋克道路主题 ====== */
+/* ====== V14: 3077赛博朋克道路主题 — Rajdhani 标题 + Share Tech Mono 正文，霓虹冲突风格 ====== */
 body.theme-cyber{--accent-w:#ff6b6b;--accent-m:#c45c4a;--danger:#ff6b6b;--success:#4ecdc4;--purple:#7b68ee;}
 body.theme-cyber #particles{opacity:0.7;}
-body.theme-cyber .ambient-glow{background:radial-gradient(ellipse at 60% 40%,rgba(255,107,107,0.05),transparent 60%);}
-body.theme-cyber .scene-chapter{color:#ff6b6b;}
-body.theme-cyber .scene-chapter::before,body.theme-cyber .scene-chapter::after{background:rgba(255,107,107,0.4);}
+body.theme-cyber .ambient-glow{background:radial-gradient(ellipse at 60% 40%,rgba(255,107,107,0.08),transparent 50%),radial-gradient(ellipse at 30% 70%,rgba(78,205,196,0.04),transparent 50%);}
+body.theme-cyber .scene-chapter{color:#ff6b6b;font-family:'Rajdhani','Share Tech Mono',sans-serif;letter-spacing:0.2em;text-shadow:0 0 20px rgba(255,107,107,0.3);}
+body.theme-cyber .scene-chapter::before,body.theme-cyber .scene-chapter::after{background:rgba(255,107,107,0.6);}
 body.theme-cyber .choice-btn::after{background:#ff6b6b;}
 body.theme-cyber .choice-btn.cat-moral{border-left-color:#4ecdc4;}
 body.theme-cyber .choice-btn.cat-self-serving{border-left-color:#ffd700;}
 body.theme-cyber .choice-btn.cat-compromise{border-left-color:#7b68ee;}
 body.theme-cyber .choice-btn.cat-betrayal{border-left-color:#ff6b6b;}
 body.theme-cyber .choice-btn.cat-passive{border-left-color:#95a5a6;}
+body.theme-cyber .choice-btn:hover{border-color:#ff6b6b;box-shadow:0 0 30px rgba(255,107,107,0.15),inset 0 0 30px rgba(255,107,107,0.03);}
 body.theme-cyber .consequence-box{border-left-color:#ff6b6b;}
 body.theme-cyber .debt-panel-title{color:#ff6b6b;}
-body.theme-cyber .echo-card{border-color:rgba(255,107,107,0.15);background:linear-gradient(135deg,rgba(10,10,10,0.95),rgba(255,107,107,0.03));}
-body.theme-cyber .echo-card .ec-title{color:#ff6b6b;}
-body.theme-cyber .intro-badge{border-color:#ff6b6b;}
-body.theme-cyber .scene-text{font-family:'Share Tech Mono','Courier New',monospace;letter-spacing:0.02em;line-height:2;}
-body.theme-cyber .choice-btn{font-family:'Share Tech Mono',monospace;letter-spacing:0.02em;}
-body.theme-cyber .consequence-text{font-family:'Share Tech Mono',monospace;letter-spacing:0.02em;}
-body.theme-cyber .intro-name{font-family:'Share Tech Mono',monospace;}
-body.theme-cyber .intro-desc{font-family:'Share Tech Mono',monospace;letter-spacing:0.02em;}
-body.theme-cyber .intro-situation{font-family:'Share Tech Mono',monospace;letter-spacing:0.02em;}
-body.theme-cyber .ending-title{font-family:'Share Tech Mono',monospace;}
-body.theme-cyber .ending-verdict{font-family:'Share Tech Mono',monospace;letter-spacing:0.02em;}
+body.theme-cyber .echo-card{border-color:rgba(255,107,107,0.2);background:linear-gradient(135deg,rgba(10,10,10,0.95),rgba(255,107,107,0.05));}
+body.theme-cyber .echo-card .ec-title{color:#ff6b6b;text-shadow:0 0 15px rgba(255,107,107,0.4);}
+body.theme-cyber .intro-badge{border-color:#ff6b6b;animation:cyberBadgePulse 2s ease-in-out infinite;}
+@keyframes cyberBadgePulse{0%,100%{box-shadow:0 0 10px rgba(255,107,107,0.2);}50%{box-shadow:0 0 30px rgba(255,107,107,0.5);}}
+body.theme-cyber .scene-text{font-family:'Rajdhani','Share Tech Mono',sans-serif;letter-spacing:0.04em;line-height:2.2;}
+body.theme-cyber .choice-btn{font-family:'Rajdhani','Share Tech Mono',sans-serif;letter-spacing:0.04em;}
+body.theme-cyber .consequence-text{font-family:'Rajdhani','Share Tech Mono',sans-serif;letter-spacing:0.04em;}
+body.theme-cyber .intro-name{font-family:'Rajdhani','Share Tech Mono',sans-serif;letter-spacing:0.15em;text-shadow:0 0 25px rgba(255,107,107,0.4);}
+body.theme-cyber .intro-desc{font-family:'Rajdhani','Share Tech Mono',sans-serif;letter-spacing:0.04em;line-height:2.2;}
+body.theme-cyber .intro-situation{font-family:'Rajdhani','Share Tech Mono',sans-serif;letter-spacing:0.04em;}
+body.theme-cyber .ending-title{font-family:'Rajdhani','Share Tech Mono',sans-serif;text-shadow:0 0 20px rgba(255,107,107,0.4);}
+body.theme-cyber .ending-verdict{font-family:'Rajdhani','Share Tech Mono',sans-serif;letter-spacing:0.04em;}
 
-/* ====== V14: 日常投影（韩国）道路主题 ====== */
+/* ====== V14: 日常投影（韩国）道路主题 — Noto Sans KR 正文，温暖日常 ====== */
 body.theme-korea{--accent-w:#9b8ec4;--accent-m:#6b5b95;--purple:#9b8ec4;}
 body.theme-korea #particles{opacity:0.5;}
 body.theme-korea .ambient-glow{background:radial-gradient(ellipse at 50% 50%,rgba(155,142,196,0.06),transparent 60%);}
@@ -775,9 +789,26 @@ body.theme-korea .debt-panel-title{color:#9b8ec4;}
 body.theme-korea .echo-card{border-color:rgba(155,142,196,0.15);background:linear-gradient(135deg,rgba(10,10,10,0.95),rgba(155,142,196,0.03));}
 body.theme-korea .echo-card .ec-title{color:#9b8ec4;}
 body.theme-korea .intro-badge{border-color:#9b8ec4;}
-body.theme-korea .scene-text{line-height:2.2;}
-body.theme-korea .intro-desc{line-height:2.2;}
-body.theme-korea .ending-title{font-family:'Noto Serif SC',serif;}
-body.theme-korea .ending-verdict{line-height:2.2;}
+body.theme-korea .scene-text{font-family:'Noto Sans KR','Noto Serif SC',sans-serif;line-height:2.4;letter-spacing:0.02em;}
+body.theme-korea .scene-chapter{font-family:'Noto Sans KR','Noto Serif SC',sans-serif;letter-spacing:0.08em;}
+body.theme-korea .intro-desc{font-family:'Noto Sans KR','Noto Serif SC',sans-serif;line-height:2.4;letter-spacing:0.02em;}
+body.theme-korea .intro-situation{font-family:'Noto Sans KR','Noto Serif SC',sans-serif;line-height:2.2;}
+body.theme-korea .intro-name{font-family:'Noto Sans KR','Noto Serif SC',sans-serif;letter-spacing:0.06em;}
+body.theme-korea .ending-title{font-family:'Noto Sans KR','Noto Serif SC',sans-serif;}
+body.theme-korea .ending-verdict{font-family:'Noto Sans KR','Noto Serif SC',sans-serif;line-height:2.2;}
+body.theme-korea .consequence-text{font-family:'Noto Sans KR','Noto Serif SC',sans-serif;line-height:2;}
 
+/* V14.1: 道路主题底图（高斯模糊渐变背景） */
+body.theme-whitehouse .theme-bg-layer{background:radial-gradient(ellipse at 30% 30%,rgba(201,169,110,0.08),transparent 60%),radial-gradient(ellipse at 70% 60%,rgba(139,69,19,0.04),transparent 50%),linear-gradient(180deg,var(--bg) 0%,rgba(20,18,14,0.95) 50%,var(--bg) 100%);}
+body.theme-ming .theme-bg-layer{background:radial-gradient(ellipse at 60% 30%,rgba(139,69,19,0.06),transparent 50%),radial-gradient(ellipse at 30% 70%,rgba(184,134,11,0.04),transparent 50%),linear-gradient(180deg,var(--bg) 0%,rgba(25,22,15,0.95) 50%,var(--bg) 100%);}
+body.theme-ai .theme-bg-layer{background:radial-gradient(ellipse at 40% 40%,rgba(78,205,196,0.06),transparent 50%),radial-gradient(ellipse at 60% 60%,rgba(123,104,238,0.04),transparent 50%),linear-gradient(180deg,var(--bg) 0%,rgba(15,20,25,0.95) 50%,var(--bg) 100%);}
+body.theme-africa .theme-bg-layer{background:radial-gradient(ellipse at 50% 20%,rgba(107,143,113,0.08),transparent 50%),radial-gradient(ellipse at 30% 80%,rgba(45,90,61,0.05),transparent 50%),linear-gradient(180deg,var(--bg) 0%,rgba(15,22,15,0.95) 50%,var(--bg) 100%);}
+body.theme-cyber .theme-bg-layer{background:radial-gradient(ellipse at 60% 30%,rgba(255,107,107,0.07),transparent 40%),radial-gradient(ellipse at 30% 70%,rgba(78,205,196,0.05),transparent 40%),radial-gradient(ellipse at 70% 80%,rgba(123,104,238,0.04),transparent 40%),linear-gradient(180deg,var(--bg) 0%,rgba(20,10,15,0.95) 50%,var(--bg) 100%);}
+body.theme-korea .theme-bg-layer{background:radial-gradient(ellipse at 50% 40%,rgba(155,142,196,0.06),transparent 50%),radial-gradient(ellipse at 50% 60%,rgba(122,139,160,0.03),transparent 50%),linear-gradient(180deg,var(--bg) 0%,rgba(20,18,25,0.95) 50%,var(--bg) 100%);}
+.theme-bg-layer{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;filter:blur(60px);opacity:0.6;transition:opacity 1s ease;}
+/* V14.1: 3077 冲突加强 — 危险闪光和暴力氛围 */
+body.theme-cyber .danger-flash{animation:cyberFlash 0.3s ease-out;}
+@keyframes cyberFlash{0%{box-shadow:0 0 80px rgba(255,107,107,0.8);}100%{box-shadow:0 0 0px rgba(255,107,107,0);}}
+body.theme-cyber .scene-chapter.crisis-title{color:#ff4444;text-shadow:0 0 30px rgba(255,68,68,0.6);animation:cyberTitleGlitch 0.3s ease-in-out;}
+@keyframes cyberTitleGlitch{0%,100%{transform:translateX(0);}20%{transform:translateX(-3px);}40%{transform:translateX(3px);}60%{transform:translateX(-1px);}80%{transform:translateX(1px);}}
 /* V14: gallery overrides removed — merged into main gallery section */

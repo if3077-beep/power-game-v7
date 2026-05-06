@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>权力的游戏 v14</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Noto+Sans+KR:wght@300;400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="M1-CSS.css">
 </head>
 <body>
@@ -131,7 +134,7 @@
 <script src="M3-Engine.js"></script>
 <script src="M6-Mechanics.js"></script>
 <script>
-// V14.1: 页面加载时检查隐藏道路解锁状态
+// V14.1: 页面加载时检查隐藏道路解锁状态 + 随机引言含出处
 (function() {
   const hidden = ['africa','cyber','korea'];
   hidden.forEach(road => {
@@ -146,7 +149,6 @@
     if (localStorage.getItem('aiUnlocked') || Math.random() < 0.3) {
       aiCard.style.display = '';
       if (!localStorage.getItem('aiUnlocked')) {
-        // 首次概率出现时也标记为解锁
         localStorage.setItem('aiUnlocked', 'true');
       }
     }
