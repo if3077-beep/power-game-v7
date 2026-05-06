@@ -27,7 +27,11 @@ class Particle {
   }
   draw() {
     const a = this.opacity * (this.life / this.maxLife);
-    pCtx.fillStyle = `rgba(201,169,110,${a})`;
+    if (this.color) {
+      pCtx.fillStyle = this.color.replace(')', `,${a})`).replace('rgb(', 'rgba(');
+    } else {
+      pCtx.fillStyle = `rgba(201,169,110,${a})`;
+    }
     pCtx.beginPath(); pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); pCtx.fill();
   }
 }
@@ -103,6 +107,8 @@ class AudioEngine {
       fail:     () => { this._tone(330, 0.3, 'sawtooth', this.sfxGain, 0.1); setTimeout(() => this._tone(220, 0.4, 'sawtooth', this.sfxGain, 0.1), 200); },
       scroll:   () => this._tone(200, 0.15, 'sawtooth', this.sfxGain, 0.06),
       channelLost: () => { this._tone(180, 0.5, 'sawtooth', this.sfxGain, 0.12); setTimeout(() => this._tone(120, 0.8, 'sawtooth', this.sfxGain, 0.08), 300); },
+      zhongyong: () => { this._tone(392, 0.2, 'sine', this.sfxGain, 0.1); setTimeout(() => this._tone(330, 0.3, 'sine', this.sfxGain, 0.08), 200); setTimeout(() => this._tone(294, 0.4, 'sine', this.sfxGain, 0.06), 400); },
+      dramatic: () => { this._tone(196, 0.4, 'sawtooth', this.sfxGain, 0.12); setTimeout(() => this._tone(261, 0.3, 'triangle', this.sfxGain, 0.1), 200); },
     };
     (sounds[type] || sounds.click)();
   }
@@ -190,11 +196,65 @@ function showScreen(id) {
 // --- 转场 ---
 function transition(callback) {
   const overlay = document.getElementById('transitionOverlay');
+  overlay.style.pointerEvents = 'all';
   overlay.classList.add('active');
   setTimeout(() => {
     callback();
-    setTimeout(() => overlay.classList.remove('active'), 100);
+    setTimeout(() => {
+      overlay.classList.remove('active');
+      overlay.style.pointerEvents = 'none';
+    }, 100);
   }, 600);
+}
+
+// --- 涟漪效果 ---
+function createRipple(e, el) {
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple-effect';
+  const rect = el.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2;
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+  el.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 800);
+}
+
+// --- 屏幕震击 ---
+function screenShake(intensity) {
+  const container = document.getElementById('sceneContainer');
+  if (!container) return;
+  const cls = intensity === 'heavy' ? 'shake-heavy' : intensity === 'light' ? 'shake-light' : 'shake-medium';
+  container.classList.add(cls);
+  setTimeout(() => container.classList.remove(cls), 600);
+}
+
+// --- 粒子爆发 ---
+function particleBurst(x, y, color, count) {
+  count = count || 12;
+  for (let i = 0; i < count; i++) {
+    const p = new Particle();
+    p.x = x; p.y = y;
+    p.speedX = (Math.random() - 0.5) * 3;
+    p.speedY = (Math.random() - 0.5) * 3 - 1;
+    p.size = Math.random() * 3 + 1;
+    p.life = 60 + Math.random() * 40;
+    p.maxLife = p.life;
+    p.opacity = 0.8;
+    particles.push(p);
+  }
+  // 清理多余粒子
+  setTimeout(() => { if (particles.length > 200) particles = particles.slice(-100); }, 3000);
+}
+
+// --- 全屏闪光 ---
+function flashScreen(color, duration) {
+  const flash = document.createElement('div');
+  flash.className = 'screen-flash';
+  flash.style.background = color || 'rgba(201,169,110,0.15)';
+  document.body.appendChild(flash);
+  requestAnimationFrame(() => flash.classList.add('active'));
+  setTimeout(() => { flash.classList.remove('active'); setTimeout(() => flash.remove(), 500); }, duration || 300);
 }
 
 // --- 打字机 ---

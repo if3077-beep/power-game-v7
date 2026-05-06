@@ -1,8 +1,0 @@
-[     851ms] [LOG] 🐟 MiroFish Predictor 已初始化 @ http://localhost:8000/app.js:34
-[    1535ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0
-[   19407ms] [LOG] 🔊 音频系统已初始化 @ http://localhost:8000/audio.js:32
-[   22459ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0
-[   55886ms] TypeError: Cannot destructure property 'metrics' of 'result' as it is null.
-    at LogicAnalyzer.generateVerdict (http://localhost:8000/logic.js:84:17)
-    at LogicAnalyzer.generateAnalysis (http://localhost:8000/logic.js:43:14)
-    at async MiroFishApp.viewAnalysis (http://localhost:8000/app.js:306:9)

@@ -1,8 +1,0 @@
-[    3691ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://www.idaohang123.com/:0
-[    3692ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://www.idaohang123.com/:0
-[    3692ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://www.idaohang123.com/:0
-[    3692ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://www.idaohang123.com/:0
-[    3692ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://www.idaohang123.com/:0
-[   13802ms] [LOG] mozilla/5.0 (windows nt 10.0; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/147.0.0.0 safari/537.36 @ https://www.idaohang123.com/js/master.js:173
-[   60274ms] [LOG] 成功收到响应: {status: 200, success: true, message: 操作成功, data: Object} @ https://www.idaohang123.com/js/itshiye.js:142
-[   60281ms] [LOG] mozilla/5.0 (windows nt 10.0; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/147.0.0.0 safari/537.36 @ https://www.idaohang123.com/js/master.js:249

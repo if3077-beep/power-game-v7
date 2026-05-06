@@ -266,3 +266,91 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
   .game-header{padding:0.8rem 1rem;}.scene-container{padding:4rem 1rem 3rem;}
   .echo-card{width:100%;padding:2rem 1.5rem;}.gallery-grid{grid-template-columns:1fr;}
 }
+
+/* ====== V7: 涟漪效果 ====== */
+.ripple-effect{position:absolute;border-radius:50%;background:rgba(201,169,110,0.2);transform:scale(0);animation:rippleSpread 0.8s ease-out forwards;pointer-events:none;z-index:1;}
+@keyframes rippleSpread{to{transform:scale(1);opacity:0;}}
+
+/* ====== V7: 屏幕震击 ====== */
+.shake-light{animation:shakeLight 0.4s ease;}
+.shake-medium{animation:shakeMedium 0.5s ease;}
+.shake-heavy{animation:shakeHeavy 0.6s ease;}
+@keyframes shakeLight{0%,100%{transform:translateX(0);}25%{transform:translateX(-3px);}75%{transform:translateX(3px);}}
+@keyframes shakeMedium{0%,100%{transform:translate(0);}20%{transform:translate(-5px,2px);}40%{transform:translate(4px,-3px);}60%{transform:translate(-3px,4px);}80%{transform:translate(5px,-2px);}}
+@keyframes shakeHeavy{0%,100%{transform:translate(0);}10%{transform:translate(-8px,4px);}20%{transform:translate(7px,-6px);}30%{transform:translate(-6px,3px);}40%{transform:translate(8px,-5px);}50%{transform:translate(-4px,7px);}60%{transform:translate(6px,-3px);}70%{transform:translate(-7px,5px);}80%{transform:translate(5px,-4px);}90%{transform:translate(-3px,6px);}}
+
+/* ====== V7: 全屏闪光 ====== */
+.screen-flash{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:350;opacity:0;transition:opacity 0.15s ease;}
+.screen-flash.active{opacity:1;}
+
+/* ====== V7: 增强选项按钮 ====== */
+.choice-btn{position:relative;overflow:hidden;}
+.choice-btn::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,0.05);border-radius:50%;transform:translate(-50%,-50%);transition:width 0.6s ease,height 0.6s ease;}
+.choice-btn:hover::before{width:300%;height:300%;}
+.choice-btn.clicked{pointer-events:none;}
+.choice-btn.cat-moral.clicked{box-shadow:0 0 40px rgba(107,143,113,0.3),inset 0 0 20px rgba(107,143,113,0.1);}
+.choice-btn.cat-self-serving.clicked{box-shadow:0 0 40px rgba(201,169,110,0.3),inset 0 0 20px rgba(201,169,110,0.1);}
+.choice-btn.cat-compromise.clicked{box-shadow:0 0 40px rgba(155,142,196,0.3),inset 0 0 20px rgba(155,142,196,0.1);}
+.choice-btn.cat-betrayal.clicked{box-shadow:0 0 40px rgba(196,92,74,0.3),inset 0 0 20px rgba(196,92,74,0.1);}
+.choice-btn.cat-passive.clicked{box-shadow:0 0 40px rgba(122,139,160,0.3),inset 0 0 20px rgba(122,139,160,0.1);}
+
+/* ====== V7: 中庸之道文本 ====== */
+.zhongyong-box{margin-top:1.5rem;padding:1.2rem 1.5rem;background:rgba(155,142,196,0.04);border:1px solid rgba(155,142,196,0.15);border-left:3px solid var(--purple);opacity:0;transform:translateY(15px);animation:zhongyongReveal 0.8s ease forwards;animation-delay:0.3s;}
+.zhongyong-box .zy-label{font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--purple);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;}
+.zhongyong-box .zy-label::before{content:'☯';font-size:0.8rem;}
+.zhongyong-box .zy-text{font-family:'Noto Serif SC',serif;font-size:0.85rem;line-height:1.9;color:var(--text);}
+.zhongyong-box .zy-quote{font-size:0.7rem;color:var(--muted);font-style:italic;margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(155,142,196,0.1);}
+@keyframes zhongyongReveal{to{opacity:1;transform:translateY(0);}}
+
+/* ====== V7: 增强后果箱 ====== */
+.consequence-box{position:relative;overflow:hidden;}
+.consequence-box::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(201,169,110,0.02),transparent);pointer-events:none;}
+.consequence-box .consequence-glow{position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(201,169,110,0.04),transparent 50%);animation:consequenceGlow 3s ease-in-out infinite alternate;pointer-events:none;}
+@keyframes consequenceGlow{0%{transform:rotate(0deg);}100%{transform:rotate(180deg);}}
+
+/* ====== V7: 增强场景入场 ====== */
+.scene-container{perspective:1000px;}
+.scene-chapter{animation:sceneChapterIn 1s cubic-bezier(0.23,1,0.32,1) forwards;}
+@keyframes sceneChapterIn{from{opacity:0;transform:translateY(30px) rotateX(-10deg);filter:blur(4px);}to{opacity:1;transform:translateY(0) rotateX(0);filter:blur(0);}}
+
+/* ====== V7: 渠道丢失脉冲 ====== */
+.ch-dot.lost{animation:channelLostPulse 1s ease;}
+@keyframes channelLostPulse{0%{transform:scale(1);background:var(--success);}30%{transform:scale(1.8);background:var(--danger);}60%{transform:scale(0.5);background:var(--danger);}100%{transform:scale(0.7);background:var(--danger);opacity:0.3;}}
+
+/* ====== V7: 债务条目增强 ====== */
+.debt-item{transition:all 0.3s ease;}
+.debt-item:hover{background:rgba(255,255,255,0.06);transform:translateX(-4px);}
+.debt-item.new-entry{animation:debtNewEntry 0.8s cubic-bezier(0.23,1,0.32,1);}
+@keyframes debtNewEntry{0%{opacity:0;transform:translateX(40px) scale(0.8);border-color:var(--accent-w);}50%{border-color:var(--accent-w);box-shadow:0 0 15px rgba(201,169,110,0.2);}100%{opacity:1;transform:translateX(0) scale(1);}}
+
+/* ====== V7: 结局增强 ====== */
+.ending-badge{animation:endingBadgeDrop 1.2s cubic-bezier(0.23,1,0.32,1) 0.2s both;}
+@keyframes endingBadgeDrop{0%{opacity:0;transform:translateY(-60px) scale(0.3) rotate(-20deg);}60%{transform:translateY(8px) scale(1.1) rotate(5deg);}100%{opacity:1;transform:translateY(0) scale(1) rotate(0);}}
+.ending-title{animation:endingTitleReveal 1.2s cubic-bezier(0.23,1,0.32,1) 0.4s both;}
+@keyframes endingTitleReveal{0%{opacity:0;transform:translateY(30px);letter-spacing:0.5em;}100%{opacity:1;transform:translateY(0);letter-spacing:normal;}}
+
+/* ====== V7: 场景氛围背景 ====== */
+.ambient-glow{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0;transition:opacity 2s ease;}
+.ambient-glow.whitehouse{background:radial-gradient(ellipse at 30% 40%,rgba(201,169,110,0.03),transparent 60%);}
+.ambient-glow.ming{background:radial-gradient(ellipse at 70% 60%,rgba(139,69,19,0.04),transparent 60%);}
+.ambient-glow.active{opacity:1;}
+
+/* ====== V7: 打字机增强 ====== */
+.typewriter-cursor{animation:cursorBlink 0.8s step-end infinite;}
+@keyframes cursorBlink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* ====== V7: 粒子爆发容器 ====== */
+.particle-burst{position:fixed;pointer-events:none;z-index:200;}
+
+/* ====== V7: 身份卡增强 ====== */
+.echo-card{transition:transform 0.3s ease,box-shadow 0.3s ease;}
+.echo-card:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 30px rgba(201,169,110,0.1);}
+.echo-card .ec-divider{position:relative;overflow:hidden;}
+.echo-card .ec-divider::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,169,110,0.3),transparent);animation:shimmerLine 3s ease-in-out infinite;}
+@keyframes shimmerLine{0%{left:-100%;}100%{left:200%;}}
+
+/* ====== V7: 选择卡片增强 ====== */
+.choice-card{transition:all 0.5s cubic-bezier(0.23,1,0.32,1),box-shadow 0.3s ease;}
+.choice-card:hover{box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 40px rgba(201,169,110,0.08);}
+.choice-card::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--accent-w),transparent);transform:scaleX(0);transition:transform 0.5s ease;}
+.choice-card:hover::after{transform:scaleX(1);}

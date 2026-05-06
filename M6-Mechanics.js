@@ -395,6 +395,16 @@ function renderScene() {
   const container = document.getElementById('sceneContainer');
   document.getElementById('levelIndicator').textContent = `${state.currentScene + 1} / ${sc.scenes.length}`;
 
+  // V7: 场景氛围光效
+  let ambient = document.querySelector('.ambient-glow');
+  if (!ambient) {
+    ambient = document.createElement('div');
+    ambient.className = 'ambient-glow';
+    document.body.appendChild(ambient);
+  }
+  ambient.className = `ambient-glow ${state.scenario}`;
+  requestAnimationFrame(() => ambient.classList.add('active'));
+
   // 收集本场景所有选项的书摘
   const bookQuotes = scene.choices.map(c => c.bookQuote).filter(Boolean);
 
@@ -472,6 +482,24 @@ function makeChoice(index) {
   audioEngine.play('click');
   if (state.scenario === 'ming') inkSplash();
 
+  // V7: 涟漪 + 粒子爆发 + 屏幕效果
+  const clickedBtn = document.querySelectorAll('.choices-container .choice-btn')[index];
+  if (clickedBtn) {
+    const rect = clickedBtn.getBoundingClientRect();
+    particleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, null, 8);
+  }
+  if (choice.debtCategory === 'betrayal') {
+    screenShake('heavy');
+    flashScreen('rgba(196,92,74,0.12)', 400);
+    audioEngine.play('dramatic');
+  } else if (choice.debtCategory === 'moral') {
+    flashScreen('rgba(107,143,113,0.1)', 300);
+  } else if (choice.debtCategory === 'self-serving') {
+    flashScreen('rgba(201,169,110,0.1)', 300);
+  } else if (choice.debtCategory === 'passive') {
+    screenShake('light');
+  }
+
   state.choices.push({ scene: state.currentScene, choice: index, text: choice.text });
 
   // 设置历史标记（事件联动）
@@ -490,6 +518,7 @@ function makeChoice(index) {
       btn.style.opacity = '1';
     } else {
       btn.style.opacity = '0.2';
+      btn.style.filter = 'blur(1px)';
     }
   });
 
@@ -513,18 +542,27 @@ function makeChoice(index) {
     } catch (e) { /* 静默失败 */ }
   }
 
+  // V7: 中庸之道 — 显示未选择的中庸路线
+  let zhongyongHTML = '';
+  if (choice.zhongyongText) {
+    zhongyongHTML = `<div class="zhongyong-box"><div class="zy-label">中庸之道</div><div class="zy-text">${choice.zhongyongText}</div><div class="zy-quote">「极高明而道中庸」——《中庸》</div></div>`;
+    setTimeout(() => audioEngine.play('zhongyong'), 800);
+  }
+
   const container = document.getElementById('sceneContainer');
   const consequenceEl = document.createElement('div');
   consequenceEl.className = 'consequence-box';
   consequenceEl.innerHTML = `
+    <div class="consequence-glow"></div>
     <div class="consequence-label">后果</div>
     <div class="consequence-text">${choice.consequence}</div>
     <div class="debt-added">新增人情债：「${choice.debtPhrase}」</div>
     ${insightHTML}
+    ${zhongyongHTML}
   `;
   container.appendChild(consequenceEl);
   setTimeout(() => {
-    consequenceEl.style.transition = 'all 0.8s ease';
+    consequenceEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
     consequenceEl.style.opacity = '1';
     consequenceEl.style.transform = 'translateY(0)';
   }, 100);
@@ -535,13 +573,16 @@ function makeChoice(index) {
     nextBtn.style.marginTop = '2rem';
     nextBtn.style.opacity = '0';
     nextBtn.innerHTML = state.currentScene < sc.scenes.length - 1 ? '继续' : '查看结局';
-    nextBtn.onclick = () => {
-      if (state.currentScene < sc.scenes.length - 1) {
-        state.currentScene++;
-        transition(() => renderScene());
-      } else {
-        transition(() => showEnding());
-      }
+    nextBtn.onclick = (e) => {
+      createRipple(e, nextBtn);
+      setTimeout(() => {
+        if (state.currentScene < sc.scenes.length - 1) {
+          state.currentScene++;
+          transition(() => renderScene());
+        } else {
+          transition(() => showEnding());
+        }
+      }, 300);
     };
     container.appendChild(nextBtn);
     setTimeout(() => { nextBtn.style.transition = 'all 0.5s ease'; nextBtn.style.opacity = '1'; }, 100);
@@ -618,7 +659,7 @@ function showEnding() {
         </div>
         <div class="ec-divider"></div>
         <div class="ec-debts">${state.debts.slice(-3).map(d => `<div class="ec-debt">"${d.text}"</div>`).join('')}</div>
-        <div class="ec-footer"><span>权力的游戏 v4</span><span>${new Date().toLocaleDateString('zh-CN')}</span></div>
+        <div class="ec-footer"><span>权力的游戏 v7</span><span>${new Date().toLocaleDateString('zh-CN')}</span></div>
         <div class="ec-watermark">权</div>
       </div>
     </div>
