@@ -27,25 +27,66 @@ function showUnlockNotification(road) {
   const cfg = hiddenRoads[road];
   const sc = scenarios[road];
   localStorage.setItem(cfg.unlockKey, 'true');
-  // 更新AI卡片可见性（如果是ai道路解锁）
   if (road === 'africa' || road === 'cyber' || road === 'korea') {
     const aiCard = document.getElementById('aiCard');
     if (aiCard) aiCard.style.display = '';
   }
-  // 显示解锁动画
-  const overlay = document.createElement('div');
-  overlay.className = 'unlock-overlay';
-  overlay.innerHTML = `
-    <div class="unlock-card">
-      <div class="unlock-icon">${sc.badge}</div>
-      <div class="unlock-title">新道路解锁</div>
+  // V14.3: 增强解锁动画 — 粒子+闪光+音效
+  audioEngine.play('success');
+  // 全屏闪光
+  const flash = document.createElement('div');
+  flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(201,169,110,0.3),rgba(10,10,10,0.9));pointer-events:none;z-index:9000;opacity:0;transition:opacity 0.8s ease;';
+  document.body.appendChild(flash);
+  requestAnimationFrame(() => { flash.style.opacity = '1'; });
+  // 粒子爆发
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('div');
+    const size = Math.random() * 6 + 2;
+    p.style.cssText = `position:fixed;width:${size}px;height:${size}px;background:gold;border-radius:50%;left:50%;top:50%;z-index:9001;pointer-events:none;opacity:0;box-shadow:0 0 ${size*2}px gold;`;
+    document.body.appendChild(p);
+    setTimeout(() => {
+      p.style.transition = `all ${Math.random()*1.5+1}s cubic-bezier(0.23,1,0.32,1)`;
+      p.style.opacity = '0.8';
+      p.style.transform = `translate(${Math.random()*400-200}px,${Math.random()*400-200}px) scale(0)`;
+    }, 50);
+    setTimeout(() => p.remove(), 3000);
+  }
+  // 中央卡片
+  setTimeout(() => {
+    const overlay = document.createElement('div');
+    overlay.className = 'unlock-overlay';
+    overlay.innerHTML = `<div class="unlock-card" style="animation:unlockCardIn 0.8s cubic-bezier(0.23,1,0.32,1) both;">
+      <div class="unlock-icon">${sc.intro.badge}</div>
+      <div class="unlock-title">隐藏道路已解锁</div>
       <div class="unlock-name">${sc.label}</div>
-      <div class="unlock-desc">${sc.unlockHint}</div>
-      <div class="unlock-hint">${cfg.desc}</div>
-      <button class="unlock-btn" onclick="this.parentElement.parentElement.remove()">确认</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
+      <div class="unlock-desc">${cfg.desc}</div>
+      <button class="unlock-btn" onclick="this.closest('.unlock-overlay').remove();document.querySelectorAll('[style*=\\'z-index:9000\\'],[style*=\\'z-index:9001\\']').forEach(el=>el.remove());">踏上新路</button>
+    </div>`;
+    document.body.appendChild(overlay);
+    setTimeout(() => { flash.style.opacity = '0'; setTimeout(() => flash.remove(), 800); }, 500);
+  }, 500);
+}
+
+// V14.3: 事件暗示 — 隐藏事件存在提示
+function maybeShowEventHint(sceneTitle) {
+  const hints = {
+    '深夜密会': '这个深夜的访客也许和另一个时空有关……',
+    '御史微访': '微服私访的御史看你的眼神似乎藏着另一个世界的秘密……',
+    '晨的邀请': '晨的诗里提到了一个从未存在过的地方……',
+    '兽群的低语': '兽群的号声中有一种你无法翻译的古老音节——它们似乎在等一个你还没准备好的问题……',
+    '机械臂': '那个机械臂的前主人留下了一段代码——代码里藏着一个坐标，指向一个不存在于任何地图的地方……',
+    '凌晨四点的短信': '那条短信的最后一行是乱码——但在某个特定的字体下，它读作：来找我……'
+  };
+  if (hints[sceneTitle] && Math.random() < 0.4) {
+    setTimeout(() => {
+      const hint = document.createElement('div');
+      hint.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);padding:0.6rem 1.5rem;background:rgba(184,169,212,0.1);border:1px solid rgba(184,169,212,0.3);color:var(--muted);font-size:0.7rem;letter-spacing:0.1em;z-index:500;pointer-events:none;opacity:0;transition:opacity 1s ease;border-radius:2rem;';
+      hint.textContent = hints[sceneTitle];
+      document.body.appendChild(hint);
+      requestAnimationFrame(() => { hint.style.opacity = '0.8'; });
+      setTimeout(() => { hint.style.opacity = '0'; setTimeout(() => hint.remove(), 1000); }, 4000);
+    }, 3000);
+  }
 }
 
 // --- 场景专属权力动力学解读 ---
@@ -222,6 +263,55 @@ const scenePowerInsights = {
       'compromise': '你继续做了协调官——在两边的夹缝中坚持。你累得瘦了二十斤，但你促成了第一份《人机共生宪章》。在权力场中，"坚持"是最稀缺的品质。',
       'passive': '你选择了不做决定——让时间来决定。在人机共生的时代，时间是最无情的裁判——它不会等任何人。',
       'betrayal': '你出卖了最后的底线来换取安稳。在人机共生的时代，"底线"是人类最后的尊严——你刚把它交了出去。'
+    }
+  },
+  // V14.3: 隐藏道路权力动力学
+  africa: {
+    '第一次接触': {
+      'self-serving': '你选择先保护自己——在未知星球上这是本能反应。但每一次"先保护自己"都在告诉兽群：人类是不可预测的。权力在陌生环境中首先表现为防御——过度防御会关闭所有对话通道。',
+      'moral': '你选择相信——在一个还不了解你的物种面前。这是权力的另一种形式：不是控制，而是"暴露"。暴露自己、暴露开放——这种脆弱性是建立跨物种信任的唯一桥梁。',
+      'compromise': '你选择做中介——在两个物种之间建立交易规则。交易是权力的另一种语言：当双方都愿意交换时，不需要任何一方高于另一方。这是最民主的权力形式。',
+      'passive': '你选择等待——在不确定的权力场中，等待不是放弃，而是获取信息的时间。但等待太久可能被解读为无能或不诚实。',
+      'betrayal': '你选择利用对方的不了解来占便宜——这是权力的最原始形态。但在这颗星球上，每个人都能感知到"不公平"，即使他们不能用你的语言表达。'
+    },
+    '交易': {
+      'self-serving': '你选择了对自己最有利的交易——短期收益最大化了。但你在这个星球上的"信用"下降了一级。在这里，信用不是来自你说什么——而是来自你每一次交换时"给了对方什么"。',
+      'moral': '你选择公平交易——"以物易物"不等于"等"，而是"互相理解对方的需要"。你给了兽群尊重——它们给了你信任。在这个地方，信任是最昂贵的货币。',
+      'compromise': '你选择谈判——不是"双方各退一步"，而是试着理解对方的语言。谈判在跨物种之间首先是翻译——你是在教授人类和兽群之间"对话的语法"。',
+      'passive': '你选择不做决定——保留了所有可能性。但交易的机会过去了。在这里，不做决定不是"保留权力"，而是放弃了参与到世界形成的机会。',
+      'betrayal': '你利用了权力不对等来占便宜——人类的技术优势在这颗星球上是可怕的武器。但记住：每一种武器在开火后会留下永久的痕迹。'
+    }
+  },
+  cyber: {
+    '来路不明的芯片': {
+      'self-serving': '你选择先保护好自己——在下城区这是第一条规则。但每一次自我保护都在缩小你能信赖的人数。在3077年，信赖比芯片更稀有。',
+      'moral': '你选择帮助陌生人——在下城区这是最罕见的决定。权力在这里不是"控制"——是"在别人不需要帮的时候选择帮"。这种权力无法衡量——但可以被记住。',
+      'compromise': '你选择做中间商——连接了"需要"和"供给"。在下城区，中介是一种古老的职业——它不是创造东西，而是连接人。连接——是2077年最稀缺的资源。',
+      'passive': '你选择不介入——在下城区这是最常见的决定。太多人习惯了"不介入"。但每一次"不介入"都会让这个下城区变得更冷漠一分。',
+      'betrayal': '你选择利用情况占便宜——在下城区这没有法律禁止。但有比法律更深的东西——下城区的人有极强的记忆力。你今天背弃的人，也许有一天是你唯一能求助的人。'
+    },
+    '摊位的选择': {
+      'self-serving': '你选择了最好的位置——这是一个零和游戏。你抢到了摊位，别人没有了。在有限资源的环境里，权力首先表现为"优先占用权"。你赢了今天——但你的赢是以别人失败为代价的。',
+      'moral': '你选择分享信息——下城区的稀缺资源。当你知道一个更好的摊位位置时，你告诉了两个需要的人。他们不一定给你回报——但你在这个区获得了"可信任的人"的身份。这个身份在危机时刻能救你的命。',
+      'compromise': '你选择延迟自己的决策——想等到市场的信息更明确后再做。拖延在权力博弈中是双重刃——可能让你错过机会，也可能让你避开陷阱。',
+      'passive': '你选择顺其自然——在下城区，活得越久越容易依赖这个策略。但依赖太深会失去主动——在下城区，只有主动的人才有机会改变自己所在的地板。',
+      'betrayal': '你选择掠夺别人的资源——在下城区这是常见的事。但掠夺是短期的——它给了你今天，却拿走了你的明天——因为明天你需要别人的信任，而他们已经不信任你了。'
+    }
+  },
+  korea: {
+    '午后的订单': {
+      'self-serving': '你选择先完成自己的任务——在日常生活里这是正常的节奏。但在这个日常中的"小权力"——选择什么时候帮助别人——比它看起来更有分量。因为每一次选择都在定义"你是谁"。',
+      'moral': '你选择帮助那位客人——一个简单的行为在权力游戏中看起来微不足道。但正是这些"微不足道"的选择构成了一个人的全部人格。日常中的道德不需要舞台——它只需要"注意到"。',
+      'compromise': '你选择说"我尽量"——保留了所有可能性。在职场中这个短语是最安全的。但"尽量"太多会被解读为"你没有立场"。工作三年，每一天都有人在观察你是否会说"不"或"是"。',
+      'passive': '你选择装作没看到——这也是许多人的选择。日常中的被动不会让你被开除——但它会让你失去那种"我愿意主动"的精神肌力——这种肌力需要锻炼，否则会萎缩。',
+      'betrayal': '你选择利用他人的不方便来占便宜——日常中的小背叛太细微了，几乎不被注意。但注意到的人会记得。日常中的背叛累积——它会变成一种"这个人在细微时刻不值得信任"的气味。很难定义——但被所有人感知到。'
+    },
+    '下班后的选择': {
+      'self-serving': '你选择为自己投资——学习新技能，报名线上课程。在日常生活竞争中，这是最明智的权力投资——因为你投资的是你自己，不是任何外部制度。',
+      'moral': '你选择去帮助朋友——即使是凌晨一点，你出了门。在日常的权力场中，偶尔放下自己的一切为朋友跑一趟是所有权力形式里最干净的。因为它不求回报——只求"他们没事"。',
+      'compromise': '你选择和同事喝一杯——不一定是好朋友，但在职场这是维系网络的一种方式。社交网络是日常中的隐权力——它不在pay stub上显示，但比任何涨薪都更有复利效应。',
+      'passive': '你选择回家——这可能是正确的决定。每一天的精力是有限的。在日常里选择"休息"不是软弱——是在为第二天储存能量。但持续选择休息会变成孤立——是疏远和孤独的捷径。',
+      'betrayal': '你选择把朋友说的秘密告诉了别人——这在日常中是常见的小背叛。不需要法律制裁——只需要被朋友发现后那一眼，你就已经失去了一个也许再也不会回来的人。'
     }
   }
 };
@@ -2283,6 +2373,8 @@ function renderEncounter() {
   startBGM('encounter');
   const event = events[Math.floor(Math.random() * events.length)];
   const sc = scenarios[state.scenario];
+  // V14.3: 事件暗示 — 奇遇可能关联隐藏内容
+  maybeShowEventHint(event.title);
 
   const container = document.getElementById('sceneContainer');
   document.getElementById('levelIndicator').textContent = `✦ 奇遇 · ${state.currentScene + 1} / ${sc.scenes.length}`;
@@ -3156,11 +3248,10 @@ function triggerChaosUnlockAnimation() {
     flash.style.opacity = '0';
     setTimeout(() => { flash.remove(); particles.remove(); }, 1500);
     const chaosCard = document.getElementById('chaosCard');
-    const chaosEntry = document.getElementById('chaosEntry');
     if (chaosCard) {
       chaosCard.style.display = '';
       chaosCard.style.animation = 'landingCard 1.5s cubic-bezier(0.23,1,0.32,1) both, chaosCardGlow 3s ease-in-out infinite';
-      if (chaosEntry) { chaosEntry.style.display = ''; chaosEntry.style.animation = 'fadeUp 1s ease-out 0.5s both'; }
+      chaosCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, 4000);
 }

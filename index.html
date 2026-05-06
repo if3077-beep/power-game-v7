@@ -37,11 +37,6 @@
   <h1>权 力 的 游 戏</h1>
   <p class="subtitle" id="landingSubtitle"></p>
   <div class="divider-line"></div>
-  <div class="chaos-entry" id="chaosEntry" style="display:none;" onclick="renderPrelude('chaos')">
-    <span class="chaos-entry-icon">🌀</span>
-    <span class="chaos-entry-text">时空之渊已觉醒</span>
-    <span class="chaos-entry-arrow">→</span>
-  </div>
   <div class="choice-cards">
     <div class="choice-card" data-scenario="whitehouse" onclick="renderPrelude('whitehouse')">
       <div class="card-atmosphere"></div>
@@ -166,10 +161,8 @@
   }
   // 混沌道路——通过全解锁动画后显示
   const chaosCard = document.getElementById('chaosCard');
-  const chaosEntry = document.getElementById('chaosEntry');
   if (chaosCard && localStorage.getItem('chaosUnlocked')) {
     chaosCard.style.display = '';
-    if (chaosEntry) chaosEntry.style.display = '';
   }
 })();
 </script>
