@@ -71,13 +71,13 @@ class AudioEngine {
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     this.ctx.resume();
     this.master = this.ctx.createGain();
-    this.master.gain.value = 0.8;
+    this.master.gain.value = 0.75;
     this.master.connect(this.ctx.destination);
     this.bgmGain = this.ctx.createGain();
-    this.bgmGain.gain.value = 0.55;
+    this.bgmGain.gain.value = 0.5;
     this.bgmGain.connect(this.master);
     this.sfxGain = this.ctx.createGain();
-    this.sfxGain.gain.value = 0.9;
+    this.sfxGain.gain.value = 0.7;
     this.sfxGain.connect(this.master);
     // 延迟混响（模拟空间感）
     this.reverbGain = this.ctx.createGain();
@@ -107,18 +107,18 @@ class AudioEngine {
     const t = this.ctx.currentTime;
     const sounds = {
       click: () => {
-        this._tone(1200, 0.06, 'sine', this.sfxGain, 0.4);
-        this._tone(1800, 0.04, 'sine', this.sfxGain, 0.2);
+        this._tone(1800, 0.05, 'sine', this.sfxGain, 0.25);
+        this._tone(2400, 0.03, 'sine', this.sfxGain, 0.12);
       },
       debt: () => {
-        this._tone(280, 0.35, 'triangle', this.sfxGain, 0.5);
-        setTimeout(() => this._tone(220, 0.3, 'triangle', this.sfxGain, 0.35), 150);
-        setTimeout(() => this._tone(165, 0.4, 'triangle', this.sfxGain, 0.2), 300);
+        this._tone(280, 0.35, 'triangle', this.sfxGain, 0.45);
+        setTimeout(() => this._tone(220, 0.3, 'triangle', this.sfxGain, 0.3), 150);
+        setTimeout(() => this._tone(165, 0.4, 'triangle', this.sfxGain, 0.18), 300);
       },
       scene: () => {
-        this._tone(392, 0.25, 'sine', this.sfxGain, 0.35);
-        setTimeout(() => this._tone(523, 0.3, 'sine', this.sfxGain, 0.25), 120);
-        this._delay(392, 0.5, 0.15);
+        this._tone(392, 0.25, 'sine', this.sfxGain, 0.3);
+        setTimeout(() => this._tone(523, 0.3, 'sine', this.sfxGain, 0.22), 120);
+        this._delay(392, 0.5, 0.12);
       },
       ending: () => {
         this._tone(392, 0.5, 'sine', this.sfxGain, 0.45);
@@ -166,34 +166,30 @@ class AudioEngine {
       choice_hover: () => {
         this._tone(600, 0.04, 'sine', this.sfxGain, 0.15);
       },
-      // V11: 情感分类音效
+      // V14.3: 情感分类音效 — 更有区分度，平衡音量
       choice_moral: () => {
-        // 道德：清澈上行，如钟鸣
-        this._tone(523, 0.15, 'sine', this.sfxGain, 0.35);
-        setTimeout(() => this._tone(659, 0.15, 'sine', this.sfxGain, 0.25), 80);
-        setTimeout(() => this._tone(784, 0.25, 'sine', this.sfxGain, 0.2), 160);
+        this._tone(523, 0.18, 'sine', this.sfxGain, 0.28);
+        setTimeout(() => this._tone(659, 0.18, 'sine', this.sfxGain, 0.2), 100);
+        setTimeout(() => this._tone(784, 0.3, 'sine', this.sfxGain, 0.15), 200);
+        this._delay(659, 0.6, 0.08);
       },
       choice_self_serving: () => {
-        // 利己：金属质感短促，冷硬
-        this._tone(800, 0.08, 'square', this.sfxGain, 0.2);
-        this._tone(1200, 0.05, 'sine', this.sfxGain, 0.15);
+        this._tone(900, 0.07, 'square', this.sfxGain, 0.18);
+        setTimeout(() => this._tone(1200, 0.05, 'sine', this.sfxGain, 0.1), 60);
       },
       choice_compromise: () => {
-        // 折衷：温和和弦，平衡
-        this._tone(392, 0.2, 'triangle', this.sfxGain, 0.25);
-        this._tone(494, 0.2, 'sine', this.sfxGain, 0.15);
+        this._tone(330, 0.22, 'triangle', this.sfxGain, 0.2);
+        setTimeout(() => this._tone(440, 0.18, 'sine', this.sfxGain, 0.12), 80);
       },
       choice_betrayal: () => {
-        // 背叛：不协和下行，刺耳
-        this._tone(440, 0.15, 'sawtooth', this.sfxGain, 0.3);
-        setTimeout(() => this._tone(349, 0.2, 'sawtooth', this.sfxGain, 0.25), 100);
-        setTimeout(() => this._tone(261, 0.3, 'sawtooth', this.sfxGain, 0.2), 200);
-        this._delay(261, 0.8, 0.1);
+        this._tone(440, 0.18, 'sawtooth', this.sfxGain, 0.22);
+        setTimeout(() => this._tone(311, 0.22, 'sawtooth', this.sfxGain, 0.18), 120);
+        setTimeout(() => this._tone(220, 0.35, 'sawtooth', this.sfxGain, 0.14), 250);
+        this._delay(220, 0.9, 0.08);
       },
       choice_passive: () => {
-        // 沉默：低沉消散，如叹息
-        this._tone(220, 0.4, 'sine', this.sfxGain, 0.2);
-        this._delay(165, 0.8, 0.08);
+        this._tone(200, 0.45, 'sine', this.sfxGain, 0.16);
+        this._delay(150, 0.9, 0.06);
       },
       // V11: 惩罚音效
       penalty: () => {
@@ -777,11 +773,14 @@ document.addEventListener('DOMContentLoaded', () => {
   showNextSubtitle();
   setInterval(() => {
     if (subtitleEl) {
+      const h = subtitleEl.offsetHeight;
+      subtitleEl.style.height = h + 'px';
       subtitleEl.classList.add('subtitle-fade-out');
       setTimeout(() => {
         showNextSubtitle();
         subtitleEl.classList.remove('subtitle-fade-out');
         subtitleEl.classList.add('subtitle-fade-in');
+        subtitleEl.style.height = '';
         setTimeout(() => subtitleEl.classList.remove('subtitle-fade-in'), 600);
       }, 400);
     }

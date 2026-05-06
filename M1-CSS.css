@@ -21,7 +21,15 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 /* LANDING */
 #landing{align-items:center;justify-content:center;text-align:center;padding:2rem;}
 #landing h1{font-family:'Noto Serif SC',serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:900;letter-spacing:0.1em;margin-bottom:0.5rem;background:linear-gradient(135deg,var(--text),var(--accent-w));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeUp 1.2s ease-out;}
-#landing .subtitle{font-size:clamp(0.9rem,2vw,1.2rem);color:var(--muted);margin-bottom:3rem;animation:fadeUp 1.2s ease-out 0.3s both;transition:opacity 0.5s ease,transform 0.5s ease;line-height:1.8;min-height:3.6em;}
+#landing .subtitle{font-size:clamp(0.9rem,2vw,1.2rem);color:var(--muted);margin-bottom:2rem;animation:fadeUp 1.2s ease-out 0.3s both;transition:opacity 0.5s ease,transform 0.5s ease;line-height:1.8;min-height:5em;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+/* V14.3: 混沌入口 — 精巧标题附近链接 */
+.chaos-entry{display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:2rem;padding:0.6rem 1.5rem;background:linear-gradient(135deg,rgba(184,169,212,0.1),rgba(201,169,110,0.08));border:1px solid rgba(184,169,212,0.3);border-radius:2rem;cursor:pointer;transition:all 0.4s ease;animation:fadeUp 1.2s ease-out 0.5s both;}
+.chaos-entry:hover{background:linear-gradient(135deg,rgba(184,169,212,0.18),rgba(201,169,110,0.14));border-color:rgba(184,169,212,0.6);transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,169,212,0.15);}
+.chaos-entry-icon{font-size:1.3rem;animation:chaosEntrySpin 4s ease-in-out infinite;}
+@keyframes chaosEntrySpin{0%,100%{transform:rotate(0deg);}30%{transform:rotate(15deg);}70%{transform:rotate(-10deg);}}
+.chaos-entry-text{font-family:'Noto Serif SC',serif;font-size:0.9rem;color:var(--text);letter-spacing:0.08em;}
+.chaos-entry-arrow{font-size:0.8rem;color:var(--muted);transition:transform 0.3s ease;}
+.chaos-entry:hover .chaos-entry-arrow{transform:translateX(4px);color:var(--accent-w);}
 .subtitle-source{display:block;font-size:0.72rem;color:rgba(201,169,110,0.5);margin-top:0.4rem;font-style:italic;letter-spacing:0.1em;transition:opacity 0.3s ease 0.2s;}
 .subtitle-text{display:inline;transition:opacity 0.3s ease;}
 .subtitle-fade-out{opacity:0;transform:translateY(12px);}
