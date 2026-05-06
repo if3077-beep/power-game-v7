@@ -1269,7 +1269,15 @@ function startGame(scenarioKey) {
 }
 
 // --- 渲染场景 ---
+// V14.3: 场景色调切换
+function setSceneTone(tone) {
+  const screen = document.getElementById('game-screen');
+  screen.classList.remove('scene-tone-encounter','scene-tone-crisis','scene-tone-random','scene-tone-final','scene-tone-extreme','scene-tone-normal');
+  if (tone) screen.classList.add(`scene-tone-${tone}`);
+}
+
 function renderScene() {
+  setSceneTone('normal');
   const sc = scenarios[state.scenario];
   const rawScene = sc.scenes[state.currentScene];
   // 应用历史联动效果
@@ -2314,6 +2322,7 @@ const randomEvents = {
 };
 
 function renderRandomEvent() {
+  setSceneTone('random');
   // V12: 检查渠道危机事件（渠道过低时优先触发）
   const crisisEvent = getChannelCrisisEvent(state.scenario);
   if (crisisEvent) {
@@ -2453,6 +2462,7 @@ function renderRandomEvent() {
 
 // --- V13: 奇遇事件渲染 ---
 function renderEncounter() {
+  setSceneTone('encounter');
   const events = encounterEvents[state.scenario];
   if (!events || events.length === 0) { renderScene(); return; }
   startBGM('encounter');
@@ -2591,6 +2601,7 @@ function renderEncounter() {
 
 // --- V12: 渠道危机事件渲染 ---
 function renderChannelCrisis(event) {
+  setSceneTone('crisis');
   // V14.1: 记录危机历史 + 递增连击计数 + 设置冷却
   state.crisisHistory.push(event.title);
   state.crisisStrikes++;
@@ -2697,6 +2708,7 @@ function renderChannelCrisis(event) {
 
 // --- V11: 最终场景前的额外事件 ---
 function renderExtremeStreakEvent(event) {
+  setSceneTone('extreme');
   const container = document.getElementById('sceneContainer');
   document.getElementById('levelIndicator').textContent = `⚠ 极端事件 · ${state.currentScene + 1} / ${scenarios[state.scenario].scenes.length}`;
   startBGM('crisis');
@@ -2731,6 +2743,7 @@ function renderExtremeStreakEvent(event) {
 }
 
 function renderFinalEvent() {
+  setSceneTone('final');
   const scenarioKey = state.scenario;
   const debtCounts = {};
   state.debts.forEach(d => { debtCounts[d.category] = (debtCounts[d.category] || 0) + 1; });

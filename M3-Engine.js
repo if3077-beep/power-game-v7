@@ -446,6 +446,9 @@ function showScreen(id) {
   } else {
     document.getElementById('channelsBar').classList.remove('visible');
   }
+  // V14.3: 图鉴按钮仅首页和结算页显示
+  const footer = document.querySelector('.landing-footer');
+  if (footer) footer.style.display = (id === 'landing' || id === 'ending-screen') ? '' : 'none';
 }
 
 // --- 转场 ---
