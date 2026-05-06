@@ -338,6 +338,30 @@ function getEasterEgg(scenarioKey, endingId) {
   return result;
 }
 
+// --- V7: 类别追踪系统（防止单一结局） ---
+function getCategoryStreak() {
+  if (state.debts.length < 2) return { category: null, count: 0 };
+  const last = state.debts[state.debts.length - 1].category;
+  let count = 0;
+  for (let i = state.debts.length - 1; i >= 0; i--) {
+    if (state.debts[i].category === last) count++;
+    else break;
+  }
+  return { category: last, count };
+}
+
+function getStreakWarning(streak) {
+  if (streak.count < 3) return null;
+  const warnings = {
+    moral: '你已经连续三次坚守原则了。历史上的殉道者，大多没有好下场。你确定不给自己留一条退路？',
+    self-serving: '你已经连续三次选择利己。权力的游戏里，赢太多次的人往往输在最后一把。',
+    compromise: '你已经连续三次折中。折中是最安全的路——也是最容易被遗忘的路。',
+    betrayal: '你已经连续三次出卖他人。被背叛的人不会忘记——他们只是在等一个反击的机会。',
+    passive: '你已经连续三次选择沉默。沉默不是没有代价——它只是在积累，直到有一天全部爆发。'
+  };
+  return warnings[streak.category] || null;
+}
+
 // --- 开局身份介绍 ---
 function showIntro(scenarioKey) {
   const sc = scenarios[scenarioKey];
@@ -542,11 +566,21 @@ function makeChoice(index) {
     } catch (e) { /* 静默失败 */ }
   }
 
-  // V7: 中庸之道 — 显示未选择的中庸路线
+  // V7: 中庸之道 — 仅在有zhongyongText时显示
   let zhongyongHTML = '';
   if (choice.zhongyongText) {
     zhongyongHTML = `<div class="zhongyong-box"><div class="zy-label">中庸之道</div><div class="zy-text">${choice.zhongyongText}</div><div class="zy-quote">「极高明而道中庸」——《中庸》</div></div>`;
     setTimeout(() => audioEngine.play('zhongyong'), 800);
+  }
+
+  // V7: 类别连击警告
+  const streak = getCategoryStreak();
+  const streakWarning = getStreakWarning(streak);
+  let streakHTML = '';
+  if (streakWarning) {
+    streakHTML = `<div class="streak-warning"><div class="streak-label">路径依赖警告</div><div class="streak-text">${streakWarning}</div></div>`;
+    audioEngine.play('fail');
+    screenShake('medium');
   }
 
   const container = document.getElementById('sceneContainer');
@@ -557,6 +591,7 @@ function makeChoice(index) {
     <div class="consequence-label">后果</div>
     <div class="consequence-text">${choice.consequence}</div>
     <div class="debt-added">新增人情债：「${choice.debtPhrase}」</div>
+    ${streakHTML}
     ${insightHTML}
     ${zhongyongHTML}
   `;

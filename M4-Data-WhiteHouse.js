@@ -30,8 +30,7 @@ const whitehouseData = {
           historyFlag: 'wh_chose_public_op',
           debtCategory: 'compromise',
           channelEffect: 0,
-          consequence: '你发了一条澄清推文，支持率回升。但情报被搁置，军方接触对手的消息在下午才被你看到——已经晚了三小时。幕僚长在走廊里叹了口气。',
-          analysisTags: ['public_op', 'short_term']
+          consequence: '你发了一条澄清推文，支持率回升。但情报被搁置，军方接触对手的消息在下午才被你看到——已经晚了三小时。幕僚长在走廊里叹了口气。'
         },
         {
           text: '优先处理军方情报——危机要扼杀在摇篮里',
@@ -51,7 +50,8 @@ const whitehouseData = {
           debtCategory: 'passive',
           channelEffect: -1,
           consequence: '幕僚长眼底闪过一丝疲惫，但还是转身去安排了。下午他交来两份方案——都算不上完美，但至少没有出大乱子。只是，你的消息渠道少了一条——他开始自己筛选信息再给你。',
-          analysisTags: ['delegate', 'trust_cost']
+          analysisTags: ['delegate', 'trust_cost'],
+          zhongyongText: '中庸之道：委派可以，但要明确分工——让幕僚长处理推文危机，你亲自盯情报。委派不是甩锅，是把任务分配给最合适的人。关键是让每个人知道自己的边界在哪里。'
         }
       ]
     },
@@ -93,7 +93,8 @@ const whitehouseData = {
           debtCategory: 'passive',
           channelEffect: -1,
           consequence: '整个会议室陷入诡异的安静。当晚，两边都派人来"汇报工作"——实际上是在试探你。但你的沉默也让你失去了一个关键信息源：国防部长不再主动分享军事情报，财政部长开始绕过你直接和国会沟通。你发现，"让所有人猜"的代价是"没有人告诉你真相"。',
-          analysisTags: ['strategic', 'uncertainty']
+          analysisTags: ['strategic', 'uncertainty'],
+          zhongyongText: '中庸之道：沉默之后，当天下午分别给两人发一条加密短信："你的立场我理解，给我48小时。"沉默不是不表态，是延迟表态——但延迟必须有期限，否则就是逃避。'
         },
         {
           text: '"你们两个都别吵了，下周给我一份联合方案"',
@@ -103,7 +104,8 @@ const whitehouseData = {
           debtCategory: 'passive',
           channelEffect: -1,
           consequence: '两个人都不满意，但也没撕破脸。下周的联合方案是一纸空文——两个部门各写各的。更糟的是，你的拖延被媒体解读为"总统优柔寡断"。一条评论被转发了十万次："连内阁吵架都摆不平，怎么治理国家？"你的幕僚长开始在走廊里叹气。',
-          analysisTags: ['avoidance', 'delay']
+          analysisTags: ['avoidance', 'delay'],
+          zhongyongText: '中庸之道：拖延可以，但要有结构——指定一个跨部门委员会，由你的幕僚长牵头，三天内交出三个方案供你选择。拖延不是放手，是把战场从会议室搬到文件里。'
         }
       ]
     },
@@ -133,7 +135,8 @@ const whitehouseData = {
           debtCategory: 'betrayal',
           channelEffect: -1,
           consequence: '声明发出去了。但第二天，完整录音被放出。你失去了最后一个"诚实"的标签。三名高级幕僚提交了辞呈。你的消息渠道断了三条。',
-          analysisTags: ['deception', 'risk']
+          analysisTags: ['deception', 'risk'],
+          zhongyongText: '中庸之道：让发言人说"总统对用词不当表示遗憾"——不撒谎，不否认，用"遗憾"代替"道歉"。政治语言的艺术在于：每个字都有十种解读方式。'
         },
         {
           text: '不回应，让时间冲淡一切',
@@ -168,7 +171,8 @@ const whitehouseData = {
           debtCategory: 'betrayal',
           channelEffect: 0,
           consequence: '法案通过了。你在签署仪式上微笑，但手指微微发抖。当晚，#出卖人民#成为热搜第一。你的legacy保住了，但历史会记住这笔交易。',
-          analysisTags: ['pragmatic', 'legacy']
+          analysisTags: ['pragmatic', 'legacy'],
+          zhongyongText: '中庸之道：接受交易，但附加一个"日落条款"——争议条款两年后自动失效，届时需要重新投票。你给了反对党面子，但给自己留了后手。历史会记住你的聪明，而不是你的出卖。'
         },
         {
           text: '拒绝——有些底线不能碰',
@@ -177,7 +181,8 @@ const whitehouseData = {
           debtCategory: 'moral',
           channelEffect: 0,
           consequence: '法案流产了。反对党领袖在电视上说你"不懂政治"。但你的核心团队对你更加忠诚。只是，你的任期还剩两年，手里已经没有牌了。',
-          analysisTags: ['principled', 'cost']
+          analysisTags: ['principled', 'cost'],
+          zhongyongText: '中庸之道：拒绝这个条款，但提出一个替代方案——在另一个不那么敏感的领域给反对党一个赢面。政治的本质是交换，但你可以选择交换什么。底线不碰，但其他牌可以打。'
         },
         {
           text: '提出折中方案：让步一半，但增加监督条款',
@@ -204,7 +209,8 @@ const whitehouseData = {
           debtCategory: 'betrayal',
           channelEffect: 0,
           consequence: '他沉默了很久，然后说："我只是在做准备。政治没有永远的朋友。"你们都知道，这层窗户纸捅破了就再也糊不回去。其他幕僚开始在你面前表现得格外忠诚——但你知道那只是表演。',
-          analysisTags: ['confrontation', 'trust']
+          analysisTags: ['confrontation', 'trust'],
+          zhongyongText: '中庸之道：不当面质问，但约他私下喝一杯。不提照片，只聊"我们还能一起走多远"。让他自己意识到你知道了——但给他一个体面的台阶。摊牌不一定要撕破脸。'
         },
         {
           text: '装不知道——用他到最后一刻',
@@ -233,7 +239,8 @@ const whitehouseData = {
           debtCategory: 'passive',
           channelEffect: -1,
           consequence: '你关了灯，走出白宫。深夜的空气很冷。你想起了当总统之前的日子——那时候你只需要对自己负责。照片风波三天后自然平息了。但你的幕僚们发现：你开始在关键决策中缺席。他们不再第一时间找你汇报——而是先找你的副手。你的消息渠道又断了一条。',
-          analysisTags: ['avoidance', 'exhaustion']
+          analysisTags: ['avoidance', 'exhaustion'],
+          zhongyongText: '中庸之道：今天不做决定，但给幕僚长发一条消息："这件事我知道了，明天上午十点我们单独谈。"疲惫不是借口，但延迟可以是策略——关键是让对方知道你没有忘记。'
         }
       ]
     },
@@ -250,7 +257,8 @@ const whitehouseData = {
           debtCategory: 'betrayal',
           channelEffect: 0,
           consequence: '提名通过了。社会舆论炸了锅。但你的法案确实畅通无阻了——基建、教育、医疗改革，两年内全部落地。历史会怎么评价你？也许要五十年后才有答案。',
-          analysisTags: ['trade', 'legacy']
+          analysisTags: ['trade', 'legacy'],
+          zhongyongText: '中庸之道：同意交易，但要求在提名听证会上设置严格的质询程序——让公众看到这个人选的争议性。你给了参议院领袖面子，但让媒体替你打了预防针。'
         },
         {
           text: '拒绝——司法独立不能拿来交易',
@@ -259,7 +267,8 @@ const whitehouseData = {
           debtCategory: 'moral',
           channelEffect: -1,
           consequence: '接下来两年，你的所有法案都被卡在参议院。你的任期成了"一事无成"的代名词。但你的幕僚们说："至少我们没有出卖灵魂。"',
-          analysisTags: ['principled', 'stalemate']
+          analysisTags: ['principled', 'stalemate'],
+          zhongyongText: '中庸之道：拒绝这个人选，但主动提出在其他议题上给参议院领袖一个赢面——比如基建法案的优先投票权。拒绝不一定要撕破脸，关键是给对方一个台阶下。'
         },
         {
           text: '提出替代方案：换一个温和人选',
