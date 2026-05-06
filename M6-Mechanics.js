@@ -720,6 +720,18 @@ const encounterEvents = {
         { text: `「个体——因为整体是由每一个不可替代的人构成的」`, hint: `双倍影响——你的投票将在三个时代同时载入法典。`, debtPhrase: `你欠每一个个体一个不会被整体扫掉的权利`, debtCategory: 'moral', channelEffect: -3, consequence: `大儒和法官点头——但量子伦理学家沉默了。他说：「在3077年——有一部分人已经不只是个体——他们只是整体的一部分——不知道自己的名字。你的决定意味着——他们需要被给予名字。」你说：「那就给他们名字。用混沌之渊的权限。」` },
         { text: `「整体——因为个体离开了整体就不存在」`, hint: `双倍影响——你选择的安全可能会被利用。`, debtPhrase: `你欠三个时代的整体一个不会被个体冲散的稳固`, debtCategory: 'self-serving', channelEffect: -3, consequence: `量子伦理学家点头了——但大儒和法官看了你一眼——很轻的一眼。他们不说——但你知道——他们记得你用整体扫过了少数。而你将在余生——不是在一个时代，而是在三个——一直问自己：那个少数里有没有一个不该被忽略的人。` }
       ]
+    },
+    { title: `时间之钟的倒转`, text: `时间钟——混沌之渊最古老的存在——第一次开始倒着走。不是故障——而是一种你从未见过的"模式"。\n\n回音监听者匆忙找你：「当钟倒着走，意味着有人正在尝试改变过去。三个时代的人谁的过去被改变——都不是好事。」\n\n钟面上的指针正在逆向划过万历年、2036年和3077年。`,
+      choices: [
+        { text: `追踪倒转的来源——找出谁在改变过去`, hint: `双倍影响——你可能会面对一个被自己过去困住的灵魂。`, debtPhrase: `你欠那个试图改变过去的人一个被理解的机会`, debtCategory: 'moral', channelEffect: -2, consequence: `你发现了一个人——一个万历朝的年轻书生。他在试图防止他父亲被处决。你知道如果他成功了，他会在这个时代的家庭会不同——但整个明朝史可能改变。你看着他的手——里握着一支笔和三百年后的一张判决书。你不说对错。你只是坐下来——和他讲了一个关于接受的故事。` },
+        { text: `让钟继续倒转——也许有些事情值得被改变`, hint: `双倍影响——你选择的是非常危险的——但对一个少年来说不是错的。`, debtPhrase: `你欠那个少年一个不会被责备的父亲`, debtCategory: 'self-serving', channelEffect: -3, consequence: `钟继续倒转。回音监听者看着你——他没有说话。你知道你在做的事很危险——但你也知道——如果这个少年的父亲能活——也许混沌之渊的目的不仅仅是防止改变——而是让错误的可以重新来过。` }
+      ]
+    },
+    { title: `创造者的最后问题`, text: `那个在第十七章见过的创建者——退休的万历御史——今天站到了时间钟前。他说他有一个"最后的问题"——需要你和其他人一起投票。\n\n他说：「我老了——我该把我的记忆给别人。但问题是——该给哪一个时代？」\n\n他的记忆里有四百年的所有重要对话——每一个与混沌之渊有关的故事、教训、错误和发现。如果给万历朝——他们会学着避免重蹈覆辙。给2036年——他们会找到与AI共存的新方式。给3077年——他们能从最古老的智慧里汲取重启文明的力量。`,
+      choices: [
+        { text: `「给他们每一个人一份——记忆不该只有一个主人」`, hint: `双倍影响——你选择了平等的——但也是最多人会感到困惑的。`, debtPhrase: `你欠创建者一个不会被独占的四百年记忆`, debtCategory: 'moral', channelEffect: -2, consequence: `创建者的记忆被分到了三个时代。他不完整了——在每个时代只有一个"版本"。但他说：「完整不是记忆的数量——而是每一个时代能用我的记忆帮助另一个人。"临别他说:'你是对的。知识不是子弹——是种子。」` },
+        { text: `「给最需要它的时代——万历朝——因为他们最接近遗忘」`, hint: `双倍影响——你选了一个时代——把所有的种子放在一片土上。`, debtPhrase: `你欠未来一个不会被遗忘的过去`, debtCategory: 'compromise', channelEffect: -2, consequence: `记忆全部流向万历朝。大明的学者们拿到了他们需要的"教材"——但他们也对从未来来的所有灾难感到震惊。创建者说：「他们现在知道了——他们也更害怕了。但害怕有时比无知更好。」\n\n你看着万历朝的焦痕——那里曾经有一个安静的县城——现在他们为即将发生的事情而整日担忧。也许这是必要的——也许这是代价。` }
+      ]
     }
   ]
 };
@@ -988,15 +1000,17 @@ function showIntro(scenarioKey) {
   const sc = scenarios[scenarioKey];
   const intro = sc.intro;
   const screen = document.getElementById('intro-screen');
-  // V12.2: 随机选择 intro 变体
-  const desc = intro.descVariants && intro.descVariants.length > 0 && Math.random() < 0.4
+  const desc = intro.descVariants && intro.descVariants.length > 0 && Math.random() < 0.5
     ? intro.descVariants[Math.floor(Math.random() * intro.descVariants.length)]
     : intro.desc;
-  const situation = intro.situationVariants && intro.situationVariants.length > 0 && Math.random() < 0.4
+  const situation = intro.situationVariants && intro.situationVariants.length > 0 && Math.random() < 0.5
     ? intro.situationVariants[Math.floor(Math.random() * intro.situationVariants.length)]
     : intro.situation;
-  // 设置道路主题
-  document.body.className = `theme-${scenarioKey}`;
+  // V14.3: 部分道路支持明亮主题变体
+  const brightChance = { korea: 0.5, africa: 0.4, ai: 0.3 };
+  const useBright = brightChance[scenarioKey] && Math.random() < brightChance[scenarioKey];
+  state._brightTheme = useBright;
+  document.body.className = useBright ? `theme-${scenarioKey}-bright` : `theme-${scenarioKey}`;
   screen.innerHTML = `
     <div class="intro-ambient-glow"></div>
     <div class="intro-identity theme-${scenarioKey}">
@@ -1041,12 +1055,11 @@ function startGame(scenarioKey) {
   const isHidden = ['africa', 'cyber', 'korea', 'chaos'].includes(scenarioKey);
   // V14.1: 隐藏道路随机难度 — 40%高强度, 60%普通
   const intensity = isHidden ? (Math.random() < 0.4 ? 'high' : 'normal') : 'normal';
-  state = { scenario: scenarioKey, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [], encounterUsed: false, encounterScene: Math.floor(Math.random() * 4) + 2, isHidden, crisisHistory: [], crisisCooldown: 0, crisisStrikes: 0, intensity };
+  state = { scenario: scenarioKey, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [], encounterUsed: false, encounterScene: Math.floor(Math.random() * 4) + 2, isHidden, crisisHistory: [], crisisCooldown: 0, crisisStrikes: 0, intensity, _brightTheme: state._brightTheme || false };
   resetFlags();
   renderChannels();
   renderDebtScroll();
-  // 设置道路主题
-  document.body.className = `theme-${scenarioKey}`;
+  document.body.className = state._brightTheme ? `theme-${scenarioKey}-bright` : `theme-${scenarioKey}`;
   // V14.1: 主题底图层
   let bgLayer = document.querySelector('.theme-bg-layer');
   if (!bgLayer) { bgLayer = document.createElement('div'); bgLayer.className = 'theme-bg-layer'; document.body.prepend(bgLayer); }
@@ -3096,11 +3109,11 @@ function renderGalleryContent(tab) {
 
 // V14.1: 全解锁选项
 function unlockAllEndings() {
-  if (!confirm('解锁全部结局？（混沌之路除外）')) return;
-  ['ai', 'africa', 'cyber', 'korea'].forEach(road => localStorage.setItem(road + 'Unlocked', 'true'));
+  if (!confirm('解锁前三个道路的全部结局？（隐藏道路需自行探索）')) return;
+  ['ai'].forEach(road => localStorage.setItem(road + 'Unlocked', 'true'));
   const allEndings = {};
   Object.entries(scenarios).forEach(([key, sc]) => {
-    if (key === 'chaos') return;
+    if (!['whitehouse', 'ming', 'ai'].includes(key)) return;
     allEndings[key] = sc.endings.map(e => e.id);
   });
   localStorage.setItem('unlockedEndings', JSON.stringify(allEndings));

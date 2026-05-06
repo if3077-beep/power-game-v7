@@ -837,5 +837,37 @@ body.theme-chaos .theme-bg-layer{background:radial-gradient(ellipse at 50% 30%,r
 @keyframes chaosCardGlow{0%,100%{box-shadow:0 0 20px rgba(184,169,212,0.15),0 0 60px rgba(201,169,110,0.05);}50%{box-shadow:0 0 40px rgba(184,169,212,0.3),0 0 80px rgba(201,169,110,0.1);}}
 .choice-card[data-scenario="chaos"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(184,169,212,0.12),transparent 60%),radial-gradient(ellipse at 30% 70%,rgba(201,169,110,0.06),transparent 60%);}
 .choice-card[data-scenario="chaos"]:hover{box-shadow:0 20px 80px rgba(0,0,0,0.4),0 0 80px rgba(184,169,212,0.15);}
+.chaos-card{width:420px;border-image:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4) 1;}
+.chaos-card .card-era{background:linear-gradient(135deg,#c9a96e,#b8a9d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.chaos-card h2{background:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* ====== V14.3: 明亮主题道路 ====== */
+/* 韩国 — 温暖奶油调 */
+body.theme-korea-bright{--bg:#faf8f5;--text:#3a3530;--muted:#8a8078;--accent-w:#9b8ec4;--glass:rgba(0,0,0,0.03);--glass-border:rgba(0,0,0,0.08);--card-bg:rgba(0,0,0,0.02);--scroll-bg:rgba(250,248,245,0.95);}
+body.theme-korea-bright #particles{opacity:0.3;}
+body.theme-korea-bright .scene-text{color:#3a3530;}
+body.theme-korea-bright .scene-chapter{color:#7b6ba8;}
+body.theme-korea-bright .choice-btn{background:rgba(0,0,0,0.02);border-color:rgba(0,0,0,0.08);color:#3a3530;}
+body.theme-korea-bright .choice-btn:hover{background:rgba(155,142,196,0.08);border-color:#9b8ec4;}
+body.theme-korea-bright .game-header{background:linear-gradient(180deg,#faf8f5 60%,transparent);}
+body.theme-korea-bright .channels-bar{background:linear-gradient(180deg,rgba(250,248,245,0.9) 0%,transparent 100%);}
+
+/* 非洲 — 草原金调 */
+body.theme-africa-bright{--bg:#f5f0e8;--text:#3a3028;--muted:#8a7a6a;--accent-w:#6b8f71;--glass:rgba(0,0,0,0.03);--glass-border:rgba(0,0,0,0.08);--card-bg:rgba(0,0,0,0.02);--scroll-bg:rgba(245,240,232,0.95);}
+body.theme-africa-bright #particles{opacity:0.3;}
+body.theme-africa-bright .scene-text{color:#3a3028;}
+body.theme-africa-bright .scene-chapter{color:#4a7a50;}
+body.theme-africa-bright .choice-btn{background:rgba(0,0,0,0.02);border-color:rgba(0,0,0,0.08);color:#3a3028;}
+body.theme-africa-bright .choice-btn:hover{background:rgba(107,143,113,0.08);border-color:#6b8f71;}
+body.theme-africa-bright .game-header{background:linear-gradient(180deg,#f5f0e8 60%,transparent);}
+
+/* AI — 极简白青调 */
+body.theme-ai-bright{--bg:#f0f4f8;--text:#1a2a30;--muted:#6a7a80;--accent-w:#4ecdc4;--glass:rgba(0,0,0,0.02);--glass-border:rgba(0,0,0,0.06);--card-bg:rgba(0,0,0,0.02);--scroll-bg:rgba(240,244,248,0.95);}
+body.theme-ai-bright #particles{opacity:0.25;}
+body.theme-ai-bright .scene-text{color:#1a2a30;}
+body.theme-ai-bright .scene-chapter{color:#2a9d8f;}
+body.theme-ai-bright .choice-btn{background:rgba(0,0,0,0.02);border-color:rgba(0,0,0,0.06);color:#1a2a30;}
+body.theme-ai-bright .choice-btn:hover{background:rgba(78,205,196,0.06);border-color:#4ecdc4;}
+body.theme-ai-bright .game-header{background:linear-gradient(180deg,#f0f4f8 60%,transparent);}
 
 /* V14: gallery overrides removed — merged into main gallery section */
