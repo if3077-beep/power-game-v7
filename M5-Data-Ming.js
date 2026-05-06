@@ -1,0 +1,110 @@
+// ============================================================
+//  M5: 大明官场场景数据
+// ============================================================
+const mingData = {
+  label: '大明官场',
+  badge: '🏯',
+  intro: {
+    name: '七品知县',
+    role: '江南某县知县',
+    badge: '🏯',
+    desc: '你穿越到了大明万历年间，成为江南某县的七品知县。到任第一天，你就发现——这里的规则和你想象的完全不同。\n\n两本账、人情债、派系站队——你能在这张网里活几集？',
+    situation: '你的师爷递给你两本账册：一本是给朝廷看的"官账"，一本是县里实际运转的"私账"。两本账，数字差了三倍。\n\n师爷说："大人，这是规矩。"\n\n你需要在8个场景中做出选择。每个选择都会欠下一笔人情债。\n\n你准备好了吗？'
+  },
+  scenes: [
+    {
+      chapter: '第一折 · 到任', title: '两本账',
+      text: '你穿越到了大明万历年间，成为江南某县的七品知县。到任第一天，师爷递给你两本账册：一本是给朝廷看的"官账"，一本是县里实际运转的"私账"。\n\n两本账，数字差了三倍。师爷说："大人，这是规矩。"',
+      narrator: '「置身事内」：在中国，正式制度和非正式制度永远并行运转。看懂两本账，才算入门。',
+      choices: [
+        { text: '按官账上报——规矩就是规矩', bookQuote: '选这个？《沧浪之水》：池大为刚进卫生厅时也这么想。后来他明白了——规矩是给守规矩的人定的。', debtPhrase: '你的上司沉默了三天——然后派了一个"巡查"下来', debtCategory: 'moral', channelEffect: -1, consequence: '上司收到你的公文后，沉默了三天。然后派了一个"巡查"下来。你的前任师爷暗示你："大人，水至清则无鱼啊。"你发现县衙的其他官员开始躲着你走。', analysisTags: ['principled', 'isolation'] },
+        { text: '按私账来——先融入再说', bookQuote: '选这个？《乡土中国》：在乡土社会，规矩不是写在纸上的，是活在人情里的。', debtPhrase: '你欠这张网一个承诺——从此你也是网中人', debtCategory: 'compromise', channelEffect: 0, consequence: '县衙上下松了一口气。师爷开始带你拜访本地乡绅。你发现，所谓的"私账"其实是整个县运转的真正规则——没有它，河道修不了，灾民赈不了，连衙门的薪水都发不出。', analysisTags: ['adaptation', 'system'] },
+        { text: '先不动，把两本账都研究透', bookQuote: '选这个？《置身事内》：不了解制度的实际运转方式，任何改革都是空中楼阁。', debtPhrase: '师爷看你的眼神从轻视变成了谨慎——你还不确定这是好事还是坏事', debtCategory: 'passive', channelEffect: 0, consequence: '你花了半个月摸清门道。原来差额的大部分去了三个地方：上司的"冰敬炭敬"、河道修缮的"惯例浮报"、以及一个你还不敢深查的神秘去处。', analysisTags: ['observation', 'patience'] }
+      ]
+    },
+    {
+      chapter: '第二折 · 赴宴', title: '乡绅宴请',
+      text: '本地最大的乡绅王员外请你赴宴。他的庄园占了全县三成良田，佃户上千人。\n\n宴席上，王员外笑眯眯地说："大人新到任，老朽备了薄礼，不成敬意。"一锭金元宝被推到你面前。\n\n旁边坐着你的上司派来的"监司"，正不动声色地看着你。',
+      narrator: '「乡土中国」：在乡土社会，送礼不是贿赂，是建立关系的仪式。拒绝礼物，就是拒绝这段关系。',
+      choices: [
+        { text: '收下——入乡随俗', bookQuote: '选这个？《乡土中国》：礼物是社会关系的"黏合剂"。收下金子不仅是经济行为，更是政治表态。', debtPhrase: '王员外当场认你做"贤侄"——你欠他一个"贤侄"该做的事', debtCategory: 'compromise', channelEffect: 0, consequence: '王员外大喜，当场认你做"贤侄"。监司回去后在报告里写了你的"懂事"。你在县里办事开始顺畅了——但你也知道，你再也不是那个"清官"了。', analysisTags: ['adaptation', 'corruption'] },
+        { text: '婉拒——"王员外的心意我领了，但这锭金子我不能收"', bookQuote: '选这个？《乡土中国》：你拒绝的不是一锭金子，而是王员外向你发出的"结盟邀请"。', debtPhrase: '你在县里将成为孤家寡人——三天后，粮商拒绝向官仓供货', debtCategory: 'moral', channelEffect: -1, consequence: '宴席的气氛瞬间冷了。王员外的笑容僵了一秒，然后恢复如常。三天后，县里最大的粮商拒绝向官仓供货。你拒绝的不是金子，是整个县城的运转规则。', analysisTags: ['principled', 'cost'] },
+        { text: '收下，但当场宣布捐给县学——"让孩子们读书"', bookQuote: '选这个？《沧浪之水》：在规则的缝隙里找到第三条路——但过于聪明的人会让所有人不安。', debtPhrase: '你收到了三份来自其他乡绅的宴请——都在观望你', debtCategory: 'self-serving', channelEffect: 0, consequence: '王员外愣了一秒，然后哈哈大笑："大人果然高风亮节！"监司的眼神变得复杂。你的名声传开了，但也有人开始说你"沽名钓誉"。', analysisTags: ['clever', 'reputation'] },
+        { text: '看向监司："您觉得呢？"', bookQuote: '选这个？《置身事内》：在科层体制中，"请示上级"是最安全的选择——出了问题有上级担着。', debtPhrase: '你欠监司一个把柄——你的犹豫本身就是筹码', debtCategory: 'passive', channelEffect: 0, consequence: '监司皮笑肉不笑："大人自己做主就好。"你听出了弦外之音——他在试探你。最终你还是收了，但你知道，你的把柄已经在别人手里了。', analysisTags: ['delegation', 'vulnerability'] }
+      ]
+    },
+    {
+      chapter: '第三折 · 断案', title: '土地之争',
+      text: '一桩棘手的案子摆在你面前：本县农民张老实状告王员外强占其祖传十亩水田。证据确凿——地契、人证都有。\n\n但王员外是本县最大的税源，也是你上司的表亲。\n\n张老实跪在堂下，他的妻子抱着三岁的孩子站在门外。',
+      narrator: '「沧浪之水」：正义是一种奢侈品。在官场，每一次伸张正义都是在透支你的政治资本。',
+      choices: [
+        { text: '判张老实胜诉——法不容情', bookQuote: '选这个？《沧浪之水》：坚持正义还是保全自己？池大为最终选择了妥协。但你不是池大为。', debtPhrase: '王员外摔门而去——你的考评降为"下下"', debtCategory: 'moral', channelEffect: -1, consequence: '判决当天，王员外摔门而去。三天后，你的上司以"政绩不佳"为由，将你的考评降为"下下"。张老实给你磕了三个响头，你的仕途却开始亮红灯。但民间开始流传"青天大老爷"的故事。', analysisTags: ['justice', 'cost'] },
+        { text: '判王员外胜——"证据不足，驳回"', bookQuote: '选这个？《置身事内》：在基层治理中，"稳定"往往优先于"正义"。', debtPhrase: '张老实的妻子抱着孩子离开了县城，再也没有回来', debtCategory: 'betrayal', channelEffect: 0, consequence: '王员外派人送来厚礼。你在夜里把判决书翻来覆去看了十遍。师爷说："大人，做官就是做选择。"你开始理解这句话的重量了。', analysisTags: ['system', 'moral_cost'] },
+        { text: '调解——让王员外"补偿"张老实银两，田归王员外', bookQuote: '选这个？《置身事内》：调解的精髓在于"各退一步"——但弱者退的那一步，往往比强者大得多。', debtPhrase: '张老实拿到银子时眼里没有感激，只有认命', debtCategory: 'compromise', channelEffect: 0, consequence: '双方都不满意，但都接受了。王员外觉得你"多管闲事"。你谁也没得罪，但也谁都没交到。夜里你想：这算正义吗？', analysisTags: ['mediation', 'injustice'] },
+        { text: '拖延——"此案复杂，需进一步调查"', bookQuote: '选这个？《沧浪之水》：拖延是体制内最常见的"决策"方式——不做决定就不会犯错。', debtPhrase: '案子拖了三个月——张老实的妻子病倒了，王员外已经把地转到了别人名下', debtCategory: 'passive', channelEffect: 0, consequence: '你最终以"证据灭失"结案。没有人指责你，但你知道真相。夜里你开始失眠。', analysisTags: ['avoidance', 'victim'] }
+      ]
+    },
+    {
+      chapter: '第四折 · 站队', title: '派系抉择',
+      text: '朝廷里，内阁首辅和司礼监掌印太监的斗争白热化。你的上司是首辅的人，但掌印太监的人悄悄找上了你：只要你愿意在一份奏疏上署名，弹劾你的上司，太监可以保你连升三级。\n\n你的上司对你有知遇之恩。但他最近确实在贪墨河道银子。',
+      narrator: '「权力的道路」：在权力结构中，站队是最重要的决定——比能力重要，比政绩重要。',
+      choices: [
+        { text: '拒绝——"知遇之恩，不敢忘"', bookQuote: '选这个？《沧浪之水》：忠诚在官场是双刃剑——忠于一个人意味着得罪他的所有对手。', debtPhrase: '你保住了良心，但也保住了原地踏步的命运', debtCategory: 'moral', channelEffect: 0, consequence: '太监的人冷笑而去。你的上司听说后，感动了三天。然后继续贪他的银子。三年后，你的上司被革职，你也被牵连调任。', analysisTags: ['loyalty', 'stagnation'] },
+        { text: '署名弹劾——识时务者为俊杰', bookQuote: '选这个？《沧浪之水》：池大为最终也选择了这条路。不是因为他变了，是因为他终于看清了规则。', debtPhrase: '同僚们看你的眼神变了——有敬畏，有鄙夷，唯独没有亲近', debtCategory: 'betrayal', channelEffect: 0, consequence: '上司被革职。你连升两级，成为五品同知。但你开始一个人吃饭。晚上对着铜镜，你发现自己的笑容越来越像王员外。', analysisTags: ['ambition', 'transformation'] },
+        { text: '两不得罪——署名但暗中通知上司', bookQuote: '选这个？《权力的道路》：脚踩两只船是最危险的——因为两边都会觉得你是叛徒。', debtPhrase: '你同时失去了两边的信任——你成了官场上的透明人', debtCategory: 'betrayal', channelEffect: -1, consequence: '上司提前做了准备，弹劾失败。太监的人查出是你泄的密。从此你成了官场上的透明人——没人害你，也没人帮你。你的公文总是最后才被批复。', analysisTags: ['cunning', 'backfire'] },
+        { text: '辞官——"这官场，我不玩了"', bookQuote: '选这个？《乡土中国》：你辞了官，就能逃出这张网吗？你的家人呢？你的佃户呢？', debtPhrase: '你回到了乡下，种了一亩薄田——偶尔想起张老实', debtCategory: 'moral', channelEffect: 0, consequence: '你递了辞呈。上司挽留了三次，太监的人嘲笑你"没出息"。你回到了乡下，种了一亩薄田。夜里读书时，你忽然觉得，也许这才是你真正想要的。但偶尔你会想起张老实——你走了，谁来替他说话？', analysisTags: ['exit', 'idealism'] }
+      ]
+    },
+    {
+      chapter: '第五折 · 饭局', title: '官场酒局',
+      text: '你被邀请参加一场府城的官场酒局。在座的有知府、同知、通判，还有几个你认不出的"幕友"。\n\n酒过三巡，知府开始讲"笑话"——每个笑话都在暗讽你的上司。你听出来了：这是一场站队的"面试"。\n\n所有人的目光都落在你身上。',
+      narrator: '「乡土中国」：饭局是中国社会最重要的社交场——所有的交易、站队、表态，都在觥筹交错之间完成。',
+      choices: [
+        { text: '跟着笑——附和知府的"笑话"', bookQuote: '选这个？《乡土中国》：在饭局上，笑声就是表态。你附和知府意味着你向他递了"投名状"。', debtPhrase: '知府拍着你的肩膀说"小兄弟懂事"——你在回去的马车里对着夜空吐了', debtCategory: 'compromise', channelEffect: 0, consequence: '知府拍着你的肩膀说："小兄弟懂事。"你升了一级。但你在回去的马车里，对着夜空吐了。不是因为酒，是因为你发现自己笑得越来越自然了。', analysisTags: ['conformity', 'disgust'] },
+        { text: '沉默——低头喝酒，不接话', bookQuote: '选这个？《权力的道路》：不参与本身就是一种参与。你的沉默传达的信息是："我不站队。"', debtPhrase: '几个关键的审批开始"卡住"了——没人愿意帮一个"局外人"', debtCategory: 'passive', channelEffect: -1, consequence: '酒局的气氛微妙地冷了。知府不再看你。回县后，你发现几个关键的审批开始"卡住"了——不是针对你，只是没人愿意帮一个"局外人"。', analysisTags: ['neutrality', 'isolation'] },
+        { text: '反击——讲一个关于知府的"笑话"', bookQuote: '选这个？《权力的道路》：敢于反击的人要么一战成名，要么一败涂地。没有中间地带。', debtPhrase: '你给自己树立了一个强大的敌人——但"敢言"也在官场传开了', debtCategory: 'self-serving', channelEffect: 0, consequence: '你讲了一个关于知府"微服私访"的笑话。全场安静了三秒。然后知府哈哈大笑——但笑声没有到达眼底。你知道你给自己树立了一个强大的敌人。但你的"敢言"也在官场传开了。', analysisTags: ['courage', 'risk'] },
+        { text: '中途离席——"身体不适，先行告退"', bookQuote: '选这个？《置身事内》：在体制内，"不在场"的人永远不会被考虑——无论是提拔还是站队。', debtPhrase: '你走在府城的夜街上，吃了一碗馄饨——这是你穿越以来最自在的一刻', debtCategory: 'passive', channelEffect: 0, consequence: '你借口醉酒离席了。知府没有挽留。你走在府城的夜街上，闻到了路边馄饨摊的香味。你坐下来吃了一碗——这是你穿越以来最自在的一刻。但你也知道，你错过了一个改变命运的机会。', analysisTags: ['avoidance', 'freedom'] }
+      ]
+    },
+    {
+      chapter: '第六折 · 上访', title: '民变前夜',
+      text: '县里爆发了佃农抗租事件。起因是王员外加了两成租子，佃户们活不下去了。三百多人围在县衙门口。\n\n你的上司来信："安抚即可，不可扩大事态。"\n\n王员外来信："大人，这些刁民，抓几个为首的就老实了。"\n\n门外的佃户们举着"求青天大老爷做主"的牌子。',
+      narrator: '「置身事内」：基层治理的核心矛盾——稳定与公正、上级与民众、人情与法律——永远没有完美解。',
+      choices: [
+        { text: '开仓放粮，强制减租——为民做主', bookQuote: '选这个？《沧浪之水》："为民做主"是最危险的选择——因为它同时得罪了权力结构中的所有利益方。', debtPhrase: '佃户们在县衙门口放了一地的鸡蛋和蔬菜——他们能给的，只有这些了', debtCategory: 'moral', channelEffect: -1, consequence: '你开了官仓，贴了减租告示。佃户们跪了一地。但王员外当晚就给府城写了信。七天后，你被以"擅权妄为"为由停职。', analysisTags: ['justice', 'martyrdom'] },
+        { text: '按上司指示——安抚为主，不做实质行动', bookQuote: '选这个？《沧浪之水》：如果你连三百个人的命都救不了，你做官还有什么意义？', debtPhrase: '王员外派人送来一坛好酒——你在书房里把酒倒了，然后又重新倒了一杯', debtCategory: 'betrayal', channelEffect: 0, consequence: '你贴了一张"正在调查"的告示，然后关了县衙的门。三天后，佃户们散了。王员外派人送来一坛好酒。你在书房里把酒倒了——然后又重新倒了一杯。', analysisTags: ['compliance', 'moral_cost'] },
+        { text: '两边斡旋——让王员外减一成租，佃户散去', bookQuote: '选这个？《置身事内》：调解的前提是双方都有妥协的意愿——但弱者退的那一步，往往比强者大得多。', debtPhrase: '你苦口婆心谈了三天——没有人满意，但也没有人流血', debtCategory: 'compromise', channelEffect: 0, consequence: '王员外最终同意减一成——他也不希望事情闹大。佃户们勉强接受了。你累得在公堂上睡着了。师爷给你盖了一件外衣。', analysisTags: ['mediation', 'pragmatic'] },
+        { text: '装病——把烂摊子推给县丞', bookQuote: '选这个？《沧浪之水》：逃避是体制内最常见的生存策略。但你推掉的每一件事，都在消耗你的权威。', debtPhrase: '所有人都知道了：这个知县，关键时候靠不住', debtCategory: 'passive', channelEffect: -1, consequence: '你"病"了七天。县丞替你处理了——他两边都不得罪，佃户散了，王员外也没闹。但所有人都知道了：这个知县，关键时候靠不住。你的考评又降了一等。', analysisTags: ['avoidance', 'reputation'] }
+      ]
+    },
+    {
+      chapter: '第七折 · 面圣', title: '陛见',
+      text: '你被举荐面圣。皇帝问你：「朕听说你治下有方。你觉得，天下之弊，弊在何处？」\n\n你面前有两条路：说真话，或者说皇帝想听的话。\n\n殿外，太监和大臣们都在竖着耳朵。',
+      narrator: '「沧浪之水」：真话的代价，有时候不是丢官，是丢命。但假话的代价，是丢掉自己。',
+      choices: [
+        { text: '"弊在兼并——豪绅占田，百姓无立锥之地"', bookQuote: '选这个？《权力的道路》：在权力面前，真话是最危险的武器——它可能伤到别人，也可能伤到自己。', debtPhrase: '二十年后，一个年轻的御史读到了你的事迹——你不知道这件事', debtCategory: 'moral', channelEffect: -1, consequence: '皇帝沉默了很久。退朝后，三个大臣来找你"叙旧"，话里话外都是威胁。你的考评又降了。但民间开始流传一个"敢说真话的知县"的故事。', analysisTags: ['truth', 'martyrdom'] },
+        { text: '"弊在吏治——官员贪腐，上行下效"', bookQuote: '选这个？《置身事内》：在体制内，"正确的废话"是最安全的发言策略。', debtPhrase: '你安全过关了——但你也知道，你错过了一个可能改变什么的机会', debtCategory: 'passive', channelEffect: 0, consequence: '皇帝点了点头，不置可否。你安全过关了。回县后，一切照旧。你开始怀疑：面圣的意义是什么？', analysisTags: ['safe', 'regret'] },
+        { text: '"天下太平，皆赖陛下圣明"', bookQuote: '选这个？《权力的道路》：说假话的人最终会变成假话本身——你不再是"说谎的真人"，而是"真话说不出口的假人"。', debtPhrase: '皇帝龙颜大悦——回到驿站后，你对着铜镜看了很久，镜子里的人你还认识吗？', debtCategory: 'betrayal', channelEffect: 0, consequence: '皇帝龙颜大悦，当场赐你绸缎若干。太监对你刮目相看。你升了官。但回到驿站后，你对着铜镜看了很久——镜子里的人，你还认识吗？', analysisTags: ['flattery', 'self_loss'] },
+        { text: '"臣愚钝，不敢妄议。请陛下教诲。"', bookQuote: '选这个？《权力的道路》：在权力面前示弱，是一种自我保护。但皇帝会觉得你"不堪大用"。', debtPhrase: '皇帝有些失望——就像一滴水落进大海，无声无息', debtCategory: 'passive', channelEffect: 0, consequence: '皇帝有些失望，挥了挥手让你退下。你没有升官，也没有获罪。就像一滴水落进大海——无声无息。你想：也许这就是大多数人的命运。', analysisTags: ['submission', 'insignificance'] }
+      ]
+    },
+    {
+      chapter: '第八折 · 三年', title: '去留抉择',
+      text: '你在任上三年了。\n\n你的政绩不算差，也不算好。你学会了很多——如何在两本账之间游走，如何在酒桌上说场面话，如何在派系之间左右逢源。\n\n今天，朝廷考核，你的去留将被决定。你坐在书房里，翻出三年前刚到任时写的日记。上面只有一句话：「做一个好官。」\n\n墨迹已经淡了。',
+      narrator: '「沧浪之水」：人最终都会变成自己曾经最讨厌的样子。区别只在于——你是主动变的，还是被逼变的。',
+      choices: [
+        { text: '继续做官——往上爬，才能做更多的事', bookQuote: '选这个？《沧浪之水》：用权力来改变体制——但你还记得为什么要改变吗？', debtPhrase: '你翻开那本日记——"做一个好官"五个字已经模糊得看不清了', debtCategory: 'compromise', channelEffect: 0, consequence: '你被调任府城，官升一级。你开始接触更大的棋局。有一天你忽然发现，你已经在用"为百姓好"来为自己的妥协辩护了。', analysisTags: ['ambition', 'rationalization'] },
+        { text: '辞官归隐——"我尽力了"', bookQuote: '选这个？《乡土中国》：你辞了官，就能逃出这张网吗？你回到乡下，面对的还是同一套人情规则。', debtPhrase: '乡亲们还记得你——"那个做了三年官没发财的书生"', debtCategory: 'moral', channelEffect: 0, consequence: '你回到了故乡。乡亲们还记得你——"那个做了三年官没发财的书生"。你笑了。你终于可以睡一个安稳觉了。但偶尔你会想：如果当初再坚持一下呢？', analysisTags: ['exit', 'peace'] },
+        { text: '上万言书——把三年所见所闻如实上报', bookQuote: '选这个？《权力的道路》：有时候，一颗种子需要二十年才能发芽。', debtPhrase: '万言书石沉大海——但你的万言书被人抄录，在士林中悄悄流传', debtCategory: 'moral', channelEffect: -1, consequence: '万言书递上去了。石沉大海。三个月后，你被调往边疆——明升暗降。但你的万言书被人抄录，在士林中悄悄流传。你不知道的是，二十年后，一个年轻的御史读到了它，然后改变了整个朝廷。', analysisTags: ['truth', 'legacy'] }
+      ]
+    }
+  ],
+  endings: [
+    { id: 'ming_manipulator', title: '弄潮儿', subtitle: '你学会了规则，也学会了代价', icon: '🌊', condition: (d, ch) => d.filter(x => x.category === 'compromise').length >= 3 && ch >= 2, verdict: '你在官场如鱼得水，步步高升。但你也变成了自己曾经最讨厌的那种人。', analysis: '「沧浪之水」里池大为的结局：他得到了权力，但失去了自己。', quote: '「一个人最终都会变成自己曾经最讨厌的样子。」——《沧浪之水》', atmosphere: 'dark', epitaph: '在浊流中如鱼得水的人' },
+    { id: 'ming_martyr', title: '清风', subtitle: '你守住了自己，但官场没有你的位置', icon: '🍃', condition: (d, ch) => d.filter(x => x.category === 'moral').length >= 4, verdict: '你是清官，但清官在大明活不长。你被调往边疆，仕途坎坷。但你的万言书在士林中流传。', analysis: '「沧浪之水」的终极命题：理想主义者在体制内的命运，要么被同化，要么被边缘化。', quote: '「沧浪之水清兮，可以濯吾缨；沧浪之水浊兮，可以濯吾足。」——屈原', atmosphere: 'neutral', epitaph: '守住了清名的孤臣' },
+    { id: 'ming_deaf', title: '聋子', subtitle: '你失去了所有内线', icon: '🔇', condition: (d, ch) => ch <= 0, verdict: '你失去了所有消息渠道。你坐在县衙里，但你什么都不知道。你成了聋子。', analysis: '《置身事内》：信息是权力的血液。失去信息，就失去了一切。', quote: '「不知道真相的人是无知的；知道真相却假装不知道的人是卑劣的。」', atmosphere: 'dark', epitaph: '被所有人礼貌地遗忘的人' },
+    { id: 'ming_betrayed', title: '背叛者', subtitle: '你踩着别人的肩膀往上爬', icon: '🗡️', condition: (d, ch) => d.filter(x => x.category === 'betrayal').length >= 3, verdict: '你升了官，但你踩过的人都记住了你。你开始一个人吃饭，一个人走路。', analysis: '《权力的道路》：用背叛换来的权力，最终也会被背叛终结。', quote: '「天下熙熙，皆为利来；天下攘攘，皆为利往。」——司马迁', atmosphere: 'dark', epitaph: '踩着白骨登高的人' },
+    { id: 'ming_hermit', title: '倦鸟', subtitle: '你累了', icon: '🐦', condition: (d, ch) => d.filter(x => x.category === 'passive').length >= 4, verdict: '官场的尔虞我诈让你心力交瘁。你选择了辞官归隐。种田、读书、睡觉——这些曾经最简单的事，现在成了最奢侈的事。', analysis: '「沧浪之水」：精神内耗是体制内最常见的"职业病"。', quote: '「归去来兮，田园将芜胡不归？」——陶渊明', atmosphere: 'neutral', epitaph: '在风暴中选择归隐的人' },
+    { id: 'ming_balanced', title: '圆满', subtitle: '你找到了第三条路', icon: '☯️', condition: (d, ch) => true, verdict: '你既没有被同化，也没有被边缘化。你学会了在规则和原则之间找到平衡点。', analysis: '「沧浪之水」：在理想和现实之间，存在第三条路——不是妥协，不是对抗，而是"在规则中寻找空间"。', quote: '「极高明而道中庸。」——《中庸》', atmosphere: 'confetti', epitaph: '在刀锋上找到平衡的人' }
+  ]
+};
