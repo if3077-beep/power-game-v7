@@ -1230,20 +1230,20 @@ function startGame(scenarioKey) {
     if (intensity === 'high' && scenarioKey === 'cyber') {
       setTimeout(() => startBGM('crisis'), 600);
     }
-    // V14.3: 移动端渠道栏 — 滑动时显示，静止2秒后消失
+    // V14.3: 移动端渠道栏 — 滑动显示，静止2秒消失
     if (window.innerWidth <= 900) {
       let scrollTimeout;
       const channelsBar = document.getElementById('channelsBar');
-      if (!channelsBar) return;
-      channelsBar.classList.add('visible');
-      const onScroll = () => {
+      if (channelsBar) {
         channelsBar.classList.add('visible');
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => channelsBar.classList.remove('visible'), 2000);
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      // 初始显示3秒后开始监听
-      setTimeout(() => { if (!scrollTimeout) channelsBar.classList.remove('visible'); }, 3000);
+        const onScroll = () => {
+          channelsBar.classList.add('visible');
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => channelsBar.classList.remove('visible'), 2000);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        scrollTimeout = setTimeout(() => channelsBar.classList.remove('visible'), 4000);
+      }
     }
   });
 }
