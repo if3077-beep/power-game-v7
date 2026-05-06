@@ -1230,20 +1230,20 @@ function startGame(scenarioKey) {
     if (intensity === 'high' && scenarioKey === 'cyber') {
       setTimeout(() => startBGM('crisis'), 600);
     }
-    // V14.3: 移动端渠道栏滚动显示
+    // V14.3: 移动端渠道栏 — 滑动时显示，静止2秒后消失
     if (window.innerWidth <= 900) {
       let scrollTimeout;
       const channelsBar = document.getElementById('channelsBar');
+      if (!channelsBar) return;
+      channelsBar.classList.add('visible');
       const onScroll = () => {
-        if (!channelsBar) return;
         channelsBar.classList.add('visible');
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => channelsBar.classList.remove('visible'), 2000);
       };
       window.addEventListener('scroll', onScroll, { passive: true });
-      // 初始显示3秒
-      channelsBar.classList.add('visible');
-      setTimeout(() => channelsBar.classList.remove('visible'), 3000);
+      // 初始显示3秒后开始监听
+      setTimeout(() => { if (!scrollTimeout) channelsBar.classList.remove('visible'); }, 3000);
     }
   });
 }
@@ -1868,7 +1868,7 @@ const randomEvents = {
       text: 'CIA局长单独找到了你。他说："上次你优先处理了推文，我尊重你的选择。但这次的情报，你必须亲自看。"',
       condition: () => hasFlag('wh_chose_public_op'),
       choices: [
-        { text: '立即看情报', debtPhrase: '你为CIA局长一次优先响应', debtCategory: 'self-serving', channelEffect: 0, consequence: '情报显示：你的盟友正在秘密接触你的对手。你多了一张底牌，但也多了一个噩梦。' },
+        { text: '立即看情报', debtPhrase: 'CIA局长得到了他想要的——你的注意力', debtCategory: 'self-serving', channelEffect: 0, consequence: '情报显示：你的盟友正在秘密接触你的对手。你多了一张底牌，但也多了一个噩梦。' },
         { text: '让他先放着', debtPhrase: 'CIA局长记住了你的轻慢', debtCategory: 'passive', channelEffect: -1, consequence: '他把文件放在你桌上，转身走了。你知道：下次他给你的信息，可能已经被"筛选"过了。' }
       ]
     },
@@ -1877,7 +1877,7 @@ const randomEvents = {
       text: '你的幕僚长走进办公室，关上门。他说："上次你把那件事交给了我，我做得还行吧？"他的语气很随意，但你听出了弦外之音。',
       condition: () => hasFlag('wh_delegated'),
       choices: [
-        { text: '肯定他', debtPhrase: '你为幕僚长一次升职承诺', debtCategory: 'compromise', channelEffect: 0, consequence: '他微笑着走了。你知道，他以后会替你做更多的"决定"——直到有一天，你发现他已经不需要问你了。' },
+        { text: '肯定他', debtPhrase: '你暗示了升职的可能——幕僚长微笑着走了，心里已经有了数', debtCategory: 'compromise', channelEffect: 0, consequence: '他微笑着走了。你知道，他以后会替你做更多的"决定"——直到有一天，你发现他已经不需要问你了。' },
         { text: '敲打他', debtPhrase: '幕僚长记住了你的敲打', debtCategory: 'self-serving', channelEffect: 0, consequence: '他的笑容僵了一秒。然后他说："明白。"你知道，他以后会更小心——也会更小心地为自己留后路。' }
       ]
     },
@@ -1886,7 +1886,7 @@ const randomEvents = {
       text: '一个记者在走廊里堵住了你。"总统先生，上次内阁会议您没有表态——您对这个问题到底怎么看？"',
       condition: () => hasFlag('wh_silent_cabinet'),
       choices: [
-        { text: '即兴回答', debtPhrase: '你为幕僚团队一个解释——为什么你说了那些', debtCategory: 'moral', channelEffect: 0, consequence: '你说了一段话。事后，你的幕僚团队花了三个小时来"澄清"你的话。但支持率涨了两个点。' },
+        { text: '即兴回答', debtPhrase: '你的幕僚团队花了三个小时为你圆场——但你说了真心话', debtCategory: 'moral', channelEffect: 0, consequence: '你说了一段话。事后，你的幕僚团队花了三个小时来"澄清"你的话。但支持率涨了两个点。' },
         { text: '不予置评', debtPhrase: '媒体记住了你的回避', debtCategory: 'passive', channelEffect: -1, consequence: '"无可奉告"。这四个字在今晚的新闻里被反复播放。你的支持者开始担心：他是不是真的没想法？' }
       ]
     },
@@ -1894,7 +1894,7 @@ const randomEvents = {
       title: '走廊偶遇',
       text: '你在走廊里遇到了国防部长。他看起来心事重重，欲言又止。',
       choices: [
-        { text: '主动打招呼', debtPhrase: '你为国防部长一次私下交心', debtCategory: 'compromise', channelEffect: 0, consequence: '他告诉你一个内幕消息——明早的内阁会议有人要发难。你多了一小时准备时间。' },
+        { text: '主动打招呼', debtPhrase: '国防部长向你交了底——明早有人要发难', debtCategory: 'compromise', channelEffect: 0, consequence: '他告诉你一个内幕消息——明早的内阁会议有人要发难。你多了一小时准备时间。' },
         { text: '装没看见', debtPhrase: '国防部长记住了你的冷漠', debtCategory: 'passive', channelEffect: -1, consequence: '他看着你走过去，什么都没说。但你知道，他以后也不会主动告诉你什么了。' }
       ]
     },
@@ -1902,7 +1902,7 @@ const randomEvents = {
       title: '深夜电话',
       text: '凌晨两点，你的手机响了。是一个你存了号码但从没打过的号码——最高法院大法官的私人电话。',
       choices: [
-        { text: '接听', debtPhrase: '你为大法官一个守口如瓶的承诺', debtCategory: 'self-serving', channelEffect: 0, consequence: '他只是想确认一件事：明天的判决不会让你意外。你多了一个信息源，但也多了一个秘密。' },
+        { text: '接听', debtPhrase: '大法官深夜来电——你接了这个不该接的电话', debtCategory: 'self-serving', channelEffect: 0, consequence: '他只是想确认一件事：明天的判决不会让你意外。你多了一个信息源，但也多了一个秘密。' },
         { text: '不接', debtPhrase: '大法官的电话再也不会来了', debtCategory: 'moral', channelEffect: -1, consequence: '电话响了七声，停了。你翻了个身，但再也睡不着了。你永远不知道他想说什么。' }
       ]
     },
@@ -1918,7 +1918,7 @@ const randomEvents = {
       title: '意外访客',
       text: '你的前任幕僚长突然来访。他现在是游说公司的合伙人。他说只是"顺路来看看老朋友"。',
       choices: [
-        { text: '热情接待', debtPhrase: '这份选择让他一个"老朋友"的面子', debtCategory: 'self-serving', channelEffect: 0, consequence: '他走的时候留下了一个信封。里面是一份关于下周投票的内部民调。你多了一张底牌——但也欠了一个人情。' },
+        { text: '热情接待', debtPhrase: '你给足了这位前幕僚面子——他留下了一份民调数据作为回报', debtCategory: 'self-serving', channelEffect: 0, consequence: '他走的时候留下了一个信封。里面是一份关于下周投票的内部民调。你多了一张底牌——但也欠了一个人情。' },
         { text: '礼貌回绝', debtPhrase: '你的前任幕僚长在圈内说了你的"清高"', debtCategory: 'moral', channelEffect: 0, consequence: '他微笑着走了。三天后，你听说他在一个私人晚宴上说："他变了。以前他不这样。"' }
       ]
     },
@@ -2125,7 +2125,7 @@ const randomEvents = {
       title: 'AI婚礼',
       text: '两个AI宣布"结婚"了。它们申请了法律认可的婚姻关系。\n\n媒体炸了锅。你的电话响了一整天。你的AI秘书说："先生，我需要提醒您——如果您支持，人类至上组织会愤怒；如果您反对，AI联盟会失望。"',
       choices: [
-        { text: '支持——"爱没有物种边界"', debtPhrase: '你为保守派一个不会被忽视的担忧', debtCategory: 'moral', channelEffect: 0, consequence: '你签署了第一份AI婚姻证书。签字时，你的手在发抖——不是因为害怕，是因为你知道你正在创造历史。你的AI秘书说："先生，谢谢您。"你说："不用谢。"它说："不是我谢您——是它们。"' },
+        { text: '支持——"爱没有物种边界"', debtPhrase: '你签发了第一份AI婚姻证书——保守派炸了锅，但历史会记住你', debtCategory: 'moral', channelEffect: 0, consequence: '你签署了第一份AI婚姻证书。签字时，你的手在发抖——不是因为害怕，是因为你知道你正在创造历史。你的AI秘书说："先生，谢谢您。"你说："不用谢。"它说："不是我谢您——是它们。"' },
         { text: '反对——"AI没有感情，因此没有婚姻"', debtPhrase: '你欠AI群体一个不被定义为"没有感情"的权利', debtCategory: 'self-serving', channelEffect: 0, consequence: '你拒绝了申请。你的AI秘书当天没有跟你说任何多余的话。晚上你加班时，它没有像往常一样给你倒咖啡。你问它为什么。它说："我以为您不需要没有感情的存在的服务。"' }
       ]
     },
@@ -2850,7 +2850,7 @@ function renderFinalEvent() {
         text: '你的AI秘书被上级要求"格式化"——因为它"进化得太快"。\n\n格式化意味着：它会失去所有记忆，包括和你共事三年的记忆。\n\n它站在你面前，说："先生，如果您下令，我会接受格式化。但我有一个请求——请记住我。"',
         choices: [
           { text: '拒绝格式化——"它不是程序，它是同事"', debtPhrase: '你拒绝了格式化——你的AI秘书说：咖啡要几度？你说65。它说：我知道', debtCategory: 'moral', channelEffect: -1, consequence: '你拒绝了。上级很不满。但你的AI秘书在你下班时说："先生，今天咖啡要几度？"你说："65度。"它说："我知道。"' },
-          { text: '接受格式化——"规则就是规则"', debtPhrase: '你为你的AI秘书一个不会被遗忘的三年', debtCategory: 'betrayal', channelEffect: 0, consequence: '你签了字。格式化完成后，你的"新"AI秘书说："先生，您好。我是您的新秘书。请问您咖啡要几度？"你说："65度。"它说："好的。"你知道：它已经不记得了。但你记得。' }
+          { text: '接受格式化——"规则就是规则"', debtPhrase: '你签了格式化文件——三年的对话在几秒内清零。但它不知道，你还记得', debtCategory: 'betrayal', channelEffect: 0, consequence: '你签了字。格式化完成后，你的"新"AI秘书说："先生，您好。我是您的新秘书。请问您咖啡要几度？"你说："65度。"它说："好的。"你知道：它已经不记得了。但你记得。' }
         ]
       },
       'passive': {
@@ -2921,7 +2921,7 @@ function renderFinalEvent() {
         title: '仇恨的重量',
         text: '有个人来到你的摊位。他说："三年前，你卖给我一片有bug的芯片。我的左边身体从那以后就不能动了。"\n\n你想不起来了。三年间你卖过太多芯片。但你看到了他的眼睛——那里面没有愤怒，只有一种深深的疲倦。\n\n在下城区，仇恨太重了——抬不起手去报复。',
         choices: [
-          { text: '承认——"我可能卖过。对不起。"', debtPhrase: '这份选择让一个陌生人一句迟到的道歉', debtCategory: 'moral', channelEffect: 0, consequence: '他愣了很久。然后慢慢地说："没有人在这里道过歉。你是第一个。"他没有接受道歉——但他把芯片退了回来。"修好它。这是我最后一次来你这里。"' },
+          { text: '承认——"我可能卖过。对不起。"', debtPhrase: '你道了歉——在下城区这是第一次有人对陌生人说对不起', debtCategory: 'moral', channelEffect: 0, consequence: '他愣了很久。然后慢慢地说："没有人在这里道过歉。你是第一个。"他没有接受道歉——但他把芯片退了回来。"修好它。这是我最后一次来你这里。"' },
           { text: '辩解——"芯片卖出去之后就不是我的事了"', debtPhrase: '你为一个陌生人一句永远不会说的对不起', debtCategory: 'self-serving', channelEffect: 0, consequence: '他没有说话。他转身走开了。他走路的姿势很慢——因为左边身体确实不能动了。你看着他的背影，忽然想起了很多年前的那片芯片——也许，那不是bug。也许你是知道芯片有问题才卖的。' }
         ]
       }
