@@ -46,61 +46,123 @@ document.addEventListener('mousemove', e => {
   glow.style.top = e.clientY + 'px';
 });
 
-// --- 音频系统 ---
-let audioCtx = null, masterGain = null, audioEnabled = false, bgmRunning = false;
-function initAudio() {
-  if (audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  masterGain = audioCtx.createGain();
-  masterGain.gain.value = 0.3;
-  masterGain.connect(audioCtx.destination);
-}
-function playTone(freq, dur, type = 'sine', vol = 0.2) {
-  if (!audioEnabled || !audioCtx) return;
-  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-  o.type = type; o.frequency.value = freq;
-  g.gain.setValueAtTime(vol * 0.3, audioCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-  o.connect(g); g.connect(masterGain);
-  o.start(); o.stop(audioCtx.currentTime + dur);
-}
-function playClick() { playTone(800, 0.08, 'sine', 0.15); }
-function playDebt() { playTone(300, 0.3, 'triangle', 0.2); setTimeout(() => playTone(250, 0.2, 'triangle', 0.15), 150); }
-function playEnding() { playTone(523, 0.4, 'sine', 0.2); setTimeout(() => playTone(659, 0.4, 'sine', 0.2), 300); setTimeout(() => playTone(784, 0.6, 'sine', 0.25), 600); }
-function playScroll() { playTone(200, 0.15, 'sawtooth', 0.08); }
-function playChannelLost() { playTone(180, 0.5, 'sawtooth', 0.15); setTimeout(() => playTone(120, 0.8, 'sawtooth', 0.1), 300); }
-
-// BGM
-function startBGM(style) {
-  if (!audioEnabled || !audioCtx || bgmRunning) return;
-  bgmRunning = true;
-  const notes = style === 'whitehouse'
-    ? [261,293,329,349,392,349,329,293,261,246,220,246,261,293,329,349]
-    : [261,293,329,392,440,392,329,293,261,220,196,220,261,293,329,261];
-  let i = 0;
-  function playNext() {
-    if (!bgmRunning || !audioEnabled) return;
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = style === 'whitehouse' ? 'sine' : 'triangle';
-    o.frequency.value = notes[i % notes.length];
-    g.gain.setValueAtTime(0.04, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
-    o.connect(g); g.connect(masterGain);
-    o.start(); o.stop(audioCtx.currentTime + 2);
-    i++;
-    setTimeout(playNext, 2000);
+// --- 音频系统（AudioEngine） ---
+class AudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.master = null;
+    this.bgmGain = null;
+    this.sfxGain = null;
+    this.enabled = false;
+    this.bgmNodes = [];
+    this.bgmRunning = false;
+    this._bgmTimer = null;
   }
-  playNext();
+
+  init() {
+    if (this.ctx) return;
+    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    this.master = this.ctx.createGain();
+    this.master.gain.value = 0.4;
+    this.master.connect(this.ctx.destination);
+    this.bgmGain = this.ctx.createGain();
+    this.bgmGain.gain.value = 0.15;
+    this.bgmGain.connect(this.master);
+    this.sfxGain = this.ctx.createGain();
+    this.sfxGain.gain.value = 0.5;
+    this.sfxGain.connect(this.master);
+  }
+
+  toggle() {
+    this.init();
+    this.enabled = !this.enabled;
+    const btn = document.getElementById('audioBtn');
+    if (btn) btn.classList.toggle('muted', !this.enabled);
+    if (!this.enabled) this.stopBGM();
+    return this.enabled;
+  }
+
+  // 音效
+  play(type) {
+    if (!this.enabled || !this.ctx) return;
+    const sounds = {
+      click:    () => this._tone(800, 0.06, 'sine', this.sfxGain),
+      debt:     () => { this._tone(300, 0.25, 'triangle', this.sfxGain); setTimeout(() => this._tone(250, 0.2, 'triangle', this.sfxGain), 120); },
+      scene:    () => { this._tone(440, 0.15, 'sine', this.sfxGain); setTimeout(() => this._tone(550, 0.15, 'sine', this.sfxGain), 100); },
+      ending:   () => { this._tone(523, 0.3, 'sine', this.sfxGain); setTimeout(() => this._tone(659, 0.3, 'sine', this.sfxGain), 250); setTimeout(() => this._tone(784, 0.5, 'sine', this.sfxGain), 500); },
+      ink:      () => this._tone(150, 0.3, 'sawtooth', this.sfxGain, 0.08),
+      success:  () => { this._tone(523, 0.2, 'sine', this.sfxGain); setTimeout(() => this._tone(784, 0.3, 'sine', this.sfxGain), 150); },
+      fail:     () => { this._tone(330, 0.3, 'sawtooth', this.sfxGain, 0.1); setTimeout(() => this._tone(220, 0.4, 'sawtooth', this.sfxGain, 0.1), 200); },
+      scroll:   () => this._tone(200, 0.15, 'sawtooth', this.sfxGain, 0.06),
+      channelLost: () => { this._tone(180, 0.5, 'sawtooth', this.sfxGain, 0.12); setTimeout(() => this._tone(120, 0.8, 'sawtooth', this.sfxGain, 0.08), 300); },
+    };
+    (sounds[type] || sounds.click)();
+  }
+
+  // BGM: 不同路线不同主题
+  startBGM(style) {
+    if (!this.enabled || !this.ctx || this.bgmRunning) return;
+    this.bgmRunning = true;
+    const scales = {
+      whitehouse: [261, 277, 329, 349, 370, 349, 329, 277],   // tension: 半音阶，紧张感
+      ming:       [261, 293, 329, 392, 440, 523, 440, 392],   // chinese: 五声调式，古风
+      ambient:    [261, 293, 329, 392, 440, 392, 329, 293],
+      dramatic:   [196, 233, 261, 293, 329, 293, 261, 233],
+    };
+    const notes = scales[style] || scales.ambient;
+    let i = 0;
+    const playNote = () => {
+      if (!this.bgmRunning || !this.enabled) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = style === 'ming' ? 'triangle' : 'sine';
+      osc.frequency.value = notes[i % notes.length];
+      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.8);
+      osc.connect(gain);
+      gain.connect(this.bgmGain);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 2);
+      this.bgmNodes.push(osc);
+      i++;
+      this._bgmTimer = setTimeout(playNote, 1800);
+    };
+    playNote();
+  }
+
+  stopBGM() {
+    this.bgmRunning = false;
+    clearTimeout(this._bgmTimer);
+    this.bgmNodes.forEach(n => { try { n.stop(); } catch(e) {} });
+    this.bgmNodes = [];
+  }
+
+  _tone(freq, dur, type, dest, vol) {
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(vol || 0.15, this.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+    o.connect(g);
+    g.connect(dest || this.sfxGain);
+    o.start();
+    o.stop(this.ctx.currentTime + dur);
+  }
 }
-function stopBGM() { bgmRunning = false; }
-function toggleAudio() {
-  initAudio();
-  audioEnabled = !audioEnabled;
-  const btn = document.getElementById('audioBtn');
-  btn.classList.toggle('muted', !audioEnabled);
-  if (audioEnabled) { startBGM(state.scenario || 'whitehouse'); }
-  else { stopBGM(); }
-}
+
+// 全局音频引擎实例
+const audioEngine = new AudioEngine();
+
+// 兼容旧接口
+function toggleAudio() { audioEngine.toggle(); }
+function playClick() { audioEngine.play('click'); }
+function playDebt() { audioEngine.play('debt'); }
+function playEnding() { audioEngine.play('ending'); }
+function playScroll() { audioEngine.play('scroll'); }
+function playChannelLost() { audioEngine.play('channelLost'); }
+function startBGM(style) { audioEngine.startBGM(style); }
+function stopBGM() { audioEngine.stopBGM(); }
 
 // --- 游戏状态 ---
 let state = { scenario: null, currentScene: 0, debts: [], channels: 5, choices: [], history: [] };
@@ -152,6 +214,24 @@ function typewriter(el, text, callback) {
   type();
 }
 
+// --- 结果闪字 ---
+function showResultFlash(text) {
+  let flash = document.getElementById('resultFlash');
+  if (!flash) {
+    flash = document.createElement('div');
+    flash.id = 'resultFlash';
+    flash.className = 'result-flash';
+    document.body.appendChild(flash);
+  }
+  flash.textContent = text;
+  flash.style.opacity = '1';
+  flash.style.transform = 'translate(-50%, -50%) scale(1)';
+  setTimeout(() => {
+    flash.style.opacity = '0';
+    flash.style.transform = 'translate(-50%, -50%) scale(0.95)';
+  }, 2500);
+}
+
 // --- 债务面板 ---
 function toggleDebtPanel() {
   const panel = document.getElementById('debtPanel');
@@ -190,6 +270,7 @@ function loseChannel(reason) {
   state.channels--;
   renderChannels();
   playChannelLost();
+  showResultFlash('消息渠道 -1');
 }
 
 // --- 确认退出 ---
@@ -208,6 +289,7 @@ function inkSplash() {
   splash.className = 'ink-splash';
   splash.style.left = '50%'; splash.style.top = '50%';
   document.body.appendChild(splash);
+  audioEngine.play('ink');
   setTimeout(() => splash.remove(), 2000);
 }
 

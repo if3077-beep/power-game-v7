@@ -17,8 +17,8 @@ const mingData = {
       text: '你穿越到了大明万历年间，成为江南某县的七品知县。到任第一天，师爷递给你两本账册：一本是给朝廷看的"官账"，一本是县里实际运转的"私账"。\n\n两本账，数字差了三倍。师爷说："大人，这是规矩。"',
       narrator: '「置身事内」：在中国，正式制度和非正式制度永远并行运转。看懂两本账，才算入门。',
       choices: [
-        { text: '按官账上报——规矩就是规矩', bookQuote: '选这个？《沧浪之水》：池大为刚进卫生厅时也这么想。后来他明白了——规矩是给守规矩的人定的。', debtPhrase: '你的上司沉默了三天——然后派了一个"巡查"下来', debtCategory: 'moral', channelEffect: -1, consequence: '上司收到你的公文后，沉默了三天。然后派了一个"巡查"下来。你的前任师爷暗示你："大人，水至清则无鱼啊。"你发现县衙的其他官员开始躲着你走。', analysisTags: ['principled', 'isolation'] },
-        { text: '按私账来——先融入再说', bookQuote: '选这个？《乡土中国》：在乡土社会，规矩不是写在纸上的，是活在人情里的。', debtPhrase: '你欠这张网一个承诺——从此你也是网中人', debtCategory: 'compromise', channelEffect: 0, consequence: '县衙上下松了一口气。师爷开始带你拜访本地乡绅。你发现，所谓的"私账"其实是整个县运转的真正规则——没有它，河道修不了，灾民赈不了，连衙门的薪水都发不出。', analysisTags: ['adaptation', 'system'] },
+        { text: '按官账上报——规矩就是规矩', hint: '清官的代价：你守住了规矩，但规矩保护不了你。', bookQuote: '选这个？《沧浪之水》：池大为刚进卫生厅时也这么想。后来他明白了——规矩是给守规矩的人定的。', debtPhrase: '你的上司沉默了三天——然后派了一个"巡查"下来', historyFlag: 'ming_followed_rules', debtCategory: 'moral', channelEffect: -1, consequence: '上司收到你的公文后，沉默了三天。然后派了一个"巡查"下来。你的前任师爷暗示你："大人，水至清则无鱼啊。"你发现县衙的其他官员开始躲着你走。', analysisTags: ['principled', 'isolation'] },
+        { text: '按私账来——先融入再说', bookQuote: '选这个？《乡土中国》：在乡土社会，规矩不是写在纸上的，是活在人情里的。', debtPhrase: '你欠这张网一个承诺——从此你也是网中人', historyFlag: 'ming_followed_private', debtCategory: 'compromise', channelEffect: 0, consequence: '县衙上下松了一口气。师爷开始带你拜访本地乡绅。你发现，所谓的"私账"其实是整个县运转的真正规则——没有它，河道修不了，灾民赈不了，连衙门的薪水都发不出。', analysisTags: ['adaptation', 'system'] },
         { text: '先不动，把两本账都研究透', bookQuote: '选这个？《置身事内》：不了解制度的实际运转方式，任何改革都是空中楼阁。', debtPhrase: '师爷看你的眼神从轻视变成了谨慎——你还不确定这是好事还是坏事', debtCategory: 'passive', channelEffect: 0, consequence: '你花了半个月摸清门道。原来差额的大部分去了三个地方：上司的"冰敬炭敬"、河道修缮的"惯例浮报"、以及一个你还不敢深查的神秘去处。', analysisTags: ['observation', 'patience'] }
       ]
     },
@@ -27,7 +27,7 @@ const mingData = {
       text: '本地最大的乡绅王员外请你赴宴。他的庄园占了全县三成良田，佃户上千人。\n\n宴席上，王员外笑眯眯地说："大人新到任，老朽备了薄礼，不成敬意。"一锭金元宝被推到你面前。\n\n旁边坐着你的上司派来的"监司"，正不动声色地看着你。',
       narrator: '「乡土中国」：在乡土社会，送礼不是贿赂，是建立关系的仪式。拒绝礼物，就是拒绝这段关系。',
       choices: [
-        { text: '收下——入乡随俗', bookQuote: '选这个？《乡土中国》：礼物是社会关系的"黏合剂"。收下金子不仅是经济行为，更是政治表态。', debtPhrase: '王员外当场认你做"贤侄"——你欠他一个"贤侄"该做的事', debtCategory: 'compromise', channelEffect: 0, consequence: '王员外大喜，当场认你做"贤侄"。监司回去后在报告里写了你的"懂事"。你在县里办事开始顺畅了——但你也知道，你再也不是那个"清官"了。', analysisTags: ['adaptation', 'corruption'] },
+        { text: '收下——入乡随俗', hint: '收下容易，但"贤侄"这两个字，比金子更重。', bookQuote: '选这个？《乡土中国》：礼物是社会关系的"黏合剂"。收下金子不仅是经济行为，更是政治表态。', debtPhrase: '王员外当场认你做"贤侄"——你欠他一个"贤侄"该做的事', historyFlag: 'ming_accepted_gold', debtCategory: 'compromise', channelEffect: 0, consequence: '王员外大喜，当场认你做"贤侄"。监司回去后在报告里写了你的"懂事"。你在县里办事开始顺畅了——但你也知道，你再也不是那个"清官"了。', analysisTags: ['adaptation', 'corruption'] },
         { text: '婉拒——"王员外的心意我领了，但这锭金子我不能收"', bookQuote: '选这个？《乡土中国》：你拒绝的不是一锭金子，而是王员外向你发出的"结盟邀请"。', debtPhrase: '你在县里将成为孤家寡人——三天后，粮商拒绝向官仓供货', debtCategory: 'moral', channelEffect: -1, consequence: '宴席的气氛瞬间冷了。王员外的笑容僵了一秒，然后恢复如常。三天后，县里最大的粮商拒绝向官仓供货。你拒绝的不是金子，是整个县城的运转规则。', analysisTags: ['principled', 'cost'] },
         { text: '收下，但当场宣布捐给县学——"让孩子们读书"', bookQuote: '选这个？《沧浪之水》：在规则的缝隙里找到第三条路——但过于聪明的人会让所有人不安。', debtPhrase: '你收到了三份来自其他乡绅的宴请——都在观望你', debtCategory: 'self-serving', channelEffect: 0, consequence: '王员外愣了一秒，然后哈哈大笑："大人果然高风亮节！"监司的眼神变得复杂。你的名声传开了，但也有人开始说你"沽名钓誉"。', analysisTags: ['clever', 'reputation'] },
         { text: '看向监司："您觉得呢？"', bookQuote: '选这个？《置身事内》：在科层体制中，"请示上级"是最安全的选择——出了问题有上级担着。', debtPhrase: '你欠监司一个把柄——你的犹豫本身就是筹码', debtCategory: 'passive', channelEffect: 0, consequence: '监司皮笑肉不笑："大人自己做主就好。"你听出了弦外之音——他在试探你。最终你还是收了，但你知道，你的把柄已经在别人手里了。', analysisTags: ['delegation', 'vulnerability'] }
@@ -61,7 +61,7 @@ const mingData = {
       narrator: '「乡土中国」：饭局是中国社会最重要的社交场——所有的交易、站队、表态，都在觥筹交错之间完成。',
       choices: [
         { text: '跟着笑——附和知府的"笑话"', bookQuote: '选这个？《乡土中国》：在饭局上，笑声就是表态。你附和知府意味着你向他递了"投名状"。', debtPhrase: '知府拍着你的肩膀说"小兄弟懂事"——你在回去的马车里对着夜空吐了', debtCategory: 'compromise', channelEffect: 0, consequence: '知府拍着你的肩膀说："小兄弟懂事。"你升了一级。但你在回去的马车里，对着夜空吐了。不是因为酒，是因为你发现自己笑得越来越自然了。', analysisTags: ['conformity', 'disgust'] },
-        { text: '沉默——低头喝酒，不接话', bookQuote: '选这个？《权力的道路》：不参与本身就是一种参与。你的沉默传达的信息是："我不站队。"', debtPhrase: '几个关键的审批开始"卡住"了——没人愿意帮一个"局外人"', debtCategory: 'passive', channelEffect: -1, consequence: '酒局的气氛微妙地冷了。知府不再看你。回县后，你发现几个关键的审批开始"卡住"了——不是针对你，只是没人愿意帮一个"局外人"。', analysisTags: ['neutrality', 'isolation'] },
+        { text: '沉默——低头喝酒，不接话', bookQuote: '选这个？《权力的道路》：不参与本身就是一种参与。你的沉默传达的信息是："我不站队。"', debtPhrase: '几个关键的审批开始"卡住"了——没人愿意帮一个"局外人"', historyFlag: 'ming_silent_at_feast', debtCategory: 'passive', channelEffect: -1, consequence: '酒局的气氛微妙地冷了。知府不再看你。回县后，你发现几个关键的审批开始"卡住"了——不是针对你，只是没人愿意帮一个"局外人"。', analysisTags: ['neutrality', 'isolation'] },
         { text: '反击——讲一个关于知府的"笑话"', bookQuote: '选这个？《权力的道路》：敢于反击的人要么一战成名，要么一败涂地。没有中间地带。', debtPhrase: '你给自己树立了一个强大的敌人——但"敢言"也在官场传开了', debtCategory: 'self-serving', channelEffect: 0, consequence: '你讲了一个关于知府"微服私访"的笑话。全场安静了三秒。然后知府哈哈大笑——但笑声没有到达眼底。你知道你给自己树立了一个强大的敌人。但你的"敢言"也在官场传开了。', analysisTags: ['courage', 'risk'] },
         { text: '中途离席——"身体不适，先行告退"', bookQuote: '选这个？《置身事内》：在体制内，"不在场"的人永远不会被考虑——无论是提拔还是站队。', debtPhrase: '你走在府城的夜街上，吃了一碗馄饨——这是你穿越以来最自在的一刻', debtCategory: 'passive', channelEffect: 0, consequence: '你借口醉酒离席了。知府没有挽留。你走在府城的夜街上，闻到了路边馄饨摊的香味。你坐下来吃了一碗——这是你穿越以来最自在的一刻。但你也知道，你错过了一个改变命运的机会。', analysisTags: ['avoidance', 'freedom'] }
       ]

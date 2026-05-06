@@ -554,6 +554,475 @@ const Frameworks = {
       };
     },
   },
+
+  // ------ 制度分析 ------
+  institutionalAnalysis: {
+    name: '制度分析',
+    icon: '🏛️',
+    description: '分析正式制度与非正式规则如何塑造行为',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'formal_informal',
+        severity: 'high',
+        text: '任何组织都存在两套规则：写在纸上的和活在人心里的。只看正式制度会误判局势——真正驱动行为的往往是那些"不成文的规矩"。',
+        framework: this.name,
+      });
+      if (ctx.role && (ctx.role.includes('新人') || ctx.role.includes('基层'))) {
+        insights.push({
+          type: 'institutional_capture',
+          severity: 'medium',
+          text: '新人最容易犯的错误是"按规矩办事"。规矩是死的，人是活的。先观察三个月，搞清楚"真规矩"再行动。',
+          framework: this.name,
+        });
+      }
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('institutional') || t.includes('procedural')) s += 2;
+      if (t.includes('informal') || t.includes('backdoor')) s -= 1;
+      return { dimension: '制度适应', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '符合制度逻辑' : '挑战制度安排' };
+    },
+  },
+
+  // ------ 叙事控制 ------
+  narrativeControl: {
+    name: '叙事权',
+    icon: '📜',
+    description: '分析谁在定义"真相"、谁的故事会被相信',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'framing_power',
+        severity: 'high',
+        text: '控制叙事的人不需要控制事实——只需要控制"怎么讲"。同一件事，换个框架就是完全不同的故事。在博弈中，抢先定义框架的人往往赢在起跑线。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'counter_narrative',
+        severity: 'medium',
+        text: '反驳一个故事最好的方式不是"你说的不对"，而是讲一个更好的故事。人脑对叙事的接受度远高于逻辑论证。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('narrative') || t.includes('framing') || t.includes('story')) s += 2;
+      if (t.includes('silence') || t.includes('conceal')) s -= 1;
+      return { dimension: '叙事力', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '增强你的叙事权' : '削弱你的叙事权' };
+    },
+  },
+
+  // ------ 网络理论 ------
+  networkTheory: {
+    name: '网络理论',
+    icon: '🕸️',
+    description: '分析社会资本、关系网络和结构洞',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'structural_hole',
+        severity: 'high',
+        text: '最有利可图的位置不是网络中心，而是"结构洞"——连接两个原本不联通的群体的桥梁。谁占据了结构洞，谁就掌握了信息优势和议价权。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'network_density',
+        severity: 'medium',
+        text: '关系网络越密集，信息传播越快，但也越难保密。稀疏网络信息慢但更可控。选择哪种网络结构取决于你的目标。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('network') || t.includes('bridge') || t.includes('connect')) s += 2;
+      if (t.includes('isolate') || t.includes('withdraw')) s -= 2;
+      return { dimension: '社会资本', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '扩展你的关系网络' : '缩小你的关系网络' };
+    },
+  },
+
+  // ------ 时间动态 ------
+  temporalDynamics: {
+    name: '时间动态',
+    icon: '⏳',
+    description: '分析决策的短期收益与长期后果',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'temporal_discount',
+        severity: 'high',
+        text: '人天然高估即时收益、低估延迟后果。这就是为什么"眼前的诱惑"总是比"未来的代价"更有吸引力。做重大决策时，问自己："十年后的我会怎么看待这个选择？"',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'path_dependence',
+        severity: 'medium',
+        text: '每一个选择都在缩小未来的选择空间。路径依赖意味着"现在的小选择"可能决定"未来的大格局"。不要只看眼前的选项，要看这些选项各自通向什么方向。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('long_term') || t.includes('sustainable')) s += 2;
+      if (t.includes('short_term') || t.includes('immediate')) s -= 1;
+      return { dimension: '长期价值', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '长期来看更可持续' : '短期收益高但长期风险大' };
+    },
+  },
+
+  // ------ 科层制理论 ------
+  bureaucracy: {
+    name: '科层制',
+    icon: '📋',
+    description: '分析组织内部的权力结构、晋升逻辑和生存法则',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'peter_principle',
+        severity: 'medium',
+        text: '彼得原理：在科层制中，人会被晋升到自己不胜任的位置。如果你想往上走，要么在当前层级证明自己"过度胜任"，要么找到跳过中间层级的路径。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'upward_management',
+        severity: 'high',
+        text: '在科层制中，"向上管理"比"向下管理"更重要。你的上级决定你的资源、信息和晋升。但向上管理不是拍马屁——是让上级觉得你"好用"且"安全"。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('hierarchical') || t.includes('upward') || t.includes('report')) s += 1;
+      if (t.includes('grassroots') || t.includes('bottom_up')) s += 1;
+      if (t.includes('insubordinate') || t.includes('defy')) s -= 2;
+      return { dimension: '组织生存', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '在科层制中有利' : '在科层制中有风险' };
+    },
+  },
+
+  // ------ 信任动力学 ------
+  trustDynamics: {
+    name: '信任动力学',
+    icon: '🤝',
+    description: '分析信任的建立、维持和崩塌机制',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'trust_equation',
+        severity: 'high',
+        text: '信任 = (可信度 + 可靠性 + 亲近感) / 自我导向。提高前三项降低最后一项就能增加信任。但最容易被忽视的是最后一项——过度自我导向会迅速侵蚀信任。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'trust_asymmetry',
+        severity: 'high',
+        text: '信任建立需要十年，崩塌只需一秒。这种不对称性意味着：在信任问题上，防御永远优先于进攻。一次背叛需要十次修复。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('build_trust') || t.includes('consistent') || t.includes('transparent')) s += 2;
+      if (t.includes('betray') || t.includes('deceive') || t.includes('break_trust')) s -= 3;
+      return { dimension: '信任资本', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '积累信任资本' : '消耗信任资本' };
+    },
+  },
+
+  // ------ 声誉经济学 ------
+  reputationEconomics: {
+    name: '声誉经济',
+    icon: '🏷️',
+    description: '分析声誉作为一种无形资产的运作规律',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'reputation_capital',
+        severity: 'medium',
+        text: '声誉是最难获得、最容易失去的资本。它有两个特性：1) 不可交易——你不能把好名声卖给别人；2) 复利效应——好声誉带来更多机会，更多机会强化好声誉。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'reputation_signal',
+        severity: 'medium',
+        text: '在信息不对称的环境中，声誉是最重要的信号。人们不会花时间深入了解你——他们用你的声誉来做快速判断。管理声誉就是管理别人对你的"快速判断"。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('reputation') || t.includes('visible') || t.includes('public')) s += 1;
+      if (t.includes('scandal') || t.includes('controversy')) s -= 2;
+      return { dimension: '声誉影响', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '提升你的声誉' : '损害你的声誉' };
+    },
+  },
+
+  // ------ 委托代理 ------
+  principalAgent: {
+    name: '委托代理',
+    icon: '🔗',
+    description: '分析委托人与代理人之间的利益冲突和激励设计',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'agency_problem',
+        severity: 'high',
+        text: '委托代理问题的核心：代理人的利益永远不完全等于委托人的利益。你让别人替你做事，就要假设他会在"你的利益"和"他的利益"之间找平衡。激励设计的关键是让两者尽可能重合。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'moral_hazard',
+        severity: 'medium',
+        text: '当代理人不承担自己行为的全部后果时，就会出现道德风险。最常见的解决方案：让代理人"有皮肤在游戏里"——利益捆绑、风险共担。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('align') || t.includes('incentive') || t.includes('skin_in_game')) s += 2;
+      if (t.includes('delegate') || t.includes('trust_other')) s += 1;
+      if (t.includes('micromanage') || t.includes('control')) s -= 1;
+      return { dimension: '激励对齐', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '利益更一致' : '利益可能分化' };
+    },
+  },
+
+  // ------ 风险评估 ------
+  riskAssessment: {
+    name: '风险评估',
+    icon: '⚠️',
+    description: '系统分析决策的风险维度、概率和影响',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'risk_types',
+        severity: 'medium',
+        text: '风险分三种：已知的已知（你清楚风险是什么）、已知的未知（你知道有风险但不确定）、未知的未知（你根本没想到的风险）。大多数致命打击来自第三种——所以永远给自己留"冗余"。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'reversibility',
+        severity: 'high',
+        text: '决策分为可逆决策和不可逆决策。可逆决策要快——试错成本低；不可逆决策要慢——一旦错了就回不了头。在做不可逆决策时，"什么都不做"也是一个选项。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('reversible') || t.includes('flexible') || t.includes('hedge')) s += 2;
+      if (t.includes('irreversible') || t.includes('all_in') || t.includes('burn_bridge')) s -= 2;
+      return { dimension: '风险控制', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '保留了灵活性' : '锁死了选择空间' };
+    },
+  },
+
+  // ------ 身份认同 ------
+  identityPolitics: {
+    name: '身份认同',
+    icon: '🎭',
+    description: '分析身份标签如何影响行为和他人的期望',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'identity_cage',
+        severity: 'high',
+        text: '身份标签是一把双刃剑：它帮你快速获得认同，也限制了你的行为空间。一旦你被定义为"某类人"，做"不符合身份"的事就会付出额外代价。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'role_conflict',
+        severity: 'medium',
+        text: '每个人同时扮演多个角色（下属、领导、父母、朋友），不同角色的要求常常冲突。角色冲突不是你的问题——是结构性问题。解决方案不是"选一个角色"，而是在不同场景中切换。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('authentic') || t.includes('consistent')) s += 1;
+      if (t.includes('role_break') || t.includes('unexpected')) s += 1;
+      return { dimension: '身份管理', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '强化你的身份资本' : '挑战身份边界' };
+    },
+  },
+
+  // ------ 零和 vs 正和 ------
+  zeroSumThinking: {
+    name: '零和博弈',
+    icon: '⚖️',
+    description: '识别零和思维陷阱，寻找正和可能',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'zero_sum_trap',
+        severity: 'high',
+        text: '人类天生有"零和偏见"——倾向于认为一方的收益必然等于另一方的损失。但现实中大多数博弈都有正和可能。问自己："有没有办法把蛋糕做大，而不是争怎么分？"',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'win_lose_framing',
+        severity: 'medium',
+        text: '当一个局面被框架为"你赢我输"时，双方都会变得更aggressive。尝试重构框架："我们共同面对的问题是什么？"这能把对抗变成合作。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('win_win') || t.includes('expand') || t.includes('create_value')) s += 2;
+      if (t.includes('zero_sum') || t.includes('winner_take_all')) s -= 1;
+      return { dimension: '正和潜力', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '创造正和可能' : '强化零和格局' };
+    },
+  },
+
+  // ------ 沉默螺旋 ------
+  spiralOfSilence: {
+    name: '沉默螺旋',
+    icon: '🔇',
+    description: '分析群体中少数意见如何被压制',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'spiral_mechanism',
+        severity: 'high',
+        text: '沉默螺旋：当人们觉得自己的观点是少数派时，会因为害怕被孤立而沉默。少数派越沉默，多数派越强势，少数派就越不敢说话——形成恶性循环。打破螺旋需要勇气，但也需要策略。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'minority_influence',
+        severity: 'medium',
+        text: '少数派要影响多数派，关键不是"声音大"，而是"一致性"。持续、一致、自信地表达少数意见，比偶尔爆发更有效。人们最终会被"坚定"本身说服。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('dissent') || t.includes('speak_up') || t.includes('minority')) s += 1;
+      if (t.includes('conform') || t.includes('silent') || t.includes('go_along')) s -= 1;
+      return { dimension: '独立声音', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '打破沉默螺旋' : '强化沉默螺旋' };
+    },
+  },
+
+  // ------ 承诺升级 ------
+  escalationOfCommitment: {
+    name: '承诺升级',
+    icon: '📈',
+    description: '分析为何人们会在失败的路径上越走越远',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'escalation_trap',
+        severity: 'high',
+        text: '承诺升级：已经投入太多所以不能放弃→继续投入→投入更多→更不能放弃。这不是理性决策，是"证明自己没错"的心理需求在驱动。止损的最佳时机永远是"现在"。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'sunk_cost_awareness',
+        severity: 'high',
+        text: '问自己一个残忍的问题："如果我之前没有投入任何东西，我现在还会做这个选择吗？"如果答案是"不会"，那你继续的原因就不是理性，而是沉没成本。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('cut_loss') || t.includes('pivot') || t.includes('exit')) s += 2;
+      if (t.includes('double_down') || t.includes('persist') || t.includes('continue')) s -= 1;
+      return { dimension: '止损能力', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '避免沉没成本陷阱' : '可能陷入承诺升级' };
+    },
+  },
+
+  // ------ 社会比较 ------
+  socialComparison: {
+    name: '社会比较',
+    icon: '📊',
+    description: '分析社会比较如何影响决策和情绪',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'comparison_direction',
+        severity: 'medium',
+        text: '向上比较（和比你好的人比）产生动力或嫉妒；向下比较（和比你差的人比）产生满足或焦虑。大多数人的痛苦不是来自绝对处境，而是来自比较对象的选择。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'relative_deprivation',
+        severity: 'medium',
+        text: '相对剥夺感：即使客观条件改善了，如果别人改善得更多，你反而更不满。这就是为什么"共同富裕"比"一部分人先富"更难引发不满。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('absolute') || t.includes('intrinsic')) s += 1;
+      if (t.includes('relative') || t.includes('competitive')) s -= 1;
+      return { dimension: '比较心态', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '减少社会比较依赖' : '强化社会比较心态' };
+    },
+  },
+
+  // ------ 权力腐化 ------
+  powerCorruption: {
+    name: '权力腐化',
+    icon: '👑',
+    description: '分析权力如何改变人的认知和行为',
+
+    analyze(ctx) {
+      const insights = [];
+      insights.push({
+        type: 'power_paradox',
+        severity: 'high',
+        text: '权力悖论：获得权力需要共情、合作和社交智慧；但拥有权力后，这些能力会退化。权力让人更冲动、更自我中心、更不善于换位思考。这就是为什么"好人变坏"往往发生在掌权之后。',
+        framework: this.name,
+      });
+      insights.push({
+        type: 'hubris_syndrome',
+        severity: 'medium',
+        text: '傲慢综合征：长期掌权者会发展出一种"我不会错"的幻觉。预防方法：在身边保留敢说真话的人——哪怕你不想听。',
+        framework: this.name,
+      });
+      return insights;
+    },
+    scoreOption(option) {
+      let s = 0;
+      const t = option.tags || [];
+      if (t.includes('humility') || t.includes('check_power') || t.includes('accountable')) s += 2;
+      if (t.includes('accumulate_power') || t.includes('centralize')) s -= 1;
+      return { dimension: '权力自律', score: Math.max(-3, Math.min(5, s)), reasoning: s > 0 ? '对权力保持警觉' : '可能加速权力腐化' };
+    },
+  },
 };
 
 

@@ -20,8 +20,10 @@ const whitehouseData = {
       choices: [
         {
           text: '先处理推文风波——民意是根基，不能让它发酵',
+          hint: '民意是即时的，情报是潜在的——但潜在的危险一旦爆发，比热搜更致命。',
           bookQuote: '选这个？《乡土中国》：面子是社会交往中最微妙的武器。在西方，面子叫 approval rating。',
           debtPhrase: '你让情报长等了三小时——军方记住了你的优先级',
+          historyFlag: 'wh_chose_public_op',
           debtCategory: 'compromise',
           channelEffect: 0,
           consequence: '你发了一条澄清推文，支持率回升。但情报被搁置，军方接触对手的消息在下午才被你看到——已经晚了三小时。幕僚长在走廊里叹了口气。',
@@ -29,6 +31,7 @@ const whitehouseData = {
         },
         {
           text: '优先处理军方情报——危机要扼杀在摇篮里',
+          hint: '情报安全是底线，但热搜失控的支持率跌幅可能比军方威胁更快到来。',
           bookQuote: '选这个？《权力的道路》：真正的权力博弈发生在公众视线之外。',
           debtPhrase: '你欠新闻发言人一次完美的危机公关',
           debtCategory: 'self-serving',
@@ -40,6 +43,7 @@ const whitehouseData = {
           text: '交给幕僚长处理——"两件事你都安排，给我一个方案"',
           bookQuote: '选这个？《置身事内》：领导者最重要的能力不是决策，是让制度运转。',
           debtPhrase: '你欠幕僚长一个不会再透支他的承诺',
+          historyFlag: 'wh_delegated',
           debtCategory: 'passive',
           channelEffect: -1,
           consequence: '幕僚长眼底闪过一丝疲惫，但还是转身去安排了。下午他交来两份方案——都算不上完美，但至少没有出大乱子。只是，你的消息渠道少了一条——他开始自己筛选信息再给你。',
@@ -55,6 +59,7 @@ const whitehouseData = {
       choices: [
         {
           text: '支持国防部长——忠诚是政治的第一货币',
+          hint: '军方的忠诚比华尔街的钱更难买到——但没有钱，你连选举都过不了。',
           bookQuote: '选这个？《白宫幕僚》：失去军方信任的总统，就像失去枪的将军。',
           debtPhrase: '华尔街给你的竞选经理打了一个电话',
           debtCategory: 'self-serving',
@@ -75,6 +80,7 @@ const whitehouseData = {
           text: '沉默十秒，然后说："我听完了。下一个议题。"',
           bookQuote: '选这个？《权力的道路》：不表态本身就是最强的表态。让所有人猜，你就永远掌握主动。',
           debtPhrase: '你让两个部长都在会后疯狂打听你的立场',
+          historyFlag: 'wh_silent_cabinet',
           debtCategory: 'passive',
           channelEffect: 0,
           consequence: '整个会议室陷入诡异的安静。当晚，两边都派人来"汇报工作"——实际上是在试探你。你的不确定性成了最大的筹码，也成了最大的隐患。',
