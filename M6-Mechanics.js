@@ -2412,11 +2412,13 @@ function renderRandomEvent() {
 
   container.innerHTML = `
     <div class="scene-chapter" id="sceneChapter">· 插曲 · ${event.title}</div>
+    <div class="scene-narrator" id="sceneContext" style="font-size:0.75rem;font-style:italic;opacity:0.7;margin-bottom:1.8rem;opacity:0;transform:translateY(20px);"></div>
     <div class="scene-text" id="sceneText"></div>
     <div class="choices-container" id="choicesContainer"></div>
   `;
 
   const chapterEl = document.getElementById('sceneChapter');
+  const contextEl = document.getElementById('sceneContext');
   const textEl = document.getElementById('sceneText');
   const choicesEl = document.getElementById('choicesContainer');
 
@@ -2425,6 +2427,27 @@ function renderRandomEvent() {
     chapterEl.style.transform = 'translateY(0)';
     chapterEl.style.transition = 'all 0.8s cubic-bezier(0.23,1,0.32,1)';
   }, 100);
+
+  setTimeout(() => {
+    // V14.5: 随机事件上下文桥接 — 根据当前状态动态生成
+    const scData = scenarios[state.scenario];
+    const sceneTitles = scData.scenes.map(s => s.title);
+    const currentMainSceneTitle = sceneTitles[state.currentScene] || '';
+    const contextBridges = {
+      whitehouse: `白宫的节奏从未慢下来——${currentMainSceneTitle ? `在「${currentMainSceneTitle}」的间隙中` : '而在这个间隙中'}，另一件事发生了。`,
+      ming: `县衙的日常被一阵敲门声打断——${currentMainSceneTitle ? `「${currentMainSceneTitle}」的事情还没处理完` : '但公务之外总有插曲'}。`,
+      ai: `协调官的日程表从不按计划走——${currentMainSceneTitle ? `「${currentMainSceneTitle}」刚有眉目` : '意外总在计划之外'}。`,
+      africa: `草原上的风吹来了新的消息——${currentMainSceneTitle ? `「${currentMainSceneTitle}」之后` : '每一次风吹草动都可能是信号'}。`,
+      cyber: `下城区的街道永远不会安静——${currentMainSceneTitle ? `「${currentMainSceneTitle}」还没结束` : '总有新的麻烦找上门来'}。`,
+      korea: `日常的节奏被一阵手机震动打破——${currentMainSceneTitle ? `「${currentMainSceneTitle}」之间` : '生活总有出其不意的转弯'}。`,
+      chaos: `混沌之渊没有时间线，但有节奏——${currentMainSceneTitle ? `「${currentMainSceneTitle}」的回响尚未散去` : '另一个时空的声音穿透了裂隙'}。`
+    };
+    const bridge = contextBridges[state.scenario] || '在故事的间隙中，另一件事发生了。';
+    contextEl.textContent = bridge;
+    contextEl.style.opacity = '1';
+    contextEl.style.transform = 'translateY(0)';
+    contextEl.style.transition = 'all 0.8s ease';
+  }, 500);
 
   setTimeout(() => {
     textEl.style.opacity = '1';
@@ -3277,6 +3300,71 @@ function saveMemorialAsImage() {
   link.download = '政治墓志铭.png'; link.href = canvas.toDataURL('image/png'); link.click();
 }
 
+// --- 结局解锁条件说明 ---
+function getEndingUnlockHint(endingId) {
+  const hints = {
+    // 白宫篇
+    'wh_manipulator': '偏向「妥协」3次以上，且保持消息渠道≥2',
+    'wh_martyr': '坚持「道德」底线4次以上，成为体制内的异类',
+    'wh_trapped': '多次「背叛」他人信任（3次以上），终被权力反噬',
+    'wh_deaf': '消息渠道归零——失去所有信息来源和信息力量',
+    'wh_hermit': '回避决策4次以上，最终选择退出权力中心',
+    'wh_balanced': '在不同类型的抉择中保持平衡，找到中庸之道',
+    'wh_chessmaster': '以「利己」为先导4次以上，将所有人当作棋子',
+    'wh_scapegoat': '消息渠道≤1且频繁回避决策，成为系统替罪羊',
+    // 大明官场
+    'ming_manipulator': '偏向「妥协」3次以上，且保持消息渠道≥2',
+    'ming_martyr': '坚持「道德」底线4次以上，宁为清官不妥协',
+    'ming_deaf': '消息渠道完全丧失，成为官场上的聋子',
+    'ming_betrayed': '多次「背叛」信任（3次以上），只剩一人独行',
+    'ming_hermit': '回避决策4次以上，终归田园不问政事',
+    'ming_balanced': '在规矩和原则之间找到第三条路',
+    'ming_teacher': '坚持道德3次以上但消息渠道≤1——丢官后开私塾教书',
+    'ming_whistleblower': '坚持道德3次以上且保持消息渠道≥2——上万言书说真话',
+    'ming_weathervane': '频繁妥协但消息渠道≤1，随风倒最终被遗忘',
+    // AI共生
+    'ai_bridge': '在「道德」和「妥协」之间各积累2次以上',
+    'ai_witness': '以「回避」为主（3次以上），但也保持道德底线（2次以上）',
+    'ai_advocate': '为AI权益「坚持道德」4次以上，成为AI代言人',
+    'ai_guardian': '以「人类利益」为先导4次以上，守住物种边界',
+    'ai_ghost': '过多「回避」决策（4次以上），成为历史的旁观者',
+    'ai_balanced': '在人机之间找到共生的动态平衡',
+    'ai_emperor': '以「利己」为主（3次以上）且至少一次「背叛」',
+    'ai_martyr': '极尽「道德」5次以上但消息渠道≤1——为AI燃烧自己',
+    'ai_dissolved': '「道德」和「妥协」各3次以上——取消协调官职位',
+    'ai_early_silent': '在第3幕选择沉默退出协调官岗位',
+    // 非洲之心
+    'africa_rebel': '坚持「道德」底线4次以上，在两个世界间守住了自己',
+    'africa_merchant': '以「利己」为先导4次以上，用商人之道在异星立足',
+    'africa_survivor': '选择「自保」4次以上，在异星活了下来',
+    'africa_exile': '过多「回避」决策（4次以上），在两个世界间无处可归',
+    'africa_default': '用你独一无二的方式走完这趟旅程',
+    'africa_connector': '在「妥协」中连接两个物种（5次以上）',
+    'africa_teacher': '坚守道德中学会合作（道德3次+妥协1次以上）',
+    // 3077
+    'cyber_rebel': '坚持「道德」底线4次以上，在机器的世界守住人性',
+    'cyber_merchant': '以「利己」为先导4次以上，在贫民窟建起商业帝国',
+    'cyber_survivor': '选择「自保」4次以上，在赛博世界活下来',
+    'cyber_default': '用你自己的方式走过3077的街头',
+    'cyber_connector': '在「妥协」中找到连接下城区每个人的路径（5次以上）',
+    'cyber_teacher': '坚守道德+学会合作（道德3次+妥协1次以上），开露天学堂',
+    // 日常投影
+    'korea_writer': '坚持「道德」底线4次以上，用文字找到自己的位置',
+    'korea_cafe': '在「妥协」中安放自己（4次以上），开一间自己的咖啡店',
+    'korea_wanderer': '选择「自保」4次以上，背上背包走遍世界',
+    'korea_default': '用你自己的节奏走过每一天',
+    'korea_bridge': '道德3次以上+妥协2次以上——成为他人生命中的摆渡人',
+    // 混沌之渊
+    'chaos_bridge': '坚持「道德」底线5次以上，在三时代之间架桥',
+    'chaos_guardian': '在「妥协」中守护混沌（4次以上），成为守望者',
+    'chaos_philosopher': '以「回避」为主（5次以上），提问比回答更有力',
+    'chaos_exile': '以「利己」为先导4次以上，选择自我放逐',
+    'chaos_harmonizer': '用最少的决定（≤10次）织出最大的网',
+    'chaos_early_silence': '在时空风暴最深处选择沉默退出'
+  };
+  return hints[endingId] || '做出不同的选择以解锁此结局';
+}
+
 // --- 图鉴系统 ---
 function showGallery() {
   showScreen('gallery-screen');
@@ -3356,12 +3444,12 @@ function renderGalleryContent(tab) {
     <div class="gallery-grid">
       ${sc.endings.map(e => {
         const isUnlocked = unlocked.includes(e.id);
-        const isEarly = e.id.includes('early');
+        const hint = getEndingUnlockHint(e.id);
         return `<div class="gallery-card ${isUnlocked ? 'unlocked' : 'locked'}">
           <div class="gc-icon">${isUnlocked ? e.icon : '?'}</div>
           <div class="gc-title">${isUnlocked ? e.title : '???'}</div>
           <div class="gc-subtitle">${isUnlocked ? e.subtitle : '未解锁'}</div>
-          <div class="gc-quote">${isUnlocked ? e.quote : (isEarly ? '在AI道路第4幕后选择退出' : '做出不同的选择以解锁此结局')}</div>
+          <div class="gc-quote">${isUnlocked ? e.quote : hint}</div>
           ${isUnlocked ? '<div class="gc-unlocked-tag">✓ 已解锁</div>' : ''}
         </div>`;
       }).join('')}

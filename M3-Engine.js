@@ -342,20 +342,34 @@ class AudioEngine {
   playLandingHover(scenario) {
     if (!this.enabled || !this.ctx) return;
     if (scenario === 'whitehouse') {
-      // 白宫：紧张的政治氛围，低沉弦乐
       this._tone(110, 0.4, 'triangle', this.sfxGain, 0.12);
       setTimeout(() => this._tone(130, 0.3, 'triangle', this.sfxGain, 0.08), 100);
       setTimeout(() => this._tone(165, 0.5, 'sine', this.sfxGain, 0.06), 200);
     } else if (scenario === 'ming') {
-      // 大明：古风空灵，五声音阶
       this._tone(392, 0.5, 'sine', this.sfxGain, 0.1);
       setTimeout(() => this._tone(440, 0.4, 'sine', this.sfxGain, 0.07), 150);
       setTimeout(() => this._tone(523, 0.6, 'sine', this.sfxGain, 0.05), 300);
     } else if (scenario === 'ai') {
-      // AI共生：电子脉冲感
       this._tone(880, 0.15, 'sine', this.sfxGain, 0.08);
       setTimeout(() => this._tone(1047, 0.1, 'sine', this.sfxGain, 0.06), 80);
       setTimeout(() => this._tone(1319, 0.2, 'sine', this.sfxGain, 0.04), 160);
+    } else if (scenario === 'africa') {
+      this._tone(220, 0.5, 'triangle', this.sfxGain, 0.1);
+      setTimeout(() => this._tone(330, 0.4, 'triangle', this.sfxGain, 0.07), 120);
+      setTimeout(() => this._tone(440, 0.6, 'sine', this.sfxGain, 0.06), 280);
+    } else if (scenario === 'cyber') {
+      this._tone(280, 0.2, 'sawtooth', this.sfxGain, 0.1);
+      setTimeout(() => this._tone(370, 0.15, 'square', this.sfxGain, 0.06), 80);
+      setTimeout(() => this._tone(440, 0.3, 'sawtooth', this.sfxGain, 0.05), 200);
+    } else if (scenario === 'korea') {
+      this._tone(349, 0.4, 'sine', this.sfxGain, 0.08);
+      setTimeout(() => this._tone(392, 0.45, 'sine', this.sfxGain, 0.06), 150);
+      setTimeout(() => this._tone(440, 0.5, 'sine', this.sfxGain, 0.04), 300);
+    } else if (scenario === 'chaos') {
+      this._tone(261, 0.3, 'sine', this.sfxGain, 0.1);
+      setTimeout(() => this._tone(330, 0.25, 'sine', this.sfxGain, 0.07), 100);
+      setTimeout(() => this._tone(392, 0.2, 'triangle', this.sfxGain, 0.05), 180);
+      setTimeout(() => this._tone(523, 0.5, 'sine', this.sfxGain, 0.04), 280);
     }
   }
 
