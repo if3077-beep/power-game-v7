@@ -23,20 +23,22 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 #landing h1{font-family:'Noto Serif SC',serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:900;letter-spacing:0.1em;margin-bottom:0.5rem;background:linear-gradient(135deg,var(--text),var(--accent-w));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeUp 1.2s ease-out;}
 #landing .subtitle{font-size:clamp(0.9rem,2vw,1.2rem);color:var(--muted);margin-bottom:2rem;animation:fadeUp 1.2s ease-out 0.3s both;transition:opacity 0.5s ease,transform 0.5s ease;line-height:1.8;min-height:5em;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 /* V14.3: 混沌入口 — 精巧标题附近链接 */
-.chaos-entry{display:flex;align-items:center;justify-content:center;gap:0.8rem;margin:0 auto 2rem;padding:0.5rem 1rem;cursor:pointer;transition:all 0.5s ease;animation:fadeUp 1.2s ease-out 0.6s both;max-width:320px;position:relative;}
-.chaos-entry-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(184,169,212,0.25),transparent);transition:all 0.5s ease;}
+.chaos-entry{display:flex;align-items:center;justify-content:center;gap:0.8rem;margin:0.5rem auto 2.5rem;padding:0.6rem 1.2rem;cursor:pointer;transition:all 0.6s cubic-bezier(0.23,1,0.32,1);animation:fadeUp 1.2s ease-out 0.6s both;max-width:340px;position:relative;border-radius:2rem;}
+.chaos-entry::before{content:'';position:absolute;inset:0;border-radius:2rem;background:radial-gradient(ellipse at 50% 50%,rgba(184,169,212,0.06),transparent 70%);opacity:0;transition:opacity 0.6s ease;}
+.chaos-entry:hover::before{opacity:1;}
+.chaos-entry-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(184,169,212,0.2),transparent);transition:all 0.6s ease;}
 .chaos-entry:hover .chaos-entry-line{background:linear-gradient(90deg,transparent,rgba(184,169,212,0.5),transparent);}
-.chaos-entry-icon{font-size:1.1rem;opacity:0.6;transition:all 0.5s ease;}
-.chaos-entry:hover .chaos-entry-icon{opacity:1;transform:rotate(25deg) scale(1.2);}
-.chaos-entry-label{font-family:'Noto Serif SC',serif;font-size:0.75rem;color:var(--muted);letter-spacing:0.2em;transition:color 0.4s ease;}
-.chaos-entry:hover .chaos-entry-label{color:var(--accent-w);}
+.chaos-entry-icon{font-size:1rem;opacity:0.5;transition:all 0.6s cubic-bezier(0.23,1,0.32,1);}
+.chaos-entry:hover .chaos-entry-icon{opacity:1;transform:rotate(30deg) scale(1.25);}
+.chaos-entry-label{font-family:'Noto Serif SC',serif;font-size:0.72rem;color:var(--muted);letter-spacing:0.2em;transition:all 0.5s ease;}
+.chaos-entry:hover .chaos-entry-label{color:#b8a9d4;text-shadow:0 0 20px rgba(184,169,212,0.3);}
 .subtitle-source{display:block;font-size:0.72rem;color:rgba(201,169,110,0.5);margin-top:0.4rem;font-style:italic;letter-spacing:0.1em;transition:opacity 0.3s ease 0.2s;}
 .subtitle-text{display:inline;transition:opacity 0.3s ease;}
 .subtitle-fade-out{opacity:0;transform:translateY(12px);}
 .subtitle-fade-out .subtitle-source{opacity:0;}
 .subtitle-fade-in{animation:subtitleFadeIn 0.7s cubic-bezier(0.23,1,0.32,1);}
 @keyframes subtitleFadeIn{from{opacity:0;transform:translateY(-12px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}
-.divider-line{width:60px;height:1px;background:var(--muted);margin:0 auto 3rem;animation:fadeUp 1.2s ease-out 0.5s both;}
+.divider-line{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,0.4),transparent);margin:0 auto 3rem;animation:fadeUp 1.2s ease-out 0.5s both;}
 .choice-cards{display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;animation:fadeUp 1.2s ease-out 0.7s both;}
 .choice-card{width:380px;padding:3rem 2rem;background:var(--card-bg);border:1px solid var(--card-border);cursor:pointer;transition:all 0.5s cubic-bezier(0.23,1,0.32,1);position:relative;overflow:hidden;backdrop-filter:blur(10px);}
 .choice-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--accent-w),transparent);transform:scaleX(0);transition:transform 0.5s ease;}
@@ -52,11 +54,12 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 .landing-footer button:hover::before{left:100%;}
 .landing-footer button:hover{border-color:var(--accent-w);color:var(--text);background:linear-gradient(135deg,rgba(201,169,110,0.15),rgba(201,169,110,0.05));box-shadow:0 8px 30px rgba(201,169,110,0.1);transform:translateY(-2px);}
 /* V14.3: 锁定道路占位卡 */
-.locked-road{opacity:0.45;filter:grayscale(0.6);cursor:default !important;}
+.locked-road{opacity:0.4;filter:grayscale(0.5);cursor:default !important;}
 .locked-road:hover{transform:none !important;background:var(--card-bg) !important;border-color:var(--card-border) !important;box-shadow:none !important;}
 .locked-road::before{display:none;}
-.locked-road .card-era{color:var(--muted) !important;font-size:0.65rem;letter-spacing:0.15em;}
-.locked-road .card-icon{opacity:0.4;}
+.locked-road::after{display:none;}
+.locked-road .card-era{color:var(--muted) !important;font-size:0.62rem;letter-spacing:0.15em;opacity:0.6;}
+.locked-road .card-icon{opacity:0.35;}
 
 /* INTRO */
 #intro-screen{align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;}
@@ -317,7 +320,11 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 .game-mobile-debt{display:none;margin:1.5rem 0;padding:1rem;background:var(--glass);border:1px solid var(--glass-border);}
 .game-mobile-debt .debt-scroll-mobile{max-height:200px;overflow-y:auto;}
 @media(max-width:768px){
-  .choice-cards{flex-direction:column;align-items:center;}.choice-card{width:100%;max-width:360px;}
+  #landing{padding:1.5rem 1rem;}
+  #landing h1{font-size:clamp(1.8rem,8vw,4rem);}
+  .choice-cards{flex-direction:column;align-items:center;gap:1.2rem;}
+  .choice-card{width:100%;max-width:360px;padding:2rem 1.5rem;}
+  .chaos-entry{max-width:280px;margin:0.3rem auto 2rem;}
   .game-header{padding:0.6rem 0.8rem;flex-wrap:wrap;gap:0.3rem;}
   .game-header .scenario-label{font-size:0.6rem;letter-spacing:0.15em;}
   .game-header .level-indicator{font-size:0.65rem;}
@@ -429,8 +436,8 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 @keyframes shimmerLine{0%{left:-100%;}100%{left:200%;}}
 
 /* ====== V7: 选择卡片增强 ====== */
-.choice-card{transition:all 0.5s cubic-bezier(0.23,1,0.32,1),box-shadow 0.3s ease;}
-.choice-card:hover{box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 40px rgba(201,169,110,0.08);}
+.choice-card{transition:all 0.6s cubic-bezier(0.23,1,0.32,1),box-shadow 0.5s ease;}
+.choice-card:hover{box-shadow:0 24px 80px rgba(0,0,0,0.4),0 0 50px rgba(201,169,110,0.1);transform:translateY(-6px);}
 .choice-card::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--accent-w),transparent);transform:scaleX(0);transition:transform 0.5s ease;}
 .choice-card:hover::after{transform:scaleX(1);}
 
