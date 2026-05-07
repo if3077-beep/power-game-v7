@@ -214,9 +214,54 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 .ending-analysis h4{color:var(--accent-w);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.8rem;}
 .ending-quote{font-style:italic;color:var(--muted);font-size:0.85rem;margin-bottom:2rem;opacity:0;animation:fadeUp 1s ease-out 1.6s both;}
 .ending-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 1s ease-out 1.8s both;}
-.ending-btn{padding:0.8rem 2rem;background:transparent;border:1px solid var(--card-border);color:var(--text);font-family:'Noto Serif SC',serif;font-size:0.9rem;cursor:pointer;transition:all 0.4s ease;}
+.ending-btn{padding:0.8rem 2rem;background:transparent;border:1px solid var(--card-border);color:var(--text);font-family:'Noto Serif SC',serif;font-size:0.9rem;cursor:pointer;transition:all 0.4s ease;position:relative;overflow:hidden;}
+.ending-btn::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(201,169,110,0.08),transparent 70%);opacity:0;transition:opacity 0.4s ease;}
 .ending-btn:hover{background:rgba(255,255,255,0.06);border-color:var(--accent-w);}
-.ending-btn.primary{border-color:var(--accent-w);}
+.ending-btn:hover::after{opacity:1;}
+.ending-btn.primary{border-color:var(--accent-w);background:linear-gradient(135deg,rgba(201,169,110,0.06),transparent);}
+.ending-btn.primary::before{content:'';position:absolute;top:0;left:-100%;width:200%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.03),transparent);animation:endingBtnShine 3s ease-in-out infinite;}
+@keyframes endingBtnShine{0%{left:-100%;}100%{left:100%;}}
+/* V14.6: 结局页面 — 金光照耀 + 光柱动效 */
+#ending-screen{position:relative;overflow:hidden;}
+#ending-screen::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,rgba(201,169,110,0.04),transparent 60%);pointer-events:none;}
+#ending-screen::after{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:1px;height:150%;background:linear-gradient(180deg,transparent,rgba(201,169,110,0.15) 20%,rgba(255,255,255,0.25) 50%,rgba(201,169,110,0.15) 80%,transparent);pointer-events:none;animation:endingLightBeam 4s ease-in-out infinite;}
+@keyframes endingLightBeam{0%,100%{opacity:0.3;width:1px;}50%{opacity:0.7;width:2px;}}
+body.theme-cyber #ending-screen::after{background:linear-gradient(180deg,transparent,rgba(255,107,107,0.15) 20%,rgba(78,205,196,0.2) 50%,rgba(255,107,107,0.15) 80%,transparent);}
+body.theme-ming #ending-screen::after{background:linear-gradient(180deg,transparent,rgba(139,69,19,0.15) 20%,rgba(184,134,11,0.2) 50%,rgba(139,69,19,0.15) 80%,transparent);}
+body.theme-ai #ending-screen::after{background:linear-gradient(180deg,transparent,rgba(78,205,196,0.15) 20%,rgba(123,104,238,0.15) 50%,rgba(78,205,196,0.15) 80%,transparent);}
+body.theme-africa #ending-screen::after{background:linear-gradient(180deg,transparent,rgba(107,143,113,0.15) 20%,rgba(255,215,0,0.12) 50%,rgba(107,143,113,0.15) 80%,transparent);}
+body.theme-korea #ending-screen::after{background:linear-gradient(180deg,transparent,rgba(155,142,196,0.12) 20%,rgba(255,215,0,0.08) 50%,rgba(155,142,196,0.12) 80%,transparent);}
+body.theme-chaos #ending-screen::after{background:linear-gradient(180deg,transparent,rgba(184,169,212,0.1) 20%,rgba(201,169,110,0.1) 40%,rgba(78,205,196,0.08) 60%,rgba(184,169,212,0.1) 80%,transparent);}
+.ending-badge{animation:endingBadgeDrop 1.2s cubic-bezier(0.23,1,0.32,1) 0.2s both;}
+@keyframes endingBadgeDrop{0%{opacity:0;transform:translateY(-60px) scale(0.3) rotate(-20deg);}60%{transform:translateY(8px) scale(1.1) rotate(5deg);}100%{opacity:1;transform:translateY(0) scale(1) rotate(0);}}
+.ending-title{animation:endingTitleReveal 1.2s cubic-bezier(0.23,1,0.32,1) 0.4s both;}
+@keyframes endingTitleReveal{0%{opacity:0;transform:translateY(30px);letter-spacing:0.5em;}100%{opacity:1;transform:translateY(0);letter-spacing:normal;}}
+/* V14.6: echo card 增强 — 金光边框扫描 */
+.echo-card{position:relative;overflow:hidden;}
+.echo-card::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.03),transparent);animation:echoCardScan 5s ease-in-out infinite;}
+@keyframes echoCardScan{0%{left:-100%;}40%{left:100%;}100%{left:100%;}}
+/* V14.6: verdict 增强 — 道路色左线 */
+.ending-verdict{position:relative;overflow:hidden;}
+.ending-verdict::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(201,169,110,0.02),transparent);pointer-events:none;}
+body.theme-cyber .ending-verdict{border-left:2px solid rgba(255,107,107,0.2);}
+body.theme-ming .ending-verdict{border-left:2px solid rgba(139,69,19,0.2);}
+body.theme-ai .ending-verdict{border-left:2px solid rgba(78,205,196,0.2);}
+body.theme-africa .ending-verdict{border-left:2px solid rgba(107,143,113,0.2);}
+body.theme-korea .ending-verdict{border-left:2px solid rgba(155,142,196,0.2);}
+body.theme-chaos .ending-verdict{border-left:2px solid rgba(184,169,212,0.2);}
+
+/* V14.6: 再来一局过渡动效 — 道路主题光幕扫过 */
+.transition-swipe{position:fixed;top:0;left:-100%;width:100%;height:100%;z-index:550;pointer-events:none;transition:left 0.6s cubic-bezier(0.76,0,0.24,1);}
+.transition-swipe.active{left:0;}
+.transition-swipe::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(201,169,110,0.15) 30%,rgba(255,255,255,0.2) 50%,rgba(201,169,110,0.15) 70%,transparent 100%);}
+.transition-swipe::after{content:'';position:absolute;inset:0;background:var(--bg);transform:scaleX(0);transform-origin:left;transition:transform 0.5s cubic-bezier(0.76,0,0.24,1) 0.15s;}
+.transition-swipe.active::after{transform:scaleX(1);}
+body.theme-cyber .transition-swipe::before{background:linear-gradient(90deg,transparent 0%,rgba(255,107,107,0.15) 30%,rgba(78,205,196,0.12) 50%,rgba(255,107,107,0.15) 70%,transparent 100%);}
+body.theme-ming .transition-swipe::before{background:linear-gradient(90deg,transparent 0%,rgba(139,69,19,0.15) 30%,rgba(184,134,11,0.12) 50%,rgba(139,69,19,0.15) 70%,transparent 100%);}
+body.theme-ai .transition-swipe::before{background:linear-gradient(90deg,transparent 0%,rgba(78,205,196,0.15) 30%,rgba(123,104,238,0.1) 50%,rgba(78,205,196,0.15) 70%,transparent 100%);}
+body.theme-africa .transition-swipe::before{background:linear-gradient(90deg,transparent 0%,rgba(107,143,113,0.15) 30%,rgba(255,215,0,0.1) 50%,rgba(107,143,113,0.15) 70%,transparent 100%);}
+body.theme-korea .transition-swipe::before{background:linear-gradient(90deg,transparent 0%,rgba(155,142,196,0.15) 30%,rgba(255,215,0,0.08) 50%,rgba(155,142,196,0.15) 70%,transparent 100%);}
+body.theme-chaos .transition-swipe::before{background:linear-gradient(90deg,transparent 0%,rgba(184,169,212,0.12) 25%,rgba(201,169,110,0.1) 50%,rgba(78,205,196,0.08) 75%,transparent 100%);}
 
 /* MEMORIAL SCROLL */
 .memorial-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:600;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.8s ease;}
@@ -233,38 +278,54 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 .memorial-btn:hover{background:rgba(42,31,20,0.1);}
 
 /* GALLERY */
-#gallery-screen{align-items:center;padding:3rem 1.5rem;}
-.gallery-header{text-align:center;margin-bottom:1.5rem;}
-.gallery-header h2{font-family:'Noto Serif SC',serif;font-size:1.8rem;font-weight:900;margin-bottom:0.5rem;}
+#gallery-screen{align-items:center;padding:3rem 1.5rem;position:relative;}
+#gallery-screen::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 20%,rgba(201,169,110,0.03),transparent 50%);pointer-events:none;}
+.gallery-header{text-align:center;margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s ease-out both;}
+.gallery-header h2{font-family:'Noto Serif SC',serif;font-size:2rem;font-weight:900;margin-bottom:0.5rem;background:linear-gradient(135deg,var(--text),var(--accent-w));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .gallery-header p{color:var(--muted);font-size:0.85rem;}
-.gallery-progress-bar{width:100%;max-width:400px;height:4px;background:var(--glass);border-radius:2px;margin:0.8rem auto 0;overflow:hidden;}
-.gallery-progress-fill{height:100%;background:var(--accent-w);border-radius:2px;transition:width 0.6s ease;}
-.gallery-tabs{display:flex;gap:0;justify-content:flex-start;margin-bottom:1.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;scrollbar-width:none;scroll-snap-type:x proximity;padding:0 0.5rem;flex-wrap:nowrap;}
+.gallery-progress-bar{width:100%;max-width:400px;height:6px;background:var(--glass);border-radius:3px;margin:1rem auto 0;overflow:hidden;position:relative;}
+.gallery-progress-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);animation:progressShine 2s ease-in-out infinite;}
+@keyframes progressShine{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.gallery-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-w),rgba(255,215,0,0.6));border-radius:3px;transition:width 0.8s cubic-bezier(0.23,1,0.32,1);box-shadow:0 0 12px rgba(201,169,110,0.2);}
+.gallery-tabs{display:flex;gap:0.3rem;justify-content:flex-start;margin-bottom:2rem;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;scrollbar-width:none;scroll-snap-type:x proximity;padding:0 0.5rem;flex-wrap:nowrap;opacity:0;animation:fadeUp 0.8s ease-out 0.15s both;}
 .gallery-tabs::-webkit-scrollbar{display:none;}
 .gallery-tab{scroll-snap-align:start;flex-shrink:0;}
-.gallery-tab{padding:0.5rem 1.2rem;background:transparent;border:1px solid var(--card-border);color:var(--muted);font-family:'Noto Serif SC',serif;font-size:0.8rem;cursor:pointer;transition:all 0.3s;white-space:nowrap;position:relative;}
-.gallery-tab.active{border-color:var(--accent-w);color:var(--text);background:rgba(201,169,110,0.08);}
-.gallery-tab:hover{border-color:var(--accent-w);}
+.gallery-tab{padding:0.6rem 1.4rem;background:var(--card-bg);border:1px solid var(--card-border);color:var(--muted);font-family:'Noto Serif SC',serif;font-size:0.8rem;cursor:pointer;transition:all 0.35s ease;white-space:nowrap;position:relative;overflow:hidden;}
+.gallery-tab::before{content:'';position:absolute;bottom:0;left:10%;width:80%;height:2px;background:var(--accent-w);transform:scaleX(0);transition:transform 0.35s ease;}
+.gallery-tab.active{border-color:var(--accent-w);color:var(--text);background:rgba(201,169,110,0.08);box-shadow:0 4px 20px rgba(201,169,110,0.06);}
+.gallery-tab.active::before{transform:scaleX(1);}
+.gallery-tab:hover{border-color:var(--accent-w);color:var(--text);}
 .gallery-tab .tab-progress{display:block;font-size:0.6rem;color:var(--muted);margin-top:0.15rem;opacity:0.7;}
 .gallery-tab.active .tab-progress{color:var(--accent-w);opacity:1;}
-.gallery-road-info{text-align:center;margin-bottom:1.5rem;padding:1rem;background:var(--glass);border:1px solid var(--glass-border);max-width:600px;width:100%;}
-.gallery-road-info .road-name{font-family:'Noto Serif SC',serif;font-size:1rem;font-weight:700;margin-bottom:0.3rem;}
+.gallery-road-info{text-align:center;margin-bottom:2rem;padding:1.2rem 1.5rem;background:var(--glass);border:1px solid var(--glass-border);max-width:600px;width:100%;opacity:0;animation:fadeUp 0.8s ease-out 0.25s both;position:relative;overflow:hidden;}
+.gallery-road-info::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--accent-w),transparent);}
+.gallery-road-info .road-name{font-family:'Noto Serif SC',serif;font-size:1.1rem;font-weight:700;margin-bottom:0.4rem;}
 .gallery-road-info .road-desc{font-size:0.8rem;color:var(--muted);line-height:1.6;}
-.gallery-road-info .road-progress{margin-top:0.5rem;font-size:0.75rem;color:var(--accent-w);}
-.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.2rem;max-width:900px;width:100%;margin-bottom:2rem;}
-.gallery-card{padding:1.5rem;background:var(--card-bg);border:1px solid var(--card-border);text-align:center;transition:all 0.3s;position:relative;overflow:hidden;}
-.gallery-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-w);opacity:0;transition:opacity 0.3s;}
-.gallery-card.locked{opacity:0.35;filter:grayscale(0.8);}
-.gallery-card.locked::before{display:none;}
-.gallery-card.unlocked:hover{border-color:var(--accent-w);transform:translateY(-3px);}
+.gallery-road-info .road-progress{margin-top:0.6rem;font-size:0.78rem;color:var(--accent-w);font-weight:500;}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.2rem;max-width:900px;width:100%;margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s ease-out 0.35s both;}
+/* V14.6: 图鉴卡片道路专属色调 */
+body.theme-cyber .gallery-card.unlocked:hover{box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 30px rgba(255,107,107,0.08);}
+body.theme-ming .gallery-card.unlocked:hover{box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 30px rgba(139,69,19,0.08);}
+body.theme-ai .gallery-card.unlocked:hover{box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 30px rgba(78,205,196,0.08);}
+body.theme-africa .gallery-card.unlocked:hover{box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 30px rgba(107,143,113,0.08);}
+body.theme-korea .gallery-card.unlocked:hover{box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 30px rgba(155,142,196,0.08);}
+body.theme-chaos .gallery-card.unlocked:hover{box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 30px rgba(184,169,212,0.08);}
+.gallery-card{padding:1.5rem;background:var(--card-bg);border:1px solid var(--card-border);text-align:center;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);position:relative;overflow:hidden;}
+.gallery-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--accent-w),transparent);opacity:0;transition:opacity 0.35s ease;}
+.gallery-card::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,169,110,0.04),transparent 60%);opacity:0;transition:opacity 0.35s ease;}
+.gallery-card.locked{opacity:0.3;filter:grayscale(0.85);}
+.gallery-card.locked::before{background:rgba(255,255,255,0.03);opacity:1;}
+.gallery-card.unlocked:hover{border-color:var(--accent-w);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 30px rgba(201,169,110,0.06);}
 .gallery-card.unlocked:hover::before{opacity:1;}
-.gc-icon{font-size:2rem;margin-bottom:0.6rem;}
-.gc-title{font-family:'Noto Serif SC',serif;font-size:1.05rem;font-weight:700;margin-bottom:0.25rem;}
+.gallery-card.unlocked:hover::after{opacity:1;}
+.gc-icon{font-size:2.2rem;margin-bottom:0.8rem;transition:transform 0.35s ease;}
+.gallery-card.unlocked:hover .gc-icon{transform:scale(1.1);}
+.gc-title{font-family:'Noto Serif SC',serif;font-size:1.1rem;font-weight:700;margin-bottom:0.3rem;}
 .gc-subtitle{font-size:0.78rem;color:var(--muted);margin-bottom:0.6rem;}
 .gc-quote{font-size:0.72rem;color:var(--muted);font-style:italic;line-height:1.6;}
-.gc-unlocked-tag{font-size:0.65rem;color:var(--success);margin-top:0.3rem;}
-.gallery-back{margin-top:1rem;padding:0.8rem 2rem;background:transparent;border:1px solid var(--card-border);color:var(--text);font-family:'Noto Serif SC',serif;font-size:0.9rem;cursor:pointer;transition:all 0.4s;}
-.gallery-back:hover{border-color:var(--accent-w);}
+.gc-unlocked-tag{font-size:0.65rem;color:var(--success);margin-top:0.4rem;padding:0.15rem 0.6rem;background:rgba(100,200,120,0.06);border:1px solid rgba(100,200,120,0.15);display:inline-block;border-radius:2px;}
+.gallery-back{margin-top:1.5rem;padding:0.8rem 2.2rem;background:transparent;border:1px solid var(--card-border);color:var(--text);font-family:'Noto Serif SC',serif;font-size:0.9rem;cursor:pointer;transition:all 0.4s ease;opacity:0;animation:fadeUp 0.8s ease-out 0.5s both;}
+.gallery-back:hover{border-color:var(--accent-w);background:rgba(255,255,255,0.03);box-shadow:0 4px 20px rgba(0,0,0,0.2);}
 
 /* ANIMATIONS */
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
@@ -810,6 +871,39 @@ body.theme-africa .prelude-bg-text{color:#6b8f71;text-shadow:0 0 40px rgba(107,1
 body.theme-cyber .prelude-bg-text{color:#ff6b6b;font-family:'Share Tech Mono',monospace;text-shadow:0 0 40px rgba(255,107,107,0.3);}
 body.theme-cyber .prelude-suspense,body.theme-cyber .prelude-dilemma-text,body.theme-cyber .prelude-choice-btn,body.theme-cyber .prelude-micro{font-family:'Share Tech Mono',monospace;}
 body.theme-korea .prelude-bg-text{color:#9b8ec4;text-shadow:0 0 40px rgba(155,142,196,0.3);}
+body.theme-chaos .prelude-bg-text{color:#b8a9d4;text-shadow:0 0 40px rgba(184,169,212,0.3),0 0 80px rgba(201,169,110,0.15),0 0 120px rgba(78,205,196,0.1);animation:preludeBgIn 1.5s cubic-bezier(0.23,1,0.32,1) 0.2s both,chaosPreludeShift 6s ease-in-out infinite;}
+
+/* ====== V14.6: 前置动画 — 各道路专属纹理背景 ====== */
+#prelude-screen{position:relative;overflow:hidden;}
+#prelude-screen::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;opacity:0;animation:preludeTextureIn 2s ease-out 0.3s forwards;}
+body.theme-whitehouse #prelude-screen::before{background:radial-gradient(ellipse at 50% 30%,rgba(201,169,110,0.06),transparent 60%),radial-gradient(circle at 20% 80%,rgba(201,169,110,0.03) 0,transparent 40%),repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(201,169,110,0.015) 30px,rgba(201,169,110,0.015) 31px);}
+body.theme-ming #prelude-screen::before{background:radial-gradient(ellipse at 40% 50%,rgba(139,69,19,0.07),transparent 60%),radial-gradient(circle at 80% 20%,rgba(184,134,11,0.02) 0,transparent 35%),linear-gradient(180deg,transparent 0%,rgba(139,69,19,0.03) 50%,transparent 100%);}
+body.theme-ai #prelude-screen::before{background:radial-gradient(circle at 50% 50%,rgba(78,205,196,0.03) 1px,transparent 1px);background-size:6px 6px;opacity:0.7;}
+body.theme-africa #prelude-screen::before{background:radial-gradient(ellipse at 40% 60%,rgba(107,143,113,0.06),transparent 55%),radial-gradient(circle at 70% 30%,rgba(201,160,108,0.04),transparent 45%),repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(107,143,113,0.02) 40px,rgba(107,143,113,0.02) 42px);}
+body.theme-cyber #prelude-screen::before{background:radial-gradient(ellipse at 50% 30%,rgba(255,107,107,0.05),transparent 50%),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(255,107,107,0.02) 3px,rgba(255,107,107,0.02) 4px),repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(78,205,196,0.015) 3px,rgba(78,205,196,0.015) 4px);}
+body.theme-korea #prelude-screen::before{background:radial-gradient(ellipse at 50% 50%,rgba(155,142,196,0.04),transparent 60%),radial-gradient(circle at 30% 30%,rgba(255,183,197,0.03) 0,transparent 30%),radial-gradient(circle at 70% 70%,rgba(122,139,160,0.02) 0,transparent 30%);}
+body.theme-chaos #prelude-screen::before{background:radial-gradient(ellipse at 40% 50%,rgba(184,169,212,0.05),transparent 50%),radial-gradient(ellipse at 60% 50%,rgba(201,169,110,0.04),transparent 50%),radial-gradient(ellipse at 50% 70%,rgba(78,205,196,0.03),transparent 50%);animation:preludeTextureIn 2s ease-out 0.3s forwards,chaosTextureShift 8s ease-in-out infinite;}
+@keyframes preludeTextureIn{from{opacity:0;}to{opacity:1;}}
+@keyframes chaosPreludeShift{0%,100%{text-shadow:0 0 40px rgba(184,169,212,0.3),0 0 80px rgba(201,169,110,0.15);}33%{text-shadow:0 0 40px rgba(201,169,110,0.3),0 0 80px rgba(78,205,196,0.15);}66%{text-shadow:0 0 40px rgba(78,205,196,0.3),0 0 80px rgba(184,169,212,0.15);}}
+@keyframes chaosTextureShift{0%,100%{opacity:0.8;}33%{opacity:1;}66%{opacity:0.7;}}
+
+/* V14.6: 隐藏道路 — intro身份页专属视觉增强 */
+body.theme-africa .intro-identity{position:relative;}
+body.theme-africa .intro-identity::before{content:'';position:absolute;inset:-2rem;border:1px solid rgba(107,143,113,0.12);pointer-events:none;mask:radial-gradient(circle at 50% 50%,black 40%,transparent 80%);-webkit-mask:radial-gradient(circle at 50% 50%,black 40%,transparent 80%);}
+body.theme-africa .intro-badge{font-size:3.5rem;filter:drop-shadow(0 0 20px rgba(107,143,113,0.3));}
+body.theme-cyber .intro-identity{position:relative;}
+body.theme-cyber .intro-identity::before{content:'';position:absolute;inset:-1.5rem;border:1px solid rgba(255,107,107,0.1);border-image:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(78,205,196,0.2)) 1;pointer-events:none;}
+body.theme-cyber .intro-badge{font-size:3.5rem;animation:cyberBadgePulse 2s ease-in-out infinite;filter:drop-shadow(0 0 15px rgba(255,107,107,0.4));}
+@keyframes cyberBadgePulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 15px rgba(255,107,107,0.4));}50%{transform:scale(1.08);filter:drop-shadow(0 0 25px rgba(255,107,107,0.6));}}
+body.theme-korea .intro-identity{position:relative;}
+body.theme-korea .intro-identity::after{content:'';position:absolute;left:-1rem;top:10%;width:2px;height:80%;background:linear-gradient(180deg,transparent,#ffb7c5 20%,#9b8ec4 50%,#ffb7c5 80%,transparent);pointer-events:none;opacity:0.5;}
+body.theme-korea .intro-badge{font-size:3.5rem;animation:koreaBadgeFloat 3s ease-in-out infinite;}
+@keyframes koreaBadgeFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+body.theme-chaos .intro-identity{position:relative;}
+body.theme-chaos .intro-identity::before{content:'';position:absolute;inset:-2rem;background:conic-gradient(from 0deg,rgba(184,169,212,0.06),rgba(201,169,110,0.04),rgba(78,205,196,0.06),rgba(184,169,212,0.06));pointer-events:none;mask:radial-gradient(circle at 50% 50%,black 30%,transparent 70%);-webkit-mask:radial-gradient(circle at 50% 50%,black 30%,transparent 70%);animation:chaosIntroSpin 12s linear infinite;}
+@keyframes chaosIntroSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+body.theme-chaos .intro-badge{font-size:3.5rem;animation:chaosBadgeSpin 3s ease-in-out infinite;}
+@keyframes chaosBadgeSpin{0%,100%{transform:rotate(0deg) scale(1);}50%{transform:rotate(180deg) scale(1.1);}}
 
 /* ====== V14: 隐藏道路解锁动画 ====== */
 .unlock-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9000;display:flex;align-items:center;justify-content:center;animation:unlockOverlayIn 0.5s ease;}
@@ -966,13 +1060,42 @@ body.theme-africa .theme-bg-layer{background:radial-gradient(ellipse at 50% 20%,
 body.theme-cyber .theme-bg-layer{background:radial-gradient(ellipse at 60% 30%,rgba(255,107,107,0.07),transparent 40%),radial-gradient(ellipse at 30% 70%,rgba(78,205,196,0.05),transparent 40%),radial-gradient(ellipse at 70% 80%,rgba(123,104,238,0.04),transparent 40%),linear-gradient(180deg,var(--bg) 0%,rgba(20,10,15,0.95) 50%,var(--bg) 100%);}
 body.theme-korea .theme-bg-layer{background:radial-gradient(ellipse at 50% 40%,rgba(155,142,196,0.06),transparent 50%),radial-gradient(ellipse at 50% 60%,rgba(122,139,160,0.03),transparent 50%),linear-gradient(180deg,var(--bg) 0%,rgba(20,18,25,0.95) 50%,var(--bg) 100%);}
 .theme-bg-layer{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;filter:blur(60px);opacity:0.6;transition:opacity 1s ease;}
-/* V14.3: 场景色调区分 — 不同事件类型不同氛围 */
+/* V14.6: 场景色调区分 — 不同事件类型不同氛围（增强版） */
 .scene-tone-encounter .scene-container{background:radial-gradient(ellipse at 50% 40%,rgba(201,169,110,0.06),transparent 70%);}
-.scene-tone-crisis .scene-container{background:radial-gradient(ellipse at 50% 30%,rgba(196,92,74,0.08),transparent 70%);}
-.scene-tone-random .scene-container{background:radial-gradient(ellipse at 60% 50%,rgba(155,142,196,0.05),transparent 70%);}
-.scene-tone-final .scene-container{background:radial-gradient(ellipse at 50% 50%,rgba(201,169,110,0.06),rgba(139,69,19,0.03),transparent 70%);}
-.scene-tone-extreme .scene-container{background:radial-gradient(ellipse at 50% 30%,rgba(196,92,74,0.1),rgba(80,0,0,0.05),transparent 70%);}
 .scene-tone-normal .scene-container{background:transparent;}
+/* 危机事件：红色压迫感 + 边缘血光 */
+.scene-tone-crisis .scene-container{background:radial-gradient(ellipse at 50% 30%,rgba(196,92,74,0.12),transparent 50%),radial-gradient(ellipse at 20% 80%,rgba(255,68,68,0.04),transparent 40%),radial-gradient(ellipse at 80% 20%,rgba(139,0,0,0.05),transparent 40%);position:relative;}
+.scene-tone-crisis .scene-container::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 50% 0%,rgba(180,40,40,0.06),transparent 60%),radial-gradient(ellipse at 0% 50%,rgba(120,20,20,0.03),transparent 40%),radial-gradient(ellipse at 100% 50%,rgba(120,20,20,0.03),transparent 40%);animation:crisisPulse 3s ease-in-out infinite;}
+@keyframes crisisPulse{0%,100%{opacity:0.6;}50%{opacity:1;}}
+.scene-tone-crisis .scene-chapter{color:var(--danger)!important;text-shadow:0 0 30px rgba(255,68,68,0.4);animation:crisisTitleShake 0.6s ease-out;}
+@keyframes crisisTitleShake{0%,100%{transform:translateX(0);}15%{transform:translateX(-4px);}30%{transform:translateX(4px);}45%{transform:translateX(-2px);}60%{transform:translateX(2px);}75%{transform:translateX(-1px);}}
+.scene-tone-crisis .choice-btn{border-color:rgba(196,92,74,0.2);}
+.scene-tone-crisis .choice-btn:hover{border-color:rgba(196,92,74,0.5);box-shadow:0 0 25px rgba(196,92,74,0.1);}
+/* 随机事件：紫金交织好奇光辉 */
+.scene-tone-random .scene-container{background:radial-gradient(ellipse at 40% 60%,rgba(155,142,196,0.06),transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(201,169,110,0.04),transparent 50%),linear-gradient(180deg,transparent 0%,rgba(155,142,196,0.02) 50%,transparent 100%);position:relative;}
+.scene-tone-random .scene-container::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 60% 40%,rgba(184,169,212,0.04),transparent 50%);animation:randomGlow 4s ease-in-out infinite;}
+@keyframes randomGlow{0%,100%{opacity:0.4;}50%{opacity:0.8;}}
+.scene-tone-random .scene-chapter{color:#b8a9d4!important;text-shadow:0 0 25px rgba(184,169,212,0.5);}
+.scene-tone-random .choice-btn{border-color:rgba(155,142,196,0.15);}
+.scene-tone-random .choice-btn:hover{border-color:rgba(155,142,196,0.5);box-shadow:0 0 30px rgba(155,142,196,0.12);}
+/* 最终场景：金光照耀 */
+.scene-tone-final .scene-container{background:radial-gradient(ellipse at 50% 50%,rgba(201,169,110,0.08),rgba(139,69,19,0.04),transparent 60%);position:relative;}
+.scene-tone-final .scene-container::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 50% 30%,rgba(255,215,0,0.03),transparent 50%);animation:finalGlow 3s ease-in-out infinite;}
+@keyframes finalGlow{0%,100%{opacity:0.3;}50%{opacity:0.7;}}
+/* 极端事件：深红暗黑叠加 + 边框警告 */
+.scene-tone-extreme .scene-container{background:radial-gradient(ellipse at 50% 30%,rgba(196,92,74,0.15),rgba(80,0,0,0.08),transparent 50%),radial-gradient(ellipse at 30% 80%,rgba(40,0,0,0.1),transparent 40%);position:relative;}
+.scene-tone-extreme .scene-container::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;border:1px solid rgba(196,92,74,0.08);animation:extremeBorderPulse 2s ease-in-out infinite;}
+@keyframes extremeBorderPulse{0%,100%{border-color:rgba(196,92,74,0.05);}50%{border-color:rgba(196,92,74,0.15);}}
+.scene-tone-extreme .scene-chapter{color:#ff4444!important;text-shadow:0 0 40px rgba(255,68,68,0.6),0 0 80px rgba(255,0,0,0.3);animation:extremeTitlePulse 1.5s ease-in-out infinite;}
+@keyframes extremeTitlePulse{0%,100%{text-shadow:0 0 40px rgba(255,68,68,0.6);}50%{text-shadow:0 0 60px rgba(255,68,68,0.8),0 0 100px rgba(255,0,0,0.4);}}
+.scene-tone-extreme .choice-btn{border-color:rgba(196,92,74,0.25);}
+.scene-tone-extreme .choice-btn:hover{border-color:rgba(255,68,68,0.6);box-shadow:0 0 30px rgba(196,92,74,0.15),inset 0 0 20px rgba(196,92,74,0.03);}
+/* V14.6: 惩罚事件 — 低频压迫暗调 */
+.scene-tone-penalty .scene-container{background:radial-gradient(ellipse at 50% 20%,rgba(80,0,0,0.1),transparent 40%),radial-gradient(ellipse at 30% 70%,rgba(40,0,0,0.08),transparent 40%),linear-gradient(180deg,rgba(20,0,0,0.05),transparent 50%,rgba(20,0,0,0.05));position:relative;}
+.scene-tone-penalty .scene-container::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,0,0,0.015) 3px,rgba(255,0,0,0.015) 4px);animation:penaltyScan 8s linear infinite;}
+@keyframes penaltyScan{0%{background-position:0 0;}100%{background-position:0 100px;}}
+.scene-tone-penalty .scene-chapter{color:var(--danger)!important;text-shadow:0 0 25px rgba(255,68,68,0.4);}
+.scene-tone-penalty .choice-btn{border-color:rgba(139,0,0,0.2);}
 /* V14.1: 3077 冲突加强 — 危险闪光和暴力氛围 */
 body.theme-cyber .danger-flash{animation:cyberFlash 0.3s ease-out;}
 @keyframes cyberFlash{0%{box-shadow:0 0 80px rgba(255,107,107,0.8);}100%{box-shadow:0 0 0px rgba(255,107,107,0);}}

@@ -303,6 +303,20 @@ class AudioEngine {
         bass:    [65, 82, 98,130,110, 87, 73, 65, 82,110,130,165,147,130,110, 98],
         wave: 'sine', harmWave: 'triangle', tempo: 2200, melVol: 0.24, harmVol: 0.13, bassVol: 0.16,
       },
+      // V14.6: 结局BGM — 凯旋上行和弦 D大调
+      ending: {
+        melody:  [587,659,784,880,1047,784,880,1047,1175,1047,880,784,659,587,523,587],
+        harmony: [293,330,392,440,523,392,440,523,587,523,440,392,330,293,261,293],
+        bass:    [146,165,196,220,261,196,220,261,293,261,220,196,165,146,130,146],
+        wave: 'sine', harmWave: 'triangle', tempo: 3200, melVol: 0.25, harmVol: 0.12, bassVol: 0.15,
+      },
+      // V14.6: 序章BGM — 低沉引子 悬念感
+      prelude: {
+        melody:  [220,261,293,261,220,196,220,261,293,330,293,261,220,247,261,220],
+        harmony: [110,130,146,130,110, 98,110,130,146,165,146,130,110,124,130,110],
+        bass:    [55, 65, 73, 65, 55, 49, 55, 65, 73, 82, 73, 65, 55, 62, 65, 55],
+        wave: 'triangle', harmWave: 'sine', tempo: 2800, melVol: 0.18, harmVol: 0.1, bassVol: 0.14,
+      },
     };
     const cfg = configs[style] || configs.whitehouse;
     const len = cfg.melody.length;

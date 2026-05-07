@@ -1120,6 +1120,7 @@ function renderPrelude(scenarioKey) {
   `;
   showScreen('prelude-screen');
   audioEngine.play('chapter');
+  startBGM('prelude');
 
   // 阶段2：2秒后显示两难选择
   setTimeout(() => {
@@ -3680,6 +3681,7 @@ function showEnding() {
   document.getElementById('scanline').classList.remove('active');
   document.getElementById('channelsBar').classList.remove('visible');
   stopBGM();
+  startBGM('ending');
 
   const ending = determineEnding();
   const card = generateEchoCard(ending);
@@ -3751,11 +3753,23 @@ function showEnding() {
       <div class="egg-text">"${easterEgg.diary}"</div>
     </div>` : ''}
     <div class="ending-btns">
-      <button class="ending-btn primary" onclick="startGame('${state.scenario}')">再来一次</button>
+      <button class="ending-btn primary" onclick="restartGame('${state.scenario}')">再来一次</button>
       <button class="ending-btn" onclick="showScreen('landing')">返回首页</button>
       <button class="ending-btn" onclick="showGallery()">结局图鉴</button>
     </div>
   `;
+}
+
+// V14.6: 再来一局 — 道路主题光幕扫过过渡
+function restartGame(scenarioKey) {
+  const swipe = document.getElementById('transitionSwipe');
+  swipe.classList.add('active');
+  stopBGM();
+  audioEngine.play('click');
+  setTimeout(() => {
+    swipe.classList.remove('active');
+    startGame(scenarioKey);
+  }, 450);
 }
 
 // --- 奏折失败系统 ---
