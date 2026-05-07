@@ -175,6 +175,15 @@ class AudioEngine {
       choice_hover: () => {
         this._tone(600, 0.04, 'sine', this.sfxGain, 0.15);
       },
+      // V14.6: 首页卡牌扫过音效 — 微升调
+      landing_scan: () => {
+        this._tone(800, 0.06, 'sine', this.sfxGain, 0.10);
+        setTimeout(() => this._tone(1100, 0.04, 'sine', this.sfxGain, 0.07), 40);
+      },
+      // V14.6: 标题乱码音效 — 短噪音
+      glitch_tick: () => {
+        this._noise(0.03, 0.06);
+      },
       // V14.3: 情感分类音效 — 更有区分度，平衡音量
       choice_moral: () => {
         this._tone(523, 0.18, 'sine', this.sfxGain, 0.28);
@@ -490,6 +499,7 @@ function showScreen(id) {
   // V14.3: 图鉴按钮仅首页和结算页可见
   const footer = document.querySelector('.landing-footer');
   if (footer) {
+    if (id === 'landing') { initLanding(); }
     if (id === 'landing' || id === 'ending-screen') {
       footer.style.display = '';
       footer.style.visibility = 'visible';
