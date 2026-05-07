@@ -1269,3 +1269,49 @@ body.theme-ai-bright .choice-btn:hover{background:rgba(78,205,196,0.06);border-c
 body.theme-ai-bright .game-header{background:linear-gradient(180deg,#f0f4f8 60%,transparent);}
 
 /* V14: gallery overrides removed — merged into main gallery section */
+
+/* ====== V14.6: 画面局部特效 ====== */
+/* 小块高斯模糊 — 低概率触发，随机位置，呼吸动画 */
+.local-blur-overlay{
+  position:fixed;pointer-events:none;z-index:900;
+  width:180px;height:180px;border-radius:50%;
+  backdrop-filter:blur(18px) saturate(0.6);
+  -webkit-backdrop-filter:blur(18px) saturate(0.6);
+  animation:localBlurBreathe 2.5s ease-in-out forwards;
+  opacity:0;
+}
+.local-blur-overlay::after{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,0.04),transparent 70%);
+}
+@keyframes localBlurBreathe{
+  0%{opacity:0;transform:scale(0.8);filter:blur(0px);}
+  15%{opacity:0.7;transform:scale(1);}
+  65%{opacity:0.65;transform:scale(1.05);}
+  90%{opacity:0.3;transform:scale(1.1);}
+  100%{opacity:0;transform:scale(1.2);filter:blur(5px);}
+}
+/* 碎片/破碎效果 — 画面角落碎裂，碎片飞出 */
+.shatter-container{
+  position:fixed;inset:0;pointer-events:none;z-index:950;
+}
+.shatter-fragment{
+  position:fixed;pointer-events:none;z-index:951;
+  background:var(--glass);border:1px solid var(--glass-border);
+  animation:shatterFly 1.8s ease-out forwards;
+  opacity:0;
+}
+@keyframes shatterFly{
+  0%{opacity:0.9;transform:translate(0,0) rotate(0deg) scale(1);}
+  100%{opacity:0;transform:translate(var(--sx),var(--sy)) rotate(var(--sr)) scale(0.3);}
+}
+/* 场景容器临时微颤 — 配合碎片效果 */
+.game-screen.shattering{
+  animation:screenShiver 0.15s ease-in-out 3;
+}
+@keyframes screenShiver{
+  0%,100%{transform:translate(0,0);}
+  25%{transform:translate(-2px,1px);}
+  50%{transform:translate(2px,-1px);}
+  75%{transform:translate(-1px,-2px);}
+}
