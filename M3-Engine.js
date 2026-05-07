@@ -646,14 +646,36 @@ function toggleDebtPanel() {
 function addDebt(phrase, category, sceneIndex) {
   const entry = { text: phrase, category, sceneIndex };
   state.debts.push(entry);
-  renderDebtScroll();
+  // V14.7: 逐条追加，CSS new-entry 动画驱动，避免全量重绘生硬推进
+  const scroll = document.getElementById('debtScroll');
+  const mobile = document.getElementById('mobileDebtScroll');
+  const el = document.createElement('div');
+  el.className = `debt-item ${category} new-entry`;
+  el.textContent = phrase;
+  scroll.appendChild(el);
+  if (mobile) {
+    const mel = document.createElement('div');
+    mel.className = `debt-item ${category} new-entry`;
+    mel.textContent = phrase;
+    mobile.appendChild(mel);
+  }
+  document.getElementById('debtCount').textContent = `共 ${state.debts.length} 笔人情债`;
+  // 自动滚动到底部展示新条目
+  requestAnimationFrame(() => {
+    const panel = document.getElementById('debtPanel');
+    if (panel) panel.scrollTo({ top: panel.scrollHeight, behavior: 'smooth' });
+    if (mobile) mobile.scrollTo({ top: mobile.scrollHeight, behavior: 'smooth' });
+  });
   playDebt();
 }
 function renderDebtScroll() {
+  // V14.7: 仅用于初始渲染（游戏开始时清空），逐条追加以保留入场动画
   const scroll = document.getElementById('debtScroll');
   const mobile = document.getElementById('mobileDebtScroll');
   const count = document.getElementById('debtCount');
-  const html = state.debts.map(d => `<div class="debt-item ${d.category}">${d.text}</div>`).join('');
+  const html = state.debts.map((d, i) =>
+    `<div class="debt-item ${d.category}" style="animation-delay:${i * 0.08}s">${d.text}</div>`
+  ).join('');
   scroll.innerHTML = html;
   if (mobile) mobile.innerHTML = html;
   count.textContent = `共 ${state.debts.length} 笔人情债`;

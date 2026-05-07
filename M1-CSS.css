@@ -117,7 +117,8 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 .debt-panel-toggle.collapsed{right:0;}
 .debt-panel-title{font-family:'Noto Serif SC',serif;font-size:0.8rem;color:var(--accent-w);letter-spacing:0.2em;text-align:center;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--glass-border);}
 .debt-scroll{display:flex;flex-direction:column;gap:0.8rem;}
-.debt-item{padding:0.8rem;background:var(--glass);border:1px solid var(--glass-border);font-size:0.75rem;line-height:1.6;color:var(--muted);position:relative;animation:debtSlideIn 0.5s ease;border-left:2px solid transparent;}
+.debt-item{padding:0.8rem;background:var(--glass);border:1px solid var(--glass-border);font-size:0.75rem;line-height:1.6;color:var(--muted);position:relative;border-left:2px solid transparent;transition:all 0.3s ease;}
+.debt-item.new-entry{animation:debtNewEntry 0.8s cubic-bezier(0.23,1,0.32,1);}
 .debt-item::before{content:'—';position:absolute;left:-1rem;color:var(--accent-w);font-size:0.6rem;}
 .debt-item.self-serving{border-left-color:var(--accent-w);}
 .debt-item.moral{border-left-color:var(--success);}
@@ -826,6 +827,55 @@ body.theme-ai .game-header::before{
 @keyframes aiDescIn{0%{opacity:0;transform:translateY(20px) scaleX(0.95);}100%{opacity:1;transform:translateY(0) scaleX(1);}}
 .intro-identity.theme-ai .intro-btn{animation:aiBtnIn 1.2s ease-out 1.5s both;}
 @keyframes aiBtnIn{0%{opacity:0;transform:scale(0.5);filter:blur(4px);}50%{transform:scale(1.1);filter:blur(0);}100%{opacity:1;transform:scale(1);}}
+
+/* ====== V14.7: 隐藏道路序章入场动画 ====== */
+/* Africa — 大地脉动：从下而上，有机感，暖色基调 */
+.intro-identity.theme-africa .intro-badge{animation:afBadgeIn 1.4s cubic-bezier(0.23,1,0.32,1) both;}
+@keyframes afBadgeIn{0%{opacity:0;transform:translateY(60px) scale(0.6);filter:blur(8px) saturate(0.3);}40%{transform:translateY(-8px) scale(1.05);filter:blur(0) saturate(1.3);}100%{opacity:1;transform:translateY(0) scale(1);}}
+.intro-identity.theme-africa .intro-name{animation:afNameIn 1s ease-out 0.35s both;}
+@keyframes afNameIn{0%{opacity:0;transform:translateY(35px);letter-spacing:0.6em;filter:blur(5px);}100%{opacity:1;transform:translateY(0);letter-spacing:normal;filter:blur(0);}}
+.intro-identity.theme-africa .intro-role{animation:afRoleIn 0.8s ease-out 0.65s both;}
+@keyframes afRoleIn{0%{opacity:0;transform:translateX(25px) rotate(-2deg);}100%{opacity:1;transform:translateX(0) rotate(0);}}
+.intro-identity.theme-africa .intro-desc{animation:afDescIn 1s ease-out 0.85s both;}
+@keyframes afDescIn{0%{opacity:0;transform:translateY(25px) scale(0.97);filter:blur(3px);}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0);}}
+.intro-identity.theme-africa .intro-btn{animation:afBtnIn 1.3s ease-out 1.4s both;}
+@keyframes afBtnIn{0%{opacity:0;transform:scale(0.7) translateY(15px);}50%{transform:scale(1.04);}100%{opacity:1;transform:scale(1) translateY(0);}}
+
+/* 3077/Cyber — 全息投影：扫描线构建+色差偏移 */
+.intro-identity.theme-cyber .intro-badge{animation:cyBadgeIn 1.3s cubic-bezier(0.23,1,0.32,1) both;}
+@keyframes cyBadgeIn{0%{opacity:0;transform:scale(0) skewX(30deg);filter:blur(10px) hue-rotate(90deg);}40%{transform:scale(1.2) skewX(-5deg);filter:blur(0) hue-rotate(30deg);}70%{transform:scale(0.92) skewX(2deg);}100%{opacity:1;transform:scale(1) skewX(0);filter:blur(0) hue-rotate(0);}}
+.intro-identity.theme-cyber .intro-name{animation:cyNameIn 1.1s ease-out 0.3s both;}
+@keyframes cyNameIn{0%{opacity:0;transform:translateY(30px);letter-spacing:1em;filter:blur(6px) brightness(2);}60%{filter:blur(0) brightness(1.1);}100%{opacity:1;transform:translateY(0);letter-spacing:normal;filter:blur(0) brightness(1);}}
+.intro-identity.theme-cyber .intro-role{animation:cyRoleIn 0.8s ease-out 0.6s both;}
+@keyframes cyRoleIn{0%{opacity:0;transform:translateX(-20px) scaleX(0.8);text-shadow:0 0 20px var(--cyber);}100%{opacity:1;transform:translateX(0) scaleX(1);text-shadow:none;}}
+.intro-identity.theme-cyber .intro-desc{animation:cyDescIn 1s ease-out 0.8s both;}
+@keyframes cyDescIn{0%{opacity:0;transform:translateY(20px);filter:blur(4px);clip-path:inset(0 100% 0 0);}100%{opacity:1;transform:translateY(0);filter:blur(0);clip-path:inset(0 0 0 0);}}
+.intro-identity.theme-cyber .intro-btn{animation:cyBtnIn 1.4s ease-out 1.4s both;}
+@keyframes cyBtnIn{0%{opacity:0;transform:translateY(20px);box-shadow:0 0 0 rgba(255,107,107,0);}60%{opacity:1;transform:translateY(0);box-shadow:0 0 30px rgba(255,107,107,0.4);}100%{box-shadow:0 0 8px rgba(255,107,107,0.1);}}
+
+/* Korea — 韩剧滤镜：柔和上升+柔光边缘 */
+.intro-identity.theme-korea .intro-badge{animation:krBadgeIn 1.5s ease-out both;}
+@keyframes krBadgeIn{0%{opacity:0;transform:translateY(50px) scale(0.7);filter:blur(10px) brightness(2) saturate(0);}50%{filter:blur(0) brightness(1.2) saturate(1.2);}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0) brightness(1) saturate(1);}}
+.intro-identity.theme-korea .intro-name{animation:krNameIn 1s ease-out 0.4s both;}
+@keyframes krNameIn{0%{opacity:0;transform:translateY(25px);letter-spacing:0.4em;filter:blur(4px);}100%{opacity:1;transform:translateY(0);letter-spacing:normal;filter:blur(0);}}
+.intro-identity.theme-korea .intro-role{animation:krRoleIn 0.9s ease-out 0.7s both;}
+@keyframes krRoleIn{0%{opacity:0;transform:translateX(-15px) rotate(1deg);}100%{opacity:1;transform:translateX(0) rotate(0);}}
+.intro-identity.theme-korea .intro-desc{animation:krDescIn 1.1s ease-out 0.9s both;}
+@keyframes krDescIn{0%{opacity:0;transform:translateY(20px) scale(0.98);filter:blur(3px);}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0);}}
+.intro-identity.theme-korea .intro-btn{animation:krBtnIn 1.3s ease-out 1.5s both;}
+@keyframes krBtnIn{0%{opacity:0;transform:scale(0.85) translateY(10px);}60%{transform:scale(1.03);}100%{opacity:1;transform:scale(1) translateY(0);}}
+
+/* Chaos — 碎片重组：从四面八方汇聚 */
+.intro-identity.theme-chaos .intro-badge{animation:chBadgeIn 1.6s cubic-bezier(0.23,1,0.32,1) both;}
+@keyframes chBadgeIn{0%{opacity:0;transform:rotate(-25deg) scale(0) translateY(-60px);filter:blur(15px);}30%{transform:rotate(8deg) scale(1.15);filter:blur(4px);}60%{transform:rotate(-3deg) scale(0.95);filter:blur(0);}100%{opacity:1;transform:rotate(0) scale(1);}}
+.intro-identity.theme-chaos .intro-name{animation:chNameIn 1.2s ease-out 0.35s both;}
+@keyframes chNameIn{0%{opacity:0;transform:translateY(40px) scaleX(0.6);letter-spacing:1.2em;filter:blur(8px);}50%{transform:translateY(-5px) scaleX(1.05);letter-spacing:0.3em;filter:blur(2px);}100%{opacity:1;transform:translateY(0) scaleX(1);letter-spacing:normal;filter:blur(0);}}
+.intro-identity.theme-chaos .intro-role{animation:chRoleIn 0.9s ease-out 0.65s both;}
+@keyframes chRoleIn{0%{opacity:0;transform:translateX(20px) skewX(8deg);}100%{opacity:1;transform:translateX(0) skewX(0);}}
+.intro-identity.theme-chaos .intro-desc{animation:chDescIn 1.1s ease-out 0.85s both;}
+@keyframes chDescIn{0%{opacity:0;transform:translateY(25px) rotate(1deg);filter:blur(5px);}100%{opacity:1;transform:translateY(0) rotate(0);filter:blur(0);}}
+.intro-identity.theme-chaos .intro-btn{animation:chBtnIn 1.5s ease-out 1.4s both;}
+@keyframes chBtnIn{0%{opacity:0;transform:scale(0) rotate(20deg);filter:blur(6px);}50%{transform:scale(1.08) rotate(-3deg);filter:blur(0);}100%{opacity:1;transform:scale(1) rotate(0);}}
 
 /* ====== V12.1: AI卡片锁定/解锁样式 ====== */
 .choice-card[data-scenario="ai"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(78,205,196,0.1),transparent 70%);}
