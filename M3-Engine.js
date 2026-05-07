@@ -457,7 +457,8 @@ function startBGM(style) { audioEngine.startBGM(style); }
 function stopBGM() { audioEngine.stopBGM(); }
 
 // --- 游戏状态 ---
-let state = { scenario: null, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [] };
+// V14.6: channelEventCount 限制每局最多触发2次渠道事件
+let state = { scenario: null, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [], channelEventCount: 0 };
 let unlockedEndings = JSON.parse(localStorage.getItem('unlockedEndings') || '{}');
 
 // --- 屏幕切换 ---

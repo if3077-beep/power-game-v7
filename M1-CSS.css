@@ -518,8 +518,38 @@ body.theme-korea .intro-desc, body.theme-korea .intro-situation{line-height:2.4;
 .choice-card:hover .card-atmosphere{opacity:1;}
 .choice-card[data-scenario="whitehouse"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(201,169,110,0.08),transparent 70%);}
 .choice-card[data-scenario="ming"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(139,69,19,0.1),transparent 70%);}
-.choice-card[data-scenario="whitehouse"]:hover{box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 60px rgba(201,169,110,0.06);}
-.choice-card[data-scenario="ming"]:hover{box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 60px rgba(139,69,19,0.08);}
+/* V14.5: 白宫卡片 — 金色华丽边框+内发光+斜纹 */
+.choice-card[data-scenario="whitehouse"]:hover{
+  box-shadow:0 20px 60px rgba(0,0,0,0.35),0 0 40px rgba(201,169,110,0.12),inset 0 0 50px rgba(201,169,110,0.05),0 0 100px rgba(201,169,110,0.04);
+  border-color:rgba(201,169,110,0.4);
+}
+.choice-card[data-scenario="whitehouse"]:hover::before{
+  background:linear-gradient(90deg,transparent,rgba(201,169,110,0.9),rgba(201,169,110,0.3),rgba(201,169,110,0.9),transparent);
+  height:3px;
+}
+.choice-card[data-scenario="whitehouse"]:hover::after{
+  content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(201,169,110,0.5),rgba(201,169,110,0.15),rgba(201,169,110,0.5),transparent);
+  pointer-events:none;
+}
+.choice-card[data-scenario="whitehouse"]:hover .card-atmosphere{
+  background:radial-gradient(ellipse at 50% 50%,rgba(201,169,110,0.1),transparent 70%),
+    repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(201,169,110,0.03) 3px,rgba(201,169,110,0.03) 4px);
+}
+/* V14.5: 大明卡片 — 水墨笔触左边框 */
+.choice-card[data-scenario="ming"]:hover{
+  box-shadow:0 20px 60px rgba(0,0,0,0.35),0 0 60px rgba(139,69,19,0.12),inset 0 0 40px rgba(139,69,19,0.03);
+  border-color:rgba(139,69,19,0.3);
+}
+.choice-card[data-scenario="ming"]:hover::before{
+  background:linear-gradient(90deg,transparent,rgba(139,69,19,0.6),rgba(139,69,19,0.15),transparent);
+  height:3px;
+}
+.choice-card[data-scenario="ming"]:hover::after{
+  content:'';position:absolute;left:0;top:0;width:4px;height:100%;
+  background:linear-gradient(180deg,transparent,rgba(139,69,19,0.5) 30%,rgba(139,69,19,0.2) 60%,transparent);
+  filter:blur(3px);pointer-events:none;
+}
 
 /* ====== V10: Landing 页浮动粒子光效 ====== .landing-particles 已由 #particles canvas 覆盖 */
 
@@ -644,6 +674,41 @@ body.theme-ai .glitch-text::after{content:attr(data-text);position:absolute;left
 .intro-identity.theme-ai .intro-situation{border-color:rgba(78,205,196,0.15);background:linear-gradient(135deg,rgba(78,205,196,0.03),rgba(123,104,238,0.03));}
 body.theme-ai .echo-card{border-color:rgba(78,205,196,0.15);background:linear-gradient(135deg,rgba(10,10,10,0.95),rgba(78,205,196,0.03));}
 
+/* ====== V14.5: AI道路像素装饰 — 氛围元素 ====== */
+body.theme-ai .game-main{position:relative;}
+body.theme-ai .game-main::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(78,205,196,0.05) 1px,transparent 1px);
+  background-size:4px 4px;
+  pointer-events:none;z-index:0;opacity:0.6;
+}
+body.theme-ai .game-main::after{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(78,205,196,0.025) 2px,rgba(78,205,196,0.025) 4px);
+  pointer-events:none;z-index:0;
+}
+body.theme-ai .choice-btn{
+  border-image:linear-gradient(135deg,rgba(78,205,196,0.18),rgba(78,205,196,0.04)) 1;
+  border-style:solid;
+}
+body.theme-ai .choice-btn:hover{
+  border-image:linear-gradient(135deg,rgba(78,205,196,0.35),rgba(78,205,196,0.1)) 1;
+}
+body.theme-ai .scene-text::after{
+  content:'\2588';display:inline;animation:aiCursorBlink 1s step-end infinite;
+  color:rgba(78,205,196,0.55);font-family:'Share Tech Mono',monospace;margin-left:2px;font-size:0.9em;
+}
+@keyframes aiCursorBlink{0%,100%{opacity:1;}50%{opacity:0;}}
+body.theme-ai .game-header::before{
+  content:'';position:absolute;top:8px;left:8px;
+  width:8px;height:8px;
+  box-shadow:
+    0 0 0 2px rgba(78,205,196,0.12),
+    4px 0 0 2px rgba(78,205,196,0.12),
+    0 4px 0 2px rgba(78,205,196,0.12);
+  pointer-events:none;opacity:0.45;
+}
+
 /* ====== V12.1: 道路入场动画 — 隆重版 ====== */
 
 /* 白宫入场：金色光柱从天而降 */
@@ -684,7 +749,25 @@ body.theme-ai .echo-card{border-color:rgba(78,205,196,0.15);background:linear-gr
 
 /* ====== V12.1: AI卡片锁定/解锁样式 ====== */
 .choice-card[data-scenario="ai"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(78,205,196,0.1),transparent 70%);}
-.choice-card[data-scenario="ai"]:hover{box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 60px rgba(78,205,196,0.1);}
+/* V14.5: AI卡片 — 电路板走线效果 */
+.choice-card[data-scenario="ai"]:hover{
+  box-shadow:0 20px 60px rgba(0,0,0,0.35),0 0 50px rgba(74,144,217,0.1),inset 0 0 40px rgba(74,144,217,0.03);
+  border-color:rgba(74,144,217,0.3);
+}
+.choice-card[data-scenario="ai"]:hover::before{
+  background:linear-gradient(90deg,transparent,#4a90d9,rgba(74,144,217,0.4),#4a90d9,transparent);
+  height:2px;
+}
+.choice-card[data-scenario="ai"]:hover::after{
+  content:'';position:absolute;top:50%;left:0;width:100%;height:1px;
+  background:linear-gradient(90deg,transparent 10%,rgba(74,144,217,0.15) 20%,rgba(74,144,217,0.35) 30%,rgba(74,144,217,0.08) 35%,rgba(74,144,217,0.25) 50%,rgba(74,144,217,0.06) 65%,rgba(74,144,217,0.3) 75%,transparent 90%);
+  pointer-events:none;
+  box-shadow:0 8px 0 0 rgba(74,144,217,0.06),0 -8px 0 0 rgba(74,144,217,0.04),0 16px 0 0 rgba(74,144,217,0.03);
+}
+.choice-card[data-scenario="ai"]:hover .card-atmosphere{
+  background:radial-gradient(ellipse at 50% 50%,rgba(74,144,217,0.08),transparent 70%),
+    repeating-linear-gradient(0deg,transparent,transparent 12px,rgba(74,144,217,0.03) 12px,rgba(74,144,217,0.03) 14px);
+}
 
 /* ====== V7: 人情债类别图标 ====== */
 .debt-item::after{content:'';position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);font-size:0.6rem;opacity:0.3;}
@@ -746,11 +829,53 @@ body.theme-korea .prelude-bg-text{color:#9b8ec4;text-shadow:0 0 40px rgba(155,14
 .hidden-road-card{position:relative;overflow:hidden;}
 .hidden-road-card::after{content:'隐藏道路';position:absolute;top:1rem;right:1rem;font-size:0.6rem;letter-spacing:0.15em;color:var(--accent-w);opacity:0.6;background:rgba(0,0,0,0.5);padding:0.2rem 0.5rem;border:1px solid rgba(201,169,110,0.2);}
 .choice-card[data-scenario="africa"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(107,143,113,0.1),transparent 70%);}
-.choice-card[data-scenario="africa"]:hover{box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 60px rgba(107,143,113,0.1);}
+/* V14.5: 非洲卡片 — 暖土渐变边框+条纹纹理 */
+.choice-card[data-scenario="africa"]:hover{
+  box-shadow:0 20px 60px rgba(0,0,0,0.35),0 0 50px rgba(107,143,113,0.12),inset 0 0 40px rgba(107,143,113,0.03);
+  border-color:rgba(107,143,113,0.3);
+  border-image:linear-gradient(135deg,#6b8f71,#c9a06c) 1;
+}
+.choice-card[data-scenario="africa"]:hover::before{
+  background:linear-gradient(90deg,transparent,rgba(201,160,108,0.5),rgba(107,143,113,0.4),rgba(201,160,108,0.5),transparent);
+  height:3px;
+}
+.choice-card[data-scenario="africa"]:hover::after{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 6px,rgba(107,143,113,0.03) 6px,rgba(107,143,113,0.03) 8px);
+  pointer-events:none;
+}
+/* V14.5: 赛博卡片 — 霓虹双色辉光+闪烁动画 */
 .choice-card[data-scenario="cyber"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(255,107,107,0.08),transparent 70%);}
-.choice-card[data-scenario="cyber"]:hover{box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 60px rgba(255,107,107,0.1);}
+.choice-card[data-scenario="cyber"]:hover{
+  box-shadow:0 20px 60px rgba(0,0,0,0.35),0 0 50px rgba(255,107,107,0.1),0 0 30px rgba(78,205,196,0.08);
+  border-color:rgba(255,107,107,0.3);
+  animation:cyberCardFlicker 2s ease-in-out infinite;
+}
+@keyframes cyberCardFlicker{
+  0%,100%{box-shadow:0 20px 60px rgba(0,0,0,0.35),0 0 50px rgba(255,107,107,0.1),0 0 30px rgba(78,205,196,0.08);}
+  50%{box-shadow:0 20px 60px rgba(0,0,0,0.35),0 0 70px rgba(255,107,107,0.14),0 0 40px rgba(78,205,196,0.12);}
+  25%,75%{box-shadow:0 20px 60px rgba(0,0,0,0.35),0 0 35px rgba(78,205,196,0.06),0 0 20px rgba(255,107,107,0.06);}
+}
+.choice-card[data-scenario="cyber"]:hover::before{
+  background:linear-gradient(90deg,transparent,#ff6b6b,rgba(255,107,107,0.5),#4ecdc4,rgba(78,205,196,0.5),#ff6b6b,transparent);
+  height:2px;
+}
+.choice-card[data-scenario="cyber"]:hover::after{
+  content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;
+  background:linear-gradient(90deg,transparent,#4ecdc4,rgba(78,205,196,0.5),#ff6b6b,rgba(255,107,107,0.5),#4ecdc4,transparent);
+  pointer-events:none;
+}
+/* V14.5: 韩国卡片 — 樱花粉上边框+精致缩放 */
 .choice-card[data-scenario="korea"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(155,142,196,0.1),transparent 70%);}
-.choice-card[data-scenario="korea"]:hover{box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 60px rgba(155,142,196,0.1);}
+.choice-card[data-scenario="korea"]:hover{
+  box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 60px rgba(155,142,196,0.1);
+  border-color:rgba(155,142,196,0.25);
+  transform:translateY(-4px) scale(1.015);
+}
+.choice-card[data-scenario="korea"]:hover::before{
+  background:linear-gradient(90deg,transparent,#ffb7c5,rgba(255,183,197,0.6),rgba(155,142,196,0.3),transparent);
+  height:3px;
+}
 
 /* V14: 隐藏道路入场动画 */
 .choice-cards .choice-card:nth-child(4){animation:landingCard 0.8s cubic-bezier(0.23,1,0.32,1) 1.2s both;}
@@ -870,8 +995,25 @@ body.theme-chaos .intro-badge{border-color:#b8a9d4;animation:chaosBadgeSpin 3s e
 body.theme-chaos .theme-bg-layer{background:radial-gradient(ellipse at 50% 30%,rgba(184,169,212,0.08),transparent 50%),radial-gradient(ellipse at 30% 70%,rgba(201,169,110,0.05),transparent 50%),radial-gradient(ellipse at 70% 50%,rgba(78,205,196,0.04),transparent 50%),linear-gradient(180deg,var(--bg) 0%,rgba(15,12,25,0.95) 50%,var(--bg) 100%);}
 @keyframes chaosCardGlow{0%,100%{box-shadow:0 0 20px rgba(184,169,212,0.15),0 0 60px rgba(201,169,110,0.05);}50%{box-shadow:0 0 40px rgba(184,169,212,0.3),0 0 80px rgba(201,169,110,0.1);}}
 .choice-card[data-scenario="chaos"] .card-atmosphere{background:radial-gradient(ellipse at 50% 50%,rgba(184,169,212,0.12),transparent 60%),radial-gradient(ellipse at 30% 70%,rgba(201,169,110,0.06),transparent 60%);}
-.choice-card[data-scenario="chaos"]:hover{box-shadow:0 20px 80px rgba(0,0,0,0.4),0 0 80px rgba(184,169,212,0.15);}
+/* V14.5: 混沌卡片 — 多彩流动渐变边框 */
+.choice-card[data-scenario="chaos"]:hover{
+  box-shadow:0 20px 80px rgba(0,0,0,0.4),0 0 80px rgba(184,169,212,0.15);
+  border-image:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4,#c9a96e) 1;
+  animation:chaosCardShimmer 3s linear infinite;
+}
+@keyframes chaosCardShimmer{
+  0%{border-image:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4,#c9a96e) 1;}
+  25%{border-image:linear-gradient(135deg,#b8a9d4,#4ecdc4,#c9a96e,#b8a9d4) 1;}
+  50%{border-image:linear-gradient(135deg,#4ecdc4,#c9a96e,#b8a9d4,#4ecdc4) 1;}
+  75%{border-image:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4,#c9a96e) 1;}
+  100%{border-image:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4,#c9a96e) 1;}
+}
+.choice-card[data-scenario="chaos"]:hover::before{
+  background:linear-gradient(90deg,transparent,#c9a96e,#b8a9d4,#4ecdc4,transparent);
+  height:3px;
+}
 .chaos-card{width:420px;border-image:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4) 1;}
+.chaos-card:hover{border-image:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4,#c9a96e) 1;animation:chaosCardShimmer 3s linear infinite;}
 .chaos-card .card-era{background:linear-gradient(135deg,#c9a96e,#b8a9d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .chaos-card h2{background:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 

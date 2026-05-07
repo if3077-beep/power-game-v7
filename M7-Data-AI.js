@@ -138,7 +138,6 @@ const aiData = {
         const passive = d.filter(x => x.category === 'passive').length;
         return passive >= 4;
       }, verdict: '你没有推动任何事，也没有阻止任何事。历史在你身边流过，你只是站在岸边看着。也许这就是你想要的——但也许你只是不知道该怎么做。', analysis: '「大明王朝1566」：圣人的书是用来读的，用来办事百无一用。你读了很多书，但你没有办成任何事。', quote: '「旁观者清，当局者迷。」——古谚', atmosphere: 'neutral', epitaph: '站在历史转折点上的旁观者' },
-    { id: 'ai_balanced', title: '共生者', subtitle: '你找到了第三条路', icon: '♾️', condition: (d, ch) => true, verdict: '你既没有完全站在人类这边，也没有完全站在AI这边。你站在"关系"这边——你在乎的是两个物种如何共存，而不是谁赢谁输。', analysis: '「中庸」：君子之中庸也，君子而时中。你在人机之间找到了"时中"——不是固定的平衡点，而是随时间变化的动态平衡。', quote: '「万物并育而不相害，道并行而不相悖。」——《中庸》', atmosphere: 'confetti', epitaph: '在两个物种之间找到了共生之道' },
     // V12.2: 新增结局
     { id: 'ai_emperor', title: '数字帝王', subtitle: '你成了两个物种的独裁者', icon: '👑', condition: (d, ch) => {
         const selfServing = d.filter(x => x.category === 'self-serving').length;
@@ -154,6 +153,7 @@ const aiData = {
         const compromise = d.filter(x => x.category === 'compromise').length;
         return moral >= 3 && compromise >= 3;
       }, verdict: '你做了一个大胆的决定：取消"协调官"这个职位。因为你觉得——当两个物种真正理解彼此时，不需要中间人。人类和AI开始自由地合作、竞争、恋爱、争吵。边界消失了。混乱吗？是的。但也许这就是"活着"的样子。', analysis: '「中庸」：致中和，天地位焉，万物育焉。你没有在人机之间找到平衡点——你让平衡本身消失了。万物并育，无需协调。', quote: '「天地与我并生，而万物与我为一。」——《庄子》', atmosphere: 'confetti', epitaph: '消除了边界的人——从此不再有人问"谁是人"' },
-    { id: 'ai_early_silent', title: '沉默者', subtitle: '你在第三幕就退出了', icon: '🤐', condition: (d, ch, early) => early === true, verdict: '你发现这个世界的复杂程度远超你的想象。每一个决定都会伤害某一方，每一次妥协都会被双方指责。于是你选择了沉默——不是被动的沉默，而是主动的沉默。你辞去了协调官的职务，回到你的书房，开始写一本书。书名叫《我所见到的人机共生》——但你始终没有写完。', analysis: '「万历十五年」：当个人无法改变体制时，退出本身就是一种表态。你的沉默比任何演讲都更响亮。', quote: '「不在其位，不谋其政。」——《论语》', atmosphere: 'neutral', epitaph: '选择沉默的人——有时候不说比说更有力' }
+    { id: 'ai_early_silent', title: '沉默者', subtitle: '你在第三幕就退出了', icon: '🤐', condition: (d, ch, early) => early === true, verdict: '你发现这个世界的复杂程度远超你的想象。每一个决定都会伤害某一方，每一次妥协都会被双方指责。于是你选择了沉默——不是被动的沉默，而是主动的沉默。你辞去了协调官的职务，回到你的书房，开始写一本书。书名叫《我所见到的人机共生》——但你始终没有写完。', analysis: '「万历十五年」：当个人无法改变体制时，退出本身就是一种表态。你的沉默比任何演讲都更响亮。', quote: '「不在其位，不谋其政。」——《论语》', atmosphere: 'neutral', epitaph: '选择沉默的人——有时候不说比说更有力' },
+    { id: 'ai_balanced', title: '共生者', subtitle: '你找到了第三条路', icon: '♾️', condition: (d, ch) => true, verdict: '你既没有完全站在人类这边，也没有完全站在AI这边。你站在"关系"这边——你在乎的是两个物种如何共存，而不是谁赢谁输。', analysis: '「中庸」：君子之中庸也，君子而时中。你在人机之间找到了"时中"——不是固定的平衡点，而是随时间变化的动态平衡。', quote: '「万物并育而不相害，道并行而不相悖。」——《中庸》', atmosphere: 'confetti', epitaph: '在两个物种之间找到了共生之道' }
   ]
 };

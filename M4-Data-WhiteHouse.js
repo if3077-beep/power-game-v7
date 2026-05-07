@@ -437,18 +437,6 @@ const whitehouseData = {
       epitaph: '守住了灵魂的殉道者'
     },
     {
-      id: 'wh_balanced',
-      title: '走钢丝的人',
-      subtitle: '你找到了第三条路',
-      icon: '⚖️',
-      condition: (debts, ch) => true,
-      verdict: '你既没有被同化，也没有被边缘化。你学会了在规则和原则之间找到平衡点。你不是最清的官，也不是最浊的官——但你可能是最"活"的官。',
-      analysis: '「沧浪之水」：在理想和现实之间，存在第三条路——不是妥协，不是对抗，而是"在规则中寻找空间"。',
-      quote: '「极高明而道中庸。」——《中庸》',
-      atmosphere: 'confetti',
-      epitaph: '在刀锋上跳舞的人'
-    },
-    {
       id: 'wh_chessmaster',
       title: '棋手',
       subtitle: '你把所有人都当成了棋子——包括你自己',
@@ -478,6 +466,18 @@ const whitehouseData = {
       quote: '「牺牲一个人，保全所有人——这是最古老的权力游戏。」',
       atmosphere: 'dark',
       epitaph: '被所有人推上祭坛的替罪羊'
+    },
+    {
+      id: 'wh_balanced',
+      title: '走钢丝的人',
+      subtitle: '你找到了第三条路',
+      icon: '⚖️',
+      condition: (debts, ch) => true,
+      verdict: '你既没有被同化，也没有被边缘化。你学会了在规则和原则之间找到平衡点。你不是最清的官，也不是最浊的官——但你可能是最"活"的官。',
+      analysis: '「沧浪之水」：在理想和现实之间，存在第三条路——不是妥协，不是对抗，而是"在规则中寻找空间"。',
+      quote: '「极高明而道中庸。」——《中庸》',
+      atmosphere: 'confetti',
+      epitaph: '在刀锋上跳舞的人'
     }
   ]
 };

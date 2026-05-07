@@ -127,7 +127,6 @@ const mingData = {
     { id: 'ming_deaf', title: '聋子', subtitle: '你失去了所有内线', icon: '🔇', condition: (d, ch) => ch <= 0, verdict: '你失去了所有消息渠道。你坐在县衙里，但你什么都不知道。你成了聋子。', analysis: '《置身事内》：信息是权力的血液。失去信息，就失去了一切。', quote: '「不知道真相的人是无知的；知道真相却假装不知道的人是卑劣的。」', atmosphere: 'dark', epitaph: '被所有人礼貌地遗忘的人' },
     { id: 'ming_betrayed', title: '背叛者', subtitle: '你踩着别人的肩膀往上爬', icon: '🗡️', condition: (d, ch) => d.filter(x => x.category === 'betrayal').length >= 3, verdict: '你升了官，但你踩过的人都记住了你。你开始一个人吃饭，一个人走路。', analysis: '《权力的道路》：用背叛换来的权力，最终也会被背叛终结。', quote: '「天下熙熙，皆为利来；天下攘攘，皆为利往。」——司马迁', atmosphere: 'dark', epitaph: '踩着白骨登高的人' },
     { id: 'ming_hermit', title: '倦鸟', subtitle: '你累了', icon: '🐦', condition: (d, ch) => d.filter(x => x.category === 'passive').length >= 4, verdict: '官场的尔虞我诈让你心力交瘁。你选择了辞官归隐。种田、读书、睡觉——这些曾经最简单的事，现在成了最奢侈的事。', analysis: '「沧浪之水」：精神内耗是体制内最常见的"职业病"。', quote: '「归去来兮，田园将芜胡不归？」——陶渊明', atmosphere: 'neutral', epitaph: '在风暴中选择归隐的人' },
-    { id: 'ming_balanced', title: '圆满', subtitle: '你找到了第三条路', icon: '☯️', condition: (d, ch) => true, verdict: '你既没有被同化，也没有被边缘化。你学会了在规则和原则之间找到平衡点。', analysis: '「沧浪之水」：在理想和现实之间，存在第三条路——不是妥协，不是对抗，而是"在规则中寻找空间"。', quote: '「极高明而道中庸。」——《中庸》', atmosphere: 'confetti', epitaph: '在刀锋上找到平衡的人' },
     { id: 'ming_teacher', title: '教书先生', subtitle: '你丢掉了乌纱帽，捡起了戒尺', icon: '📚', condition: (d, ch) => d.filter(x => x.category === 'moral').length >= 3 && ch <= 1, verdict: '考评降至"下下"后，你被罢官为民。你没有回乡——你在县城里开了一间私塾，教穷人家的孩子识字。\n\n十年后，你教过的十七个学生考中了秀才。其中有一个，在殿试中被皇帝问到"你师从何人"——他报出了你的名字。\n\n皇帝沉默了很久，然后在那张已经泛黄的卷宗上批了一行字："此人可为师。"', analysis: '权力动力学：当体制内的生存策略全部失效时，"退出"是最被低估的选择。不是所有的影响力都需要乌纱帽——有时一支粉笔比一枚官印更能改变世界。', quote: '「师者，所以传道受业解惑也。」——韩愈《师说》', atmosphere: 'confetti', epitaph: '丢掉乌纱帽的人——用一支粉笔改写了十七个孩子的命运' },
     { id: 'ming_whistleblower', title: '吹哨人', subtitle: '你说了真话——代价是你的官帽', icon: '📢', condition: (d, ch) => {
         const moral = d.filter(x => x.category === 'moral').length;
@@ -136,6 +135,7 @@ const mingData = {
     { id: 'ming_weathervane', title: '墙头草', subtitle: '你随风倒——但风向变了太多次', icon: '🌾', condition: (d, ch) => {
         const compromise = d.filter(x => x.category === 'compromise').length;
         return compromise >= 3 && ch <= 1;
-      }, verdict: '你学会了随风倒——哪边强就站哪边。但你忘了：风向是可以变的。当新的势力崛起时，你已经没有可以倒向的那边了。你成了官场上的透明人——不是被惩罚，是被遗忘。', analysis: '《沧浪之水》：纯粹的机会主义者最终会被所有阵营排斥——因为没有人信任一个永远随风倒的人。墙头草的悲剧不是倒错边，是根本没根。', quote: '「墙头草，两边倒——倒到最后，连根都没了。」——民间谚语', atmosphere: 'dark', epitaph: '随风倒了太多次的墙头草' }
+      }, verdict: '你学会了随风倒——哪边强就站哪边。但你忘了：风向是可以变的。当新的势力崛起时，你已经没有可以倒向的那边了。你成了官场上的透明人——不是被惩罚，是被遗忘。', analysis: '《沧浪之水》：纯粹的机会主义者最终会被所有阵营排斥——因为没有人信任一个永远随风倒的人。墙头草的悲剧不是倒错边，是根本没根。', quote: '「墙头草，两边倒——倒到最后，连根都没了。」——民间谚语', atmosphere: 'dark', epitaph: '随风倒了太多次的墙头草' },
+    { id: 'ming_balanced', title: '圆满', subtitle: '你找到了第三条路', icon: '☯️', condition: (d, ch) => true, verdict: '你既没有被同化，也没有被边缘化。你学会了在规则和原则之间找到平衡点。', analysis: '「沧浪之水」：在理想和现实之间，存在第三条路——不是妥协，不是对抗，而是"在规则中寻找空间"。', quote: '「极高明而道中庸。」——《中庸》', atmosphere: 'confetti', epitaph: '在刀锋上找到平衡的人' }
   ]
 };
