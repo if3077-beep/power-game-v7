@@ -1875,7 +1875,11 @@ function makeChoice(index) {
             transition(() => renderRandomEvent());
           } else if (state.currentScene === sc.scenes.length - 1) {
             transition(() => renderFinalEvent());
-          } else if (state.currentScene % 2 === 1) {
+          } else if (state.currentScene % 2 === 1 && Math.random() < 0.6) {
+            // V14.5: 60%概率触发随机事件 (增加重复体验差异)
+            transition(() => renderRandomEvent());
+          } else if (state.currentScene % 2 === 0 && Math.random() < 0.15) {
+            // V14.5: 15%概率在偶数场景触发随机事件 (意外插曲)
             transition(() => renderRandomEvent());
           } else {
             transition(() => renderScene());
@@ -2608,7 +2612,9 @@ function renderEncounter() {
                   transition(() => renderRandomEvent());
                 } else if (state.currentScene === sc.scenes.length - 1) {
                   transition(() => renderFinalEvent());
-                } else if (state.currentScene % 2 === 1) {
+                } else if (state.currentScene % 2 === 1 && Math.random() < 0.6) {
+                  transition(() => renderRandomEvent());
+                } else if (state.currentScene % 2 === 0 && Math.random() < 0.15) {
                   transition(() => renderRandomEvent());
                 } else {
                   transition(() => renderScene());
