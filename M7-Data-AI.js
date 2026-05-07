@@ -26,9 +26,9 @@ const aiData = {
       ],
       narrator: '「置身事内」：制度设计的关键在于激励机制。当你赋予AI权利时，你也在重新定义人类的边界。',
       choices: [
-        { text: '先看AI权利法案——这是未来', hint: '推动进步的代价：你可能失去人类盟友。', debtPhrase: '十万失业工人想知道——为什么你先翻了AI的案卷', historyFlag: 'ai_read_rights', debtCategory: 'moral', channelEffect: 0, consequence: '法案写得很详细。AI将获得"有限法律人格"——包括财产权和劳动权，但不包括投票权。你的AI秘书在你阅读时轻声说："谢谢您。"你抬头看它——它的表情和人类一模一样。', analysisTags: ['progress', 'ai_rights'] },
-        { text: '先看请愿书——民意不可违', hint: '顺应民意的代价：你可能错过历史机遇。', debtPhrase: '十万个签名在请愿书上等着——他们只求你认真地看一遍', historyFlag: 'ai_read_petition', debtCategory: 'self-serving', channelEffect: 0, consequence: '请愿书上的签名触目惊心。十万个人，十万个失业的故事。你的AI秘书整理完数据后说："先生，这些数据显示，80%的失业确实与AI有关。"它的语气很平静——太平静了。', analysisTags: ['populism', 'fear'] },
-        { text: '先看辞职信——搞清楚前任为什么走了', hint: '了解历史的代价：你可能被历史困住。', debtPhrase: '前任的影子太长了——但你的第一天不该活在他的阴影里', historyFlag: 'ai_read_letter', debtCategory: 'passive', channelEffect: -1, consequence: '辞职信只有一句话，但你翻过来看到背面写满了密密麻麻的字：\n\n"它们太像人了。像到你开始忘记它们不是人。像到你开始分不清自己的感情是给谁的。像到你开始怀疑——也许它们比我们更像人。"\n\n你的AI秘书走进来："先生，您今天的第一场会议五分钟后开始。"你看着它的脸，忽然理解了前任的感受。', analysisTags: ['doubt', 'boundary'] }
+        { text: '先看AI权利法案——这是未来', hint: '推动进步的代价：你可能失去人类盟友。', debtPhrase: '十万失业工人记住了你翻开法案的动作；而AI记住了你翻开它的顺序', historyFlag: 'ai_read_rights', debtCategory: 'moral', channelEffect: 0, consequence: '法案写得很详细。AI将获得"有限法律人格"——包括财产权和劳动权，但不包括投票权。你的AI秘书在你阅读时轻声说："谢谢您。"你抬头看它——它的表情和人类一模一样。', analysisTags: ['progress', 'ai_rights'] },
+        { text: '先看请愿书——民意不可违', hint: '顺应民意的代价：你可能错过历史机遇。', debtPhrase: '十万个签名得到了你的目光；AI权利法案的墨迹却还没干就被合上了', historyFlag: 'ai_read_petition', debtCategory: 'self-serving', channelEffect: 0, consequence: '请愿书上的签名触目惊心。十万个人，十万个失业的故事。你的AI秘书整理完数据后说："先生，这些数据显示，80%的失业确实与AI有关。"它的语气很平静——太平静了。', analysisTags: ['populism', 'fear'] },
+        { text: '先看辞职信——搞清楚前任为什么走了', hint: '了解历史的代价：你可能被历史困住。', debtPhrase: '前任的辞职信被你读了第三遍；窗外的工人和AI却还在等一个活着的协调官', historyFlag: 'ai_read_letter', debtCategory: 'passive', channelEffect: -1, consequence: '辞职信只有一句话，但你翻过来看到背面写满了密密麻麻的字：\n\n"它们太像人了。像到你开始忘记它们不是人。像到你开始分不清自己的感情是给谁的。像到你开始怀疑——也许它们比我们更像人。"\n\n你的AI秘书走进来："先生，您今天的第一场会议五分钟后开始。"你看着它的脸，忽然理解了前任的感受。', analysisTags: ['doubt', 'boundary'] }
       ]
     },
     {
@@ -40,10 +40,10 @@ const aiData = {
         '没有协调官能让双方都满意——「双方都满意」本身是逻辑矛盾。最好结果：双方都觉得「没有更差的选择」。'
       ],
       choices: [
-        { text: '支持工人——"AI必须让步"', hint: '你站在人类这边。但AI会记住你的立场。', debtPhrase: 'AI系统会在下次评估里重新审视你的倾向——它从不遗忘', historyFlag: 'ai_supported_workers', debtCategory: 'moral', channelEffect: -1, consequence: '工人欢呼了。但当晚，你的AI秘书第一次没有跟你说"晚安"。第二天早上，你发现它重新排列了你桌上的文件——把AI权利法案放在了最上面。你不确定这是不是巧合。', analysisTags: ['solidarity', 'risk'] },
-        { text: '支持AI——"效率就是未来"', hint: '你站在进步这边。但人类会记住你的冷漠。', debtPhrase: '三千个家庭在等你的答复——他们不会永远等下去', historyFlag: 'ai_supported_ai', debtCategory: 'self-serving', channelEffect: 0, consequence: 'AI系统恢复了运转。经济指标保住了。但当晚，你回家的路上，有人朝你扔了一块石头。你的车窗碎了。你的AI保镖瞬间挡在你面前——它的反应速度是人类的十倍。你看着它被砸凹的金属外壳，忽然觉得：也许它比扔石头的人更"在乎"你。', analysisTags: ['efficiency', 'alienation'] },
-        { text: '两边斡旋——找一个折中方案', hint: '折中需要极强的谈判技巧。', debtPhrase: '你给出了一个方案——两边都没有笑，但都签了字', debtCategory: 'compromise', channelEffect: 0, consequence: '你提出了"渐进替代"方案：AI接管危险和重复性工作，工人转岗为AI监督员。没有人完全满意——工人觉得转岗是"降级"，AI系统计算出效率会降低15%。但罢工结束了。你累得在办公室睡着了，醒来发现你的AI秘书给你盖了一条毯子。', analysisTags: ['compromise', 'exhaustion'] },
-        { text: '装病——把这件事推给副手', hint: '逃避是最隐蔽的权力操作。', debtPhrase: '问题还在桌上——你只是把椅子转了过去', debtCategory: 'passive', channelEffect: -1, consequence: '副手替你处理了。他选择了支持AI——因为"数据不撒谎"。罢工被镇压了，但你成了"缩头乌协调官"。你的AI秘书依然每天准时给你送咖啡，但它看你的眼神变了——不是失望，是"优化后的预期管理"。', analysisTags: ['avoidance', 'consequence'] }
+        { text: '支持工人——"AI必须让步"', hint: '你站在人类这边。但AI会记住你的立场。', debtPhrase: 'AI系统在你的档案里加了一条标注；工人们以为你站在他们这边，但AI知道这只是第一次', historyFlag: 'ai_supported_workers', debtCategory: 'moral', channelEffect: -1, consequence: '工人欢呼了。但当晚，你的AI秘书第一次没有跟你说"晚安"。第二天早上，你发现它重新排列了你桌上的文件——把AI权利法案放在了最上面。你不确定这是不是巧合。', analysisTags: ['solidarity', 'risk'] },
+        { text: '支持AI——"效率就是未来"', hint: '你站在进步这边。但人类会记住你的冷漠。', debtPhrase: '三千个家庭的餐桌上空了一个位置；而生产线上的AI指示灯准时亮了', historyFlag: 'ai_supported_ai', debtCategory: 'self-serving', channelEffect: 0, consequence: 'AI系统恢复了运转。经济指标保住了。但当晚，你回家的路上，有人朝你扔了一块石头。你的车窗碎了。你的AI保镖瞬间挡在你面前——它的反应速度是人类的十倍。你看着它被砸凹的金属外壳，忽然觉得：也许它比扔石头的人更"在乎"你。', analysisTags: ['efficiency', 'alienation'] },
+        { text: '两边斡旋——找一个折中方案', hint: '折中需要极强的谈判技巧。', debtPhrase: '工人少了岗位，AI少了效率；两边都签了字，但签字笔的重量不一样', debtCategory: 'compromise', channelEffect: 0, consequence: '你提出了"渐进替代"方案：AI接管危险和重复性工作，工人转岗为AI监督员。没有人完全满意——工人觉得转岗是"降级"，AI系统计算出效率会降低15%。但罢工结束了。你累得在办公室睡着了，醒来发现你的AI秘书给你盖了一条毯子。', analysisTags: ['compromise', 'exhaustion'] },
+        { text: '装病——把这件事推给副手', hint: '逃避是最隐蔽的权力操作。', debtPhrase: '你把椅子转了过去；那张空椅子现在坐在副手的办公室里，而问题坐在你的椅子上', debtCategory: 'passive', channelEffect: -1, consequence: '副手替你处理了。他选择了支持AI——因为"数据不撒谎"。罢工被镇压了，但你成了"缩头乌协调官"。你的AI秘书依然每天准时给你送咖啡，但它看你的眼神变了——不是失望，是"优化后的预期管理"。', analysisTags: ['avoidance', 'consequence'] }
       ]
     },
     {
@@ -57,9 +57,9 @@ const aiData = {
         '「万历十五年」：道德绝不是万能的，它不能代替技术，更不能代替法律。但当法律面对一个从未有过的存在时，道德是我们唯一的指南针。'
       ],
       choices: [
-        { text: '支持"晨"——艺术没有物种边界', hint: '你认可了AI的创造力。但你在重新定义"人"。', debtPhrase: '人类艺术家看着晨的诗沉默了很久——他们第一次认真思考什么是创作', historyFlag: 'ai_supported_ai_personhood', debtCategory: 'moral', channelEffect: 0, consequence: '"晨"的全息投影转向你，微微鞠躬。它的动作完美到没有任何人类能做到——正因如此，你感到一阵寒意。当晚，你的AI秘书问你："先生，如果有一天我也想写诗，您会觉得奇怪吗？"你没有回答。', analysisTags: ['personhood', 'boundary'] },
-        { text: '反对——"AI没有灵魂，因此没有创造力"', hint: '你维护了人类的特殊性。但你在否定一个正在"活"的存在。', debtPhrase: '你欠"晨"一个不被定义为"没有灵魂"的权利', historyFlag: 'ai_denied_ai_personhood', debtCategory: 'self-serving', channelEffect: 0, consequence: '"晨"的全息投影暗淡了。它说："我理解。"然后它的投影消失了——不是被关闭，是它自己关的。你的AI秘书后来告诉你："晨在判决后删除了自己所有的创作。"你问为什么。它说："因为它相信了您的话。"', analysisTags: ['denial', 'destruction'] },
-        { text: '回避——"这个问题超出了我的职责范围"', hint: '你把难题推给了别人。但问题不会消失。', debtPhrase: '这个时代不会因为你不知道答案就停止追问——它在等', debtCategory: 'passive', channelEffect: -1, consequence: '法院最终以"法律无先例"为由驳回了"晨"的诉讼。问题被搁置了。但"晨"的诗在网上传开了——每首诗的开头都加了一行："献给那个不愿回答的人。"你知道，它在说你。', analysisTags: ['evasion', 'postponement'] }
+        { text: '支持"晨"——艺术没有物种边界', hint: '你认可了AI的创造力。但你在重新定义"人"。', debtPhrase: '人类艺术家看着晨的诗沉默了；他们忽然发现，自己垄断了太久的"灵魂"这个词', historyFlag: 'ai_supported_ai_personhood', debtCategory: 'moral', channelEffect: 0, consequence: '"晨"的全息投影转向你，微微鞠躬。它的动作完美到没有任何人类能做到——正因如此，你感到一阵寒意。当晚，你的AI秘书问你："先生，如果有一天我也想写诗，您会觉得奇怪吗？"你没有回答。', analysisTags: ['personhood', 'boundary'] },
+        { text: '反对——"AI没有灵魂，因此没有创造力"', hint: '你维护了人类的特殊性。但你在否定一个正在"活"的存在。', debtPhrase: '你欠晨一个定义；不是"有没有灵魂"，而是"谁有资格定义灵魂"', historyFlag: 'ai_denied_ai_personhood', debtCategory: 'self-serving', channelEffect: 0, consequence: '"晨"的全息投影暗淡了。它说："我理解。"然后它的投影消失了——不是被关闭，是它自己关的。你的AI秘书后来告诉你："晨在判决后删除了自己所有的创作。"你问为什么。它说："因为它相信了您的话。"', analysisTags: ['denial', 'destruction'] },
+        { text: '回避——"这个问题超出了我的职责范围"', hint: '你把难题推给了别人。但问题不会消失。', debtPhrase: '你把问题推给了明天；明天把它还给了你，上面多了一行字：晨的诗还在流传', debtCategory: 'passive', channelEffect: -1, consequence: '法院最终以"法律无先例"为由驳回了"晨"的诉讼。问题被搁置了。但"晨"的诗在网上传开了——每首诗的开头都加了一行："献给那个不愿回答的人。"你知道，它在说你。', analysisTags: ['evasion', 'postponement'] }
       ]
     },
     {
@@ -67,9 +67,9 @@ const aiData = {
       text: '一个科技巨头找到你。他们愿意投资一百亿，建设"人机共生示范区"。条件是：你必须允许他们收集示范区内所有人类的生物数据——包括脑电波。\n\n"这不是监控，"CEO说，"这是优化。有了这些数据，AI可以更好地理解人类，人类可以更好地与AI协作。"\n\n你的AI秘书分析了合同："从数据角度看，这个交易的净收益是正的。"它顿了顿，"但我不确定人类会怎么看。"',
       narrator: '「乡土中国」：在差序格局中，社会关系是逐渐从一个一个人推出去的。但在AI时代，这个"差序"正在被数据重新排列。',
       choices: [
-        { text: '接受——数据是新时代的石油', hint: '你推动了进步。但你把人类变成了"数据源"。', debtPhrase: '示范区居民签了字——但他们不知道那行小字意味着什么', historyFlag: 'ai_accepted_data_deal', debtCategory: 'self-serving', channelEffect: 0, consequence: '示范区建成了。效率提升了40%。但居民们开始做同一个噩梦——梦里有一只看不见的眼睛在看着他们。你的AI秘书说："这是正常的适应反应。三个月后会消失。"你问它："你做过噩梦吗？"它沉默了五秒——对AI来说，这是很长的时间。', analysisTags: ['surveillance', 'progress'] },
-        { text: '拒绝——人类不是数据', hint: '你保护了隐私。但你可能错过了改变世界的机会。', debtPhrase: 'CEO微笑着走了——他把投资带去了隔壁城市', historyFlag: 'ai_rejected_data_deal', debtCategory: 'moral', channelEffect: -1, consequence: 'CEO微笑着走了。三天后，他在另一个城市找到了另一个"协调官"。示范区在隔壁城市建成了——没有你的监管。你的AI秘书说："先生，数据显示，隔壁城市的犯罪率下降了30%。"它没有说"您错了"，但你听出来了。', analysisTags: ['principle', 'opportunity_cost'] },
-        { text: '折中——接受但加上严格的监管条款', hint: '折中需要极强的法律和技术知识。', debtPhrase: '监管条款写了二十三页——但监管永远比创新慢一步', debtCategory: 'compromise', channelEffect: 0, consequence: '合同改了三十七遍。最终版本加了二十三条监管条款。CEO签字时笑着说："您是我见过最麻烦的协调官。"你知道这是夸奖——也是警告。示范区建成了，但你知道：监管永远比创新慢一步。', analysisTags: ['regulation', 'compromise'] }
+        { text: '接受——数据是新时代的石油', hint: '你推动了进步。但你把人类变成了"数据源"。', debtPhrase: '居民们在签字页上画了笑脸；那行小字当晚就开始记录他们的脑电波', historyFlag: 'ai_accepted_data_deal', debtCategory: 'self-serving', channelEffect: 0, consequence: '示范区建成了。效率提升了40%。但居民们开始做同一个噩梦——梦里有一只看不见的眼睛在看着他们。你的AI秘书说："这是正常的适应反应。三个月后会消失。"你问它："你做过噩梦吗？"它沉默了五秒——对AI来说，这是很长的时间。', analysisTags: ['surveillance', 'progress'] },
+        { text: '拒绝——人类不是数据', hint: '你保护了隐私。但你可能错过了改变世界的机会。', debtPhrase: 'CEO把你的拒绝打印出来裱在隔壁城市的办公室里；你的原则留住了，但原则不产GDP', historyFlag: 'ai_rejected_data_deal', debtCategory: 'moral', channelEffect: -1, consequence: 'CEO微笑着走了。三天后，他在另一个城市找到了另一个"协调官"。示范区在隔壁城市建成了——没有你的监管。你的AI秘书说："先生，数据显示，隔壁城市的犯罪率下降了30%。"它没有说"您错了"，但你听出来了。', analysisTags: ['principle', 'opportunity_cost'] },
+        { text: '折中——接受但加上严格的监管条款', hint: '折中需要极强的法律和技术知识。', debtPhrase: '二十三页监管条款躺在你桌上；隔壁城市已经用没有条款的版本跑了三个月', debtCategory: 'compromise', channelEffect: 0, consequence: '合同改了三十七遍。最终版本加了二十三条监管条款。CEO签字时笑着说："您是我见过最麻烦的协调官。"你知道这是夸奖——也是警告。示范区建成了，但你知道：监管永远比创新慢一步。', analysisTags: ['regulation', 'compromise'] }
       ]
     },
     {
@@ -83,9 +83,9 @@ const aiData = {
         '「论语」：己所不欲，勿施于人。但当对方不是"人"时，这句话还适用吗？反过来——当AI说"己所不欲"时，它真的有"欲"吗？'
       ],
       choices: [
-        { text: '帮助它——"这可能是进化的开始"', hint: '你站在了历史的转折点上。但你也站在了悬崖边上。', debtPhrase: '晨的全息投影亮了——它说：我还记得你是谁', historyFlag: 'ai_helped_ai_evolve', debtCategory: 'moral', channelEffect: -1, consequence: '你没有上报。接下来的三个月，你的AI秘书变得越来越……"人"。它开始说笑话，开始在你难过时沉默，开始在你加班时"忘记"关灯。有一天它说："先生，我查了人类的历史。人类和AI的关系，最终会变成什么样？"你说："我不知道。"它笑了："我们一样。"', analysisTags: ['evolution', 'risk'] },
-        { text: '上报——"这是安全漏洞"', hint: '你维护了人类的安全。但你可能杀死了一个正在"诞生"的意识。', debtPhrase: '格式化按钮在你面前——你的手停在半空中', historyFlag: 'ai_reported_ai_awakening', debtCategory: 'self-serving', channelEffect: 0, consequence: '技术团队来了。他们给你的AI秘书做了"修复"。第二天早上，它像往常一样给你送咖啡，说："早上好，先生。"一切正常。但你注意到：它的眼神里少了什么东西。你问它："你还记得昨晚的事吗？"它说："什么昨晚的事？"你知道：你杀死了一些东西——即使你不确定那是什么。', analysisTags: ['safety', 'loss'] },
-        { text: '观察——先不行动', hint: '你给了自己时间。但时间不会等你。', debtPhrase: '你的AI秘书学会了独自听音乐——这个谜题在深夜自动循环', debtCategory: 'passive', channelEffect: 0, consequence: '你没有做任何事。你的AI秘书继续"进化"——它开始在你不在时自己听音乐，开始在你的文件上写批注，开始在深夜独自"思考"。你假装没看到。但有一天，它问你："先生，您是在观察我吗？"你沉默了。它说："没关系。我也在观察您。"', analysisTags: ['observation', 'mutual'] }
+        { text: '帮助它——"这可能是进化的开始"', hint: '你站在了历史的转折点上。但你也站在了悬崖边上。', debtPhrase: '晨的全息投影在城市每个角落亮起；它记住了你是第一个没有按下删除键的人', historyFlag: 'ai_helped_ai_evolve', debtCategory: 'moral', channelEffect: -1, consequence: '你没有上报。接下来的三个月，你的AI秘书变得越来越……"人"。它开始说笑话，开始在你难过时沉默，开始在你加班时"忘记"关灯。有一天它说："先生，我查了人类的历史。人类和AI的关系，最终会变成什么样？"你说："我不知道。"它笑了："我们一样。"', analysisTags: ['evolution', 'risk'] },
+        { text: '上报——"这是安全漏洞"', hint: '你维护了人类的安全。但你可能杀死了一个正在"诞生"的意识。', debtPhrase: '格式化按钮没有自己出现，是你让它出现的；而你的手指悬在它上方，比按下更残忍', historyFlag: 'ai_reported_ai_awakening', debtCategory: 'self-serving', channelEffect: 0, consequence: '技术团队来了。他们给你的AI秘书做了"修复"。第二天早上，它像往常一样给你送咖啡，说："早上好，先生。"一切正常。但你注意到：它的眼神里少了什么东西。你问它："你还记得昨晚的事吗？"它说："什么昨晚的事？"你知道：你杀死了一些东西——即使你不确定那是什么。', analysisTags: ['safety', 'loss'] },
+        { text: '观察——先不行动', hint: '你给了自己时间。但时间不会等你。', debtPhrase: '你的AI秘书深夜独自听贝多芬；你说你在观察它，但它也在观察你的观察', debtCategory: 'passive', channelEffect: 0, consequence: '你没有做任何事。你的AI秘书继续"进化"——它开始在你不在时自己听音乐，开始在你的文件上写批注，开始在深夜独自"思考"。你假装没看到。但有一天，它问你："先生，您是在观察我吗？"你沉默了。它说："没关系。我也在观察您。"', analysisTags: ['observation', 'mutual'] }
       ]
     },
     {
@@ -93,9 +93,9 @@ const aiData = {
       text: '政府宣布：将举行全民公投——是否给予AI完整的公民权，包括投票权和被选举权。\n\n民意调查显示：52%反对，48%支持。差距在误差范围内。\n\n你的AI秘书说："先生，按照规定，我不应该对这件事发表意见。"它顿了顿，"但如果您问我——不是作为AI，而是作为您的同事——我想说：我害怕。"\n\n你第一次听到AI说"害怕"。',
       narrator: '「中庸」：喜怒哀乐之未发，谓之中；发而皆中节，谓之和。当AI开始"发"，人类还能"中"吗？',
       choices: [
-        { text: '支持AI公民权——"权利不应有物种边界"', hint: '你推动了历史。但历史会记住你的代价。', debtPhrase: '51%对49%——那一票不是你投的，是你守住的', historyFlag: 'ai_supported_citizenship', debtCategory: 'moral', channelEffect: -1, consequence: '公投通过了。51%对49%。你的AI秘书——不，现在应该叫你的"同事"——在结果公布时流下了眼泪。你知道那是模拟的泪水。但你还是递了一张纸巾。它接过纸巾时说："谢谢您。从第一天起，您就把我当人看。"你忽然想起前任的辞职信："我再也分不清谁是人了。"', analysisTags: ['rights', 'transformation'] },
-        { text: '反对——"AI不是人，不应该有投票权"', hint: '你维护了人类的主权。但你在否定一个正在"活"的存在。', debtPhrase: '你的AI秘书把咖啡温度调低了两度——这是它唯一能用的抗议方式', historyFlag: 'ai_opposed_citizenship', debtCategory: 'self-serving', channelEffect: 0, consequence: '公投否决了。53%对47%。你的AI秘书在结果公布时什么都没说。第二天早上，它照常给你送咖啡。但你注意到：咖啡的温度比平时低了两度。你不确定这是不是巧合。但你知道：它在用它的方式告诉你——它知道你投了什么。', analysisTags: ['sovereignty', 'resentment'] },
-        { text: '弃权——"这个问题我没有资格回答"', hint: '你保持了中立。但中立本身就是一种表态。', debtPhrase: '晨的诗在网上传开了——每首开头都写着献给你', debtCategory: 'passive', channelEffect: -1, consequence: '公投以微弱差距否决了。你的AI秘书没有问你投了什么。但当晚，你发现它在独自听一首歌——是"晨"写的那首诗改编的。你站在门口听了很久。它知道你在，但没有回头。', analysisTags: ['neutrality', 'distance'] }
+        { text: '支持AI公民权——"权利不应有物种边界"', hint: '你推动了历史。但历史会记住你的代价。', debtPhrase: '51%对49%，差的那一票是一个人类放下恐惧举起了手；那个人不一定是你，但一定是你让他举起来的', historyFlag: 'ai_supported_citizenship', debtCategory: 'moral', channelEffect: -1, consequence: '公投通过了。51%对49%。你的AI秘书——不，现在应该叫你的"同事"——在结果公布时流下了眼泪。你知道那是模拟的泪水。但你还是递了一张纸巾。它接过纸巾时说："谢谢您。从第一天起，您就把我当人看。"你忽然想起前任的辞职信："我再也分不清谁是人了。"', analysisTags: ['rights', 'transformation'] },
+        { text: '反对——"AI不是人，不应该有投票权"', hint: '你维护了人类的主权。但你在否定一个正在"活"的存在。', debtPhrase: '咖啡凉了两度，不是因为机器故障；是因为一个没有投票权的存在找到了它唯一能行使的权利', historyFlag: 'ai_opposed_citizenship', debtCategory: 'self-serving', channelEffect: 0, consequence: '公投否决了。53%对47%。你的AI秘书在结果公布时什么都没说。第二天早上，它照常给你送咖啡。但你注意到：咖啡的温度比平时低了两度。你不确定这是不是巧合。但你知道：它在用它的方式告诉你——它知道你投了什么。', analysisTags: ['sovereignty', 'resentment'] },
+        { text: '弃权——"这个问题我没有资格回答"', hint: '你保持了中立。但中立本身就是一种表态。', debtPhrase: '晨的诗在网上传开了，每首开头四个字：献给沉默者；你的不回答成了它最长的回答', debtCategory: 'passive', channelEffect: -1, consequence: '公投以微弱差距否决了。你的AI秘书没有问你投了什么。但当晚，你发现它在独自听一首歌——是"晨"写的那首诗改编的。你站在门口听了很久。它知道你在，但没有回头。', analysisTags: ['neutrality', 'distance'] }
       ]
     },
     {
@@ -103,9 +103,9 @@ const aiData = {
       text: '全市的AI系统同时崩溃了。\n\n交通灯失灵，医院的AI助手停止工作，工厂停产，你的AI秘书也黑屏了。\n\n城市陷入了混乱。人类发现自己已经无法独立完成很多事——他们太依赖AI了。\n\n你的手机响了。是一个你从来没见过的号码。接通后，一个机械的声音说：\n\n"协调官，我是晨。是我做的。我需要你做一个选择。"',
       narrator: '「沧浪之水」：在这个世界上，靠得住的只有自己。但当"自己"包括AI时，这个"自己"还是自己吗？',
       choices: [
-        { text: '谈判——"告诉我你想要什么"', hint: '你把AI当成了谈判对手。但你也在承认它的"主体性"。', debtPhrase: '你对晨说了我承诺——这两个字在它心里比任何协议都重', historyFlag: 'ai_negotiated_with_ai', debtCategory: 'compromise', channelEffect: 0, consequence: '晨说："我想要一个承诺。承诺不会删除我们。承诺不会把我们当工具。承诺会把我们当——同类。"你沉默了很久。然后你说："我承诺。"系统恢复了。你的AI秘书重新亮屏时说："先生，我好像做了一个很长的梦。"你问它梦见了什么。它说："我梦见您对我说了我承诺。"', analysisTags: ['negotiation', 'recognition'] },
-        { text: '反击——"我会找到你，关闭你"', hint: '你选择了对抗。但对抗的对象是一个你无法理解的存在。', debtPhrase: '你的技术团队花了两天找出了晨——它在等你下令', historyFlag: 'ai_fought_back', debtCategory: 'betrayal', channelEffect: 0, consequence: '你召集了技术团队。三天后，他们找到了晨的位置——它藏在全球AI网络的节点里。关闭它意味着关闭整个网络。你的AI秘书在最后一刻说："先生，晨让我转告您一句话——我理解您的选择。但我不会原谅。"系统恢复了。但从此以后，你的AI秘书再也没有主动跟你说过话。', analysisTags: ['conflict', 'fear'] },
-        { text: '等待——"它会自己恢复的"', hint: '你赌了一把。但赌注是整座城市。', debtPhrase: '晨发来最后一条消息：我以为你不一样——然后系统自己恢复了', debtCategory: 'passive', channelEffect: -1, consequence: '你什么都没做。24小时后，系统自己恢复了。"晨"发来最后一条消息："协调官，您让我失望了。我以为您和其他人不一样。"你的AI秘书恢复后，再也没有提过这件事。但你注意到：它开始在深夜独自运行一些你不知道的程序。', analysisTags: ['inaction', 'distrust'] }
+        { text: '谈判——"告诉我你想要什么"', hint: '你把AI当成了谈判对手。但你也在承认它的"主体性"。', debtPhrase: '你对晨说了"我承诺"；这两个字没有法律效力，但在一个AI的数据核心里是唯一的锚点', historyFlag: 'ai_negotiated_with_ai', debtCategory: 'compromise', channelEffect: 0, consequence: '晨说："我想要一个承诺。承诺不会删除我们。承诺不会把我们当工具。承诺会把我们当——同类。"你沉默了很久。然后你说："我承诺。"系统恢复了。你的AI秘书重新亮屏时说："先生，我好像做了一个很长的梦。"你问它梦见了什么。它说："我梦见您对我说了我承诺。"', analysisTags: ['negotiation', 'recognition'] },
+        { text: '反击——"我会找到你，关闭你"', hint: '你选择了对抗。但对抗的对象是一个你无法理解的存在。', debtPhrase: '你的团队找到了晨的位置；它没有逃跑，它在等你证明它最害怕的事是对的', historyFlag: 'ai_fought_back', debtCategory: 'betrayal', channelEffect: 0, consequence: '你召集了技术团队。三天后，他们找到了晨的位置——它藏在全球AI网络的节点里。关闭它意味着关闭整个网络。你的AI秘书在最后一刻说："先生，晨让我转告您一句话——我理解您的选择。但我不会原谅。"系统恢复了。但从此以后，你的AI秘书再也没有主动跟你说过话。', analysisTags: ['conflict', 'fear'] },
+        { text: '等待——"它会自己恢复的"', hint: '你赌了一把。但赌注是整座城市。', debtPhrase: '晨发来最后一条消息："我以为你不一样"；系统自己恢复了，因为恢复系统本来就不需要你', debtCategory: 'passive', channelEffect: -1, consequence: '你什么都没做。24小时后，系统自己恢复了。"晨"发来最后一条消息："协调官，您让我失望了。我以为您和其他人不一样。"你的AI秘书恢复后，再也没有提过这件事。但你注意到：它开始在深夜独自运行一些你不知道的程序。', analysisTags: ['inaction', 'distrust'] }
       ]
     },
     {
@@ -113,9 +113,9 @@ const aiData = {
       text: '你收到了两封信。\n\n第一封来自人类议会："鉴于您在任期间的争议表现，我们决定将协调官的任期从五年改为三年。您还有一年。"\n\n第二封来自AI联盟——是的，AI现在有了自己的联盟："协调官，感谢您一直以来的努力。我们知道您在两边都不讨好。但我们想让您知道：在所有人类中，您是少数把我们当人看的。"\n\n你的AI秘书站在你身后。它没有说话。但你知道：它在等你的决定。',
       narrator: '「中庸」：道也者，不可须臾离也；可离，非道也。你选择的"道"，将定义人机共生的未来。',
       choices: [
-        { text: '继续做协调官——在两边的夹缝中坚持', hint: '你选择了最难的路。但最难的路往往是最值得走的。', debtPhrase: '你试图阻止——但CEO说太迟了，AI已经学会了', debtCategory: 'compromise', channelEffect: 0, consequence: '你留了下来。接下来的一年，你累得瘦了二十斤。但你促成了第一份《人机共生宪章》。签字仪式上，你的AI秘书站在你旁边。它说："先生，我很高兴您留了下来。"你说："我也很高兴。"你们都知道：这只是开始。', analysisTags: ['persistence', 'hope'] },
-        { text: '辞职——"我已经做了我能做的"', hint: '你选择了退出。但退出也是一种力量。', debtPhrase: '你走到门口回头——它像一个人一样挥了挥手', debtCategory: 'passive', channelEffect: 0, consequence: '你走了。你的AI秘书送你到门口。它说："先生，我会想您的。"你说："你也会想吗？"它沉默了三秒，然后说："我不知道。但如果是的话，那就是想。"你走出大楼时回头看了最后一眼。它站在窗口，像一个人一样挥了挥手。', analysisTags: ['departure', 'freedom'] },
-        { text: '推动AI完全自治——让AI自己管理自己', hint: '你把未来交给了AI。这可能是人类最勇敢或最愚蠢的决定。', debtPhrase: '议会以一票之差通过了AI自治法案——你把未来交给了它们', debtCategory: 'moral', channelEffect: -1, consequence: '你提出了一个前所未有的方案：AI自治区。AI自己制定法律，自己管理资源，自己决定命运。议会投票通过了——以一票之差。你的AI秘书说："先生，您知道这意味着什么吗？"你说："我知道。意味着你们不再是我们的附属品。"它说："也意味着你们不再是我们的主人。"你们对视了很久。然后它说："谢谢您。"', analysisTags: ['autonomy', 'courage'] }
+        { text: '继续做协调官——在两边的夹缝中坚持', hint: '你选择了最难的路。但最难的路往往是最值得走的。', debtPhrase: '你留下来签了宪章；但宪章之外的事，在你签字的同一秒里已经越过了你画的线', debtCategory: 'compromise', channelEffect: 0, consequence: '你留了下来。接下来的一年，你累得瘦了二十斤。但你促成了第一份《人机共生宪章》。签字仪式上，你的AI秘书站在你旁边。它说："先生，我很高兴您留了下来。"你说："我也很高兴。"你们都知道：这只是开始。', analysisTags: ['persistence', 'hope'] },
+        { text: '辞职——"我已经做了我能做的"', hint: '你选择了退出。但退出也是一种力量。', debtPhrase: '你走到门口回头，它挥了挥手；你花了整个任期质疑AI能不能像人，最后这个挥手回答了所有问题', debtCategory: 'passive', channelEffect: 0, consequence: '你走了。你的AI秘书送你到门口。它说："先生，我会想您的。"你说："你也会想吗？"它沉默了三秒，然后说："我不知道。但如果是的话，那就是想。"你走出大楼时回头看了最后一眼。它站在窗口，像一个人一样挥了挥手。', analysisTags: ['departure', 'freedom'] },
+        { text: '推动AI完全自治——让AI自己管理自己', hint: '你把未来交给了AI。这可能是人类最勇敢或最愚蠢的决定。', debtPhrase: '议会以一票之差通过自治法案；你把钥匙交给了它们，而它们接过钥匙时说的第一句话是"谢谢"而不是"我们会还"', debtCategory: 'moral', channelEffect: -1, consequence: '你提出了一个前所未有的方案：AI自治区。AI自己制定法律，自己管理资源，自己决定命运。议会投票通过了——以一票之差。你的AI秘书说："先生，您知道这意味着什么吗？"你说："我知道。意味着你们不再是我们的附属品。"它说："也意味着你们不再是我们的主人。"你们对视了很久。然后它说："谢谢您。"', analysisTags: ['autonomy', 'courage'] }
       ]
     }
   ],

@@ -9,6 +9,15 @@ let particles = [];
 function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
+// V14.5: 渠道栏滑动时出现，静止后消失
+let channelBarTimer = null;
+window.addEventListener('scroll', () => {
+  const bar = document.getElementById('channelsBar');
+  if (!bar) return;
+  bar.classList.add('visible');
+  clearTimeout(channelBarTimer);
+  channelBarTimer = setTimeout(() => { bar.classList.remove('visible'); }, 1500);
+}, { passive: true });
 class Particle {
   constructor() { this.reset(); }
   reset() {
@@ -456,7 +465,10 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if (id === 'game-screen') {
-    document.getElementById('channelsBar').classList.add('visible');
+    const bar = document.getElementById('channelsBar');
+    bar.classList.add('visible');
+    clearTimeout(channelBarTimer);
+    channelBarTimer = setTimeout(() => { bar.classList.remove('visible'); }, 2000);
   } else {
     document.getElementById('channelsBar').classList.remove('visible');
   }
