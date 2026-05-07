@@ -20,7 +20,7 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 
 /* LANDING */
 #landing{align-items:center;justify-content:center;text-align:center;padding:2rem;}
-#landing h1{font-family:'Noto Serif SC',serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:900;letter-spacing:0.1em;margin-bottom:0.5rem;background:linear-gradient(135deg,var(--text),var(--accent-w));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeUp 1.2s ease-out;}
+#landing h1{font-family:'Noto Serif SC',serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:900;letter-spacing:0.1em;margin-bottom:0.5rem;position:relative;background:linear-gradient(135deg,var(--text),var(--accent-w));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeUp 1.2s ease-out;}
 #landing .subtitle{font-size:clamp(0.9rem,2vw,1.2rem);color:var(--muted);margin-bottom:2rem;animation:fadeUp 1.2s ease-out 0.3s both;transition:opacity 0.5s ease,transform 0.5s ease;line-height:1.8;min-height:5em;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 /* V14.3: 混沌入口 — 精巧标题附近链接 */
 .chaos-entry{display:flex;align-items:center;justify-content:center;gap:0.8rem;margin:0.5rem auto 2.5rem;padding:0.6rem 1.2rem;cursor:pointer;transition:all 0.6s cubic-bezier(0.23,1,0.32,1);animation:fadeUp 1.2s ease-out 0.6s both;max-width:340px;position:relative;border-radius:2rem;}
@@ -511,7 +511,26 @@ body.theme-chaos .gallery-card.unlocked:hover{box-shadow:0 12px 40px rgba(0,0,0,
 
 /* ====== V7: Landing 页增强 ====== */
 #landing::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,rgba(201,169,110,0.04),transparent 70%);pointer-events:none;}
-#landing h1{text-shadow:0 0 40px rgba(201,169,110,0.15);}
+#landing h1{text-shadow:0 0 40px rgba(201,169,110,0.15);transition:text-shadow 0.3s ease,transform 0.15s ease;}
+/* V14.6: 标题乱码动效 — 多层视觉（颜色偏移+抖动+发光脉冲） */
+#landing h1.glitching{
+  animation:glitchShake 0.15s steps(2) infinite,glitchGlow 0.8s ease-in-out infinite;
+  text-shadow:
+    2px 0 8px rgba(201,169,110,0.6),
+    -2px 0 8px rgba(155,142,196,0.5),
+    0 2px 12px rgba(78,205,196,0.4),
+    0 -2px 8px rgba(196,92,74,0.3),
+    0 0 60px rgba(201,169,110,0.35);
+}
+@keyframes glitchShake{
+  0%{transform:translateX(0);}25%{transform:translateX(-3px);}50%{transform:translateX(2px);}75%{transform:translateX(-1px);}100%{transform:translateX(0);}
+}
+@keyframes glitchGlow{
+  0%,100%{filter:brightness(1) drop-shadow(0 0 15px rgba(201,169,110,0.3));}
+  25%{filter:brightness(1.1) drop-shadow(0 0 30px rgba(155,142,196,0.4));}
+  50%{filter:brightness(1.05) drop-shadow(0 0 35px rgba(78,205,196,0.35));}
+  75%{filter:brightness(1.03) drop-shadow(0 0 25px rgba(196,92,74,0.25));}
+}
 .choice-card{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
 .choice-card::before{height:2px;background:linear-gradient(90deg,transparent,rgba(201,169,110,0.4),transparent);transform:scaleX(0);transition:transform 0.6s cubic-bezier(0.23,1,0.32,1);}
 .choice-card:hover::before{transform:scaleX(1);}
@@ -1139,6 +1158,86 @@ body.theme-chaos .theme-bg-layer{background:radial-gradient(ellipse at 50% 30%,r
 .chaos-card:hover{border-image:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4,#c9a96e) 1;animation:chaosCardShimmer 3s linear infinite;}
 .chaos-card .card-era{background:linear-gradient(135deg,#c9a96e,#b8a9d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .chaos-card h2{background:linear-gradient(135deg,#c9a96e,#b8a9d4,#4ecdc4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* ====== V14.6: 首页卡片闲置动画边框（通过card-atmosphere + box-shadow） ====== */
+.choice-card:not(.locked-road):not(:hover) .card-atmosphere{opacity:0.25;transition:opacity 0.6s ease;}
+.choice-card:not(.locked-road):hover .card-atmosphere{animation:none;opacity:1;}
+/* 白宫 — 金色缓慢呼吸 */
+.choice-card[data-scenario="whitehouse"]:not(.locked-road) .card-atmosphere{
+  background:radial-gradient(ellipse at 50% 50%,rgba(201,169,110,0.06),transparent 70%);
+  animation:whitehouseIdleAtmo 6s ease-in-out infinite;
+}
+@keyframes whitehouseIdleAtmo{
+  0%,100%{opacity:0.15;}
+  50%{opacity:0.35;}
+}
+/* 大明 — 水墨笔触左边暗纹 */
+.choice-card[data-scenario="ming"]:not(.locked-road) .card-atmosphere{
+  background:linear-gradient(90deg,rgba(139,69,19,0.06) 0%,transparent 30%),
+    radial-gradient(ellipse at 50% 50%,rgba(139,69,19,0.04),transparent 70%);
+  animation:mingIdleAtmo 7s ease-in-out infinite;
+}
+@keyframes mingIdleAtmo{
+  0%,100%{opacity:0.18;}
+  50%{opacity:0.38;}
+}
+/* AI — 电路扫描线微光 */
+.choice-card[data-scenario="ai"]:not(.locked-road) .card-atmosphere{
+  background:repeating-linear-gradient(0deg,transparent,transparent 14px,rgba(74,144,217,0.04) 14px,rgba(74,144,217,0.04) 15px),
+    radial-gradient(ellipse at 50% 50%,rgba(74,144,217,0.05),transparent 70%);
+  animation:aiIdleAtmo 4s linear infinite;
+}
+@keyframes aiIdleAtmo{
+  0%,100%{opacity:0.18;}
+  50%{opacity:0.4;}
+}
+/* 非洲 — 暖土渐变有机呼吸 */
+.choice-card[data-scenario="africa"]:not(.locked-road) .card-atmosphere{
+  background:radial-gradient(ellipse at 40% 60%,rgba(107,143,113,0.06),transparent 60%),
+    radial-gradient(ellipse at 70% 30%,rgba(201,160,108,0.04),transparent 60%);
+  animation:africaIdleAtmo 8s ease-in-out infinite;
+}
+@keyframes africaIdleAtmo{
+  0%,100%{opacity:0.15;}
+  33%{opacity:0.3;}
+  66%{opacity:0.22;}
+}
+/* 赛博 — 霓虹间歇脉冲 */
+.choice-card[data-scenario="cyber"]:not(.locked-road) .card-atmosphere{
+  background:radial-gradient(ellipse at 50% 50%,rgba(255,107,107,0.06),transparent 70%);
+  animation:cyberIdleAtmo 4s steps(1) infinite;
+}
+@keyframes cyberIdleAtmo{
+  0%,82%{opacity:0.12;}
+  85%,88%{opacity:0.35;}
+  92%,96%{opacity:0.12;}
+  97%,100%{opacity:0.3;}
+}
+/* 韩国 — 樱花淡粉轻颤 */
+.choice-card[data-scenario="korea"]:not(.locked-road) .card-atmosphere{
+  background:radial-gradient(ellipse at 50% 50%,rgba(155,142,196,0.05),transparent 60%),
+    radial-gradient(ellipse at 30% 70%,rgba(255,183,197,0.03),transparent 60%);
+  animation:koreaIdleAtmo 6s ease-in-out infinite;
+}
+@keyframes koreaIdleAtmo{
+  0%,100%{opacity:0.15;}
+  50%{opacity:0.32;}
+}
+/* 混沌 — 多彩渐变流转 */
+.choice-card[data-scenario="chaos"]:not(.locked-road) .card-atmosphere{
+  background:radial-gradient(ellipse at 50% 50%,rgba(184,169,212,0.08),transparent 60%),
+    radial-gradient(ellipse at 30% 70%,rgba(201,169,110,0.04),transparent 60%),
+    radial-gradient(ellipse at 70% 30%,rgba(78,205,196,0.04),transparent 60%);
+  animation:chaosIdleAtmo 8s ease-in-out infinite;
+}
+@keyframes chaosIdleAtmo{
+  0%,100%{opacity:0.18;filter:hue-rotate(0deg);}
+  25%{opacity:0.3;filter:hue-rotate(15deg);}
+  50%{opacity:0.35;filter:hue-rotate(-10deg);}
+  75%{opacity:0.25;filter:hue-rotate(5deg);}
+}
+/* 锁定卡片 — card-atmosphere 隐藏 */
+.locked-road .card-atmosphere{opacity:0 !important;animation:none !important;}
 
 /* ====== V14.3: 明亮主题道路 ====== */
 /* 韩国 — 温暖奶油调 */
