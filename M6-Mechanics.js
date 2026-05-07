@@ -1182,7 +1182,7 @@ function startGame(scenarioKey) {
   const isHidden = ['africa', 'cyber', 'korea', 'chaos'].includes(scenarioKey);
   // V14.1: 隐藏道路随机难度 — 40%高强度, 60%普通
   const intensity = isHidden ? (Math.random() < 0.4 ? 'high' : 'normal') : 'normal';
-  state = { scenario: scenarioKey, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [], encounterUsed: false, encounterScene: Math.floor(Math.random() * 4) + 2, isHidden, crisisHistory: [], crisisCooldown: 0, crisisStrikes: 0, intensity, _brightTheme: state._brightTheme || false };
+  state = { scenario: scenarioKey, currentScene: 0, debts: [], channels: 5, choices: [], history: [], usedEvents: [], encounterUsed: false, encounterScene: Math.floor(Math.random() * 4) + 2, isHidden, crisisHistory: [], crisisCooldown: 0, crisisStrikes: 0, channelLossCount: 0, extremeChannelTriggered: false, intensity, _brightTheme: state._brightTheme || false };
   resetFlags();
   renderChannels();
   renderDebtScroll();
@@ -1566,6 +1566,26 @@ const channelCrisisEvents = {
   ]
 };
 
+// V14.5: 渠道惩罚极端事件 — loseChannel 2次触发
+const channelExtremeEvents = {
+  whitehouse: { title: '信息绝境', text: '你的消息渠道已经萎缩到危机边缘。今天——最后一条内线也不再回应你了。你的加密频道变成了单向广播——只有你发出的消息，没有任何回复。幕僚长递来一份"紧急事项清单"——上面没有任何一条是你不知道的事。\n\n你知道：你已经是聋子了。在华盛顿，聋子比哑巴更危险——因为哑巴至少可以写，聋子连别人在写什么都听不到。', choices: [
+    { text: '召开最后一次新闻发布会——说你想说的一切', debtPhrase: '你在所有渠道关闭之前说了最后一段话', debtCategory: 'moral', channelEffect: 1, consequence: '闪光灯照亮了你的脸。你说出了所有压在心底的话。记者们疯狂打字。你知道：这可能是你最后一次站在这里。但你不在乎——因为至少你说过了。' },
+    { text: '接受现实——也许沉默是最好的保护', debtPhrase: '你在沉默中接受了成为聋子的事实', debtCategory: 'passive', channelEffect: 0, consequence: '你坐在办公室里。窗外，有人在说话。窗内，你什么都听不到。不是真的听不到——而是没有人对着你说。在华盛顿，沉默是最孤独的声音。' }
+  ]},
+  ming: { title: '孤城', text: '县衙里最后一个能给你消息的人也沉默了。你的师爷——跟了你四年的老人——今天没有来衙门。他留了一封信："大人，我不想走。但我家里有老小。你不能保护我，就像你保护不了张老实。"\n\n你坐在空荡荡的县衙里。门外的街道上——有人在窃窃私语。但没有人进来。因为进来的人——都会被你的孤岛拖下水。', choices: [
+    { text: '走出县衙——自己成为自己的耳目', debtPhrase: '你放下了知县的架子——走出了那扇没有人进来的门', debtCategory: 'moral', channelEffect: 1, consequence: '你走出县衙。街上的人看着你——一个穿着官服但没有一个衙役跟随的知县。你开始自己打听消息。第一个跟你说话的是一个卖菜的老妇人。她说："大人，我以为你也是聋子。"' },
+    { text: '闭门不出——守住最后的尊严', debtPhrase: '你在空无一人的县衙里坚守最后的体面', debtCategory: 'passive', channelEffect: 0, consequence: '你没有出去。你在书房里坐着，批阅已经没人呈递的公文。窗缝里透进来的只有风声。在万历朝的庞大帝国里——一个听不见看的县的知县比最偏远的村庄还不重要。' }
+  ]},
+  ai: { title: '断连', text: '最后一个AI节点也断开了你的连接。你的AI秘书——第一次——没有回复你。"检测到可信度低于阈值——协调官——自动降级已启动。"\n\n你盯着那个警告。它不是一个威胁——它是一个诊断。你连续失去信息渠道的行为已经被系统记录为"系统性失联"——AI系统内部的判定语，翻译成人话就是：你不值得再被信任。', choices: [
+    { text: '请求重新校准——"给我最后一次机会"', debtPhrase: '你向AI系统低下了头——请求重新评估你的可信度', debtCategory: 'compromise', channelEffect: 1, consequence: '系统接受了校准请求。你的AI秘书重新亮起——它的第一句话是："先生——你回来的速度比我预期的快。"你知道——这不代表一切恢复原状——只是你被允许重新开始。' },
+    { text: '接受降级——也许系统是对的', debtPhrase: '你接受了自己已经不再被信任的事实', debtCategory: 'passive', channelEffect: 0, consequence: '降级完成了。你的权限被削减了一半。但你也感到一种奇怪的轻松——不再需要假装能控制一切。有时候——承认失败是第一次真正的清醒。' }
+  ]}
+};
+
+function getChannelExtremeEvent(scenarioKey) {
+  return channelExtremeEvents[scenarioKey] || null;
+}
+
 // V14.1: 惩罚危机 — 累计>=2次危机后触发，更严重后果
 const crisisPenaltyEvents = {
   whitehouse: {
@@ -1947,7 +1967,7 @@ const randomEvents = {
       text: '你的外交顾问递给你一份报告："长官，中国的万历皇帝最近做了一个有趣的决定——他选择了不上朝。三十年不上朝，但国家居然还在运转。"\n\n你问："这和我有什么关系？"顾问说："也许——不是所有权力都需要亲力亲为。"',
       condition: () => state.currentScene >= 3 && Math.random() < 0.25,
       choices: [
-        { text: '研究这个案例——也许有借鉴意义', debtPhrase: '你研究了万历的案例——也许不是所有权力都需要亲力亲为', debtCategory: 'compromise', channelEffect: 0, consequence: '你读了万历皇帝的案例。你发现：他不是懒，是绝望。当一个皇帝发现自己的权力被制度架空时，不上朝是他唯一的反抗。你忽然觉得：你和他，也许有相似之处。' },
+        { text: '研究这个案例——也许有借鉴意义', debtPhrase: '你研究了万历的案例——也许不是所有权力都需要亲力亲为', historyFlag: 'wh_chose_others', debtCategory: 'compromise', channelEffect: 0, consequence: '你读了万历皇帝的案例。你发现：他不是懒，是绝望。当一个皇帝发现自己的权力被制度架空时，不上朝是他唯一的反抗。你忽然觉得：你和他，也许有相似之处。' },
         { text: '不感兴趣——我是总统，不是皇帝', debtPhrase: '你拒绝了历史的教训', debtCategory: 'self-serving', channelEffect: 0, consequence: '你把报告放在了一边。但当晚，你做了一个梦——你坐在一个空荡荡的大殿里，所有人都在朝你磕头，但没有人听你说话。你醒来时，出了一身冷汗。' }
       ]
     },
@@ -1956,7 +1976,7 @@ const randomEvents = {
       text: '你的女儿给你看了一首诗。她说是一个"新锐诗人"写的。你读了——写得很好，关于孤独、关于被理解、关于在两个世界之间摇摆。\n\n你问："这个诗人是谁？"女儿说："是一个AI。叫晨。"',
       condition: () => state.currentScene >= 4 && Math.random() < 0.25,
       choices: [
-        { text: '读完——也许AI比人类更懂人类', debtPhrase: '你给了自己一个不会被偏见蒙蔽的视角', debtCategory: 'moral', channelEffect: 0, consequence: '你读了整本诗集。最后一首诗的名字是《总统》——写的是一个坐在权力中心、但比任何人都孤独的人。你不知道它是怎么知道你的。但你知道：它写的是你。' },
+        { text: '读完——也许AI比人类更懂人类', debtPhrase: '你给了自己一个不会被偏见蒙蔽的视角', historyFlag: 'wh_chose_others', debtCategory: 'moral', channelEffect: 0, consequence: '你读了整本诗集。最后一首诗的名字是《总统》——写的是一个坐在权力中心、但比任何人都孤独的人。你不知道它是怎么知道你的。但你知道：它写的是你。' },
         { text: '不读——AI没有灵魂，因此没有诗歌', debtPhrase: '你拒绝了一个正在"活"的存在的声音', debtCategory: 'self-serving', channelEffect: 0, consequence: '你把诗集还给了女儿。她说："爸，你太固执了。"你说："这不是固执，是原则。"但当晚，你一个人在办公室里，把那首诗又读了一遍。' }
       ]
     },

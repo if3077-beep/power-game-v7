@@ -621,9 +621,15 @@ function renderChannels() {
 function loseChannel(reason) {
   if (state.channels <= 0) return;
   state.channels--;
+  state.channelLossCount = (state.channelLossCount || 0) + 1;
   renderChannels();
   playChannelLost();
   showResultFlash('消息渠道 -1');
+  // V14.5: 渠道惩罚2次触发极端事件
+  if (state.channelLossCount >= 2 && !state._pendingExtreme && !state.extremeChannelTriggered) {
+    state._pendingExtreme = getChannelExtremeEvent(state.scenario);
+    state.extremeChannelTriggered = true;
+  }
 }
 
 // --- 确认退出 ---
