@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>权力的游戏 v21.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600;700&family=LXGW+WenKai:wght@300;400;700&family=Ma+Shan+Zheng&family=Noto+Sans+KR:wght@300;400;700&family=Noto+Serif+SC:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="M1-CSS.css">
+</head>
+<body>
+
+<div id="appLoader" style="position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#1a1612,#0a0806);font-family:serif;transition:opacity 0.8s ease;">
+  <div style="text-align:center;position:relative;">
+    <div class="loader-ink"></div>
+    <div style="font-size:0.85rem;color:#8a7a5a;letter-spacing:0.25em;margin-top:2.5rem;opacity:0;animation:loaderTextIn 0.8s ease-out 0.6s forwards;">权 力 的 游 戏</div>
+  </div>
+</div>
+<style>
+@keyframes loaderInkSpread{
+  0%{transform:scale(0);opacity:0;filter:blur(0);}
+  30%{opacity:0.9;filter:blur(2px);}
+  70%{transform:scale(1);opacity:0.6;filter:blur(8px);}
+  100%{transform:scale(2.4);opacity:0;filter:blur(20px);}
+}
+@keyframes loaderTextIn{from{opacity:0;transform:translateY(8px);letter-spacing:0.4em;}to{opacity:0.85;transform:translateY(0);letter-spacing:0.25em;}}
+.loader-ink{
+  width:60px;height:60px;border-radius:50%;
+  background:radial-gradient(circle at 45% 45%,#c9a96e,rgba(201,169,110,0.4) 40%,transparent 70%);
+  margin:0 auto;
+  animation:loaderInkSpread 1.6s cubic-bezier(0.23,1,0.32,1) forwards;
+}
+</style>
+<canvas id="particles"></canvas>
+<div id="cursorGlow"></div>
+<div class="fate-river-wrap" id="fateRiverWrap"><canvas id="fateRiverCanvas"></canvas></div>
+<div class="transition-overlay" id="transitionOverlay"></div>
+<div class="transition-swipe" id="transitionSwipe"></div>
+<div class="vignette" id="vignette"></div>
+<div class="scanline-effect" id="scanline"></div>
+<div class="result-flash" id="resultFlash"></div>
+
+<div class="memorial-overlay" id="memorialOverlay">
+  <div>
+    <div class="memorial-scroll" id="memorialScroll">
+      <div class="ms-seal">印</div>
+      <div class="ms-text" id="memorialText"></div>
+      <div class="ms-signature" id="memorialSign"></div>
+      <div class="ms-date" id="memorialDate"></div>
+    </div>
+    <div class="memorial-btns">
+      <button class="memorial-btn" onclick="closeMemorial()">重新来过</button>
+      <button class="memorial-btn" onclick="saveMemorialAsImage()">保存为图片</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen active" id="landing">
+  <h1>权 力 的 游 戏</h1>
+  <p class="subtitle" id="landingSubtitle"></p>
+  <div class="divider-line"></div>
+  <!-- V19 R4.1: 前期留存钩子 — 试玩预览条(吸引非文字游戏群体) -->
+  <div class="trial-preview" id="trialPreview" role="region" aria-label="快速试玩预览">
+    <div class="trial-card" id="trialCard" role="button" tabindex="0" onclick="startTrialPlay()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startTrialPlay();}">
+      <div class="trial-card-glow"></div>
+      <div class="trial-scene-tag" id="trialSceneTag">凌晨 3:17 · 白宫</div>
+      <div class="trial-question" id="trialQuestion">总统来电："现在就签这份授权令。" 你签吗？</div>
+      <div class="trial-cta">
+        <span class="trial-cta-text">点击试玩</span>
+        <span class="trial-cta-arrow">→</span>
+      </div>
+    </div>
+  </div>
+  <div class="chaos-entry" id="chaosEntry" style="display:none;" onclick="renderPrelude('chaos')">
+    <span class="chaos-entry-line"></span>
+    <span class="chaos-entry-icon">🌀</span>
+    <span class="chaos-entry-label">时空之渊</span>
+    <span class="chaos-entry-line"></span>
+  </div>
+  <div class="choice-cards">
+    <div class="choice-card" data-scenario="ming" onclick="renderPrelude('ming')">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🏯</span>
+      <div class="card-era">Chapter I — 穿越</div>
+      <h2>大明官场</h2>
+      <p>穿越到万历年间，从七品知县做起。两本账、人情债、派系站队——<br><br>你能在这张网里活几集？</p>
+    </div>
+    <div class="choice-card" data-scenario="ai" id="aiCard" onclick="renderPrelude('ai')" style="display:none;">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🤖</span>
+      <div class="card-era">Chapter II — 未来</div>
+      <h2>共生时代</h2>
+      <p>2036年，AI有了公民身份。你是第一批协调官，办公桌上摆着三份文件，每份都关乎一个人，或一个AI。<br><br>前任留下的辞职信写着：我再也分不清谁是人了。</p>
+    </div>
+    <div class="choice-card" data-scenario="whitehouse" onclick="renderPrelude('whitehouse')">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🏛️</span>
+      <div class="card-era">Chapter III — 当代</div>
+      <h2>白宫的一天</h2>
+      <p>晨间简报，内阁争吵，深夜交易。八个场景，二十四小时。<br><br>每一个建议都在改写历史，也可能毁掉你自己。</p>
+    </div>
+    <div class="choice-card" data-scenario="xianjian" onclick="renderPrelude('xianjian')" style="background:linear-gradient(135deg,rgba(122,139,160,0.05),rgba(184,169,212,0.08));">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🗡️</span>
+      <div class="card-era">Chapter IV — 奇幻</div>
+      <h2>仙剑奇侠传三</h2>
+      <p>渝州城永安当的朝奉，今晨被一柄魔剑和一名红衣女子闯进了人生。<br><br>六界，三生三世，等你一剑一剑走完。</p>
+    </div>
+    <div class="choice-card hidden-road-card" data-scenario="africa" id="africaCard" onclick="renderPrelude('africa')" style="display:none;">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🌍</span>
+      <div class="card-era">Chapter V — 异星</div>
+      <h2>非洲之心</h2>
+      <p>新星球。你是双语使者，在人和兽群之间传话。<br><br>这里没有对错，只有：你愿不愿意替另一个物种开口。</p>
+    </div>
+    <div class="choice-card hidden-road-card" data-scenario="cyber" id="cyberCard" onclick="renderPrelude('cyber')" style="display:none;">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">⚡</span>
+      <div class="card-era">Chapter VI — 赛博</div>
+      <h2>3077</h2>
+      <p>新东京下城区，黑市摊位上卖着非法改装芯片。公司、领主、革命者，谁都在盯着你这块摊。<br><br>能活到天亮，就是今天的胜利。</p>
+    </div>
+    <div class="choice-card hidden-road-card" data-scenario="korea" id="koreaCard" onclick="renderPrelude('korea')" style="display:none;">
+      <div class="card-atmosphere"></div>
+      <span class="card-icon">🌸</span>
+      <div class="card-era">Chapter VII — 日常</div>
+      <h2>日常投影</h2>
+      <p>首尔，25岁，大学毕业两年，换了三份工作，目前在咖啡店打工。<br><br>没有主线任务，只有今天怎么过。</p>
+    </div>
+    </div>
+  </div>
+  <div class="landing-footer">
+    <button onclick="showGallery()">结局图鉴</button>
+    <button id="variantSwitchBtn" class="variant-switch-btn" onclick="cycleLandingVariant()" title="切换主页样式">幻 景</button>
+  </div>
+</div>
+
+<div class="screen" id="intro-screen"></div>
+
+<div class="screen" id="game-screen">
+  <div class="game-header">
+    <span class="scenario-label" id="scenarioLabel"></span>
+    <span class="level-indicator" id="levelIndicator"></span>
+    <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">♪</button>
+    <button class="back-btn" onclick="confirmExit()">返回首页</button>
+  </div>
+  <div class="channels-bar" id="channelsBar">
+    <span class="ch-label">消息渠道</span>
+    <div class="ch-dots" id="channelDots"></div>
+    <span class="ch-status" id="channelStatus"></span>
+    <div class="ch-ring" id="channelRing" aria-label="消息渠道" role="img">
+      <svg viewBox="0 0 36 36" class="ch-ring-svg">
+        <circle class="ch-ring-bg" cx="18" cy="18" r="15.5"/>
+        <circle class="ch-ring-fg" id="channelRingFg" cx="18" cy="18" r="15.5"/>
+      </svg>
+      <span class="ch-ring-val" id="channelRingVal">5</span>
+    </div>
+  </div>
+  <!-- V20.4: 文字加速按钮 — 常驻右上角,切换 ×1.0/×1.5 -->
+  <button id="speedToggle" class="speed-toggle" onclick="toggleTextSpeed()" title="切换文字速度" aria-label="切换文字速度">⚡×1.0</button>
+  <div class="game-layout">
+    <div class="game-main">
+      <div class="scene-container" id="sceneContainer"></div>
+      <div class="game-mobile-debt" id="mobileDebt">
+        <div class="debt-panel-title">人情债记录本</div>
+        <div class="debt-scroll-mobile" id="mobileDebtScroll"></div>
+      </div>
+    </div>
+  </div>
+  <div class="debt-panel" id="debtPanel">
+    <div class="debt-panel-title">人情债记录本</div>
+    <div class="debt-scroll" id="debtScroll"></div>
+    <div class="debt-count" id="debtCount"></div>
+    <div class="radar-section" id="radarSection">
+      <div class="radar-title">— 你的画像 —</div>
+      <div class="radar-canvas-wrap"><canvas id="radarCanvas"></canvas></div>
+    </div>
+  </div>
+  <div class="debt-panel-toggle" id="debtToggle" onclick="toggleDebtPanel()">卷 轴</div>
+</div>
+
+<!-- V14: 前置动画屏幕 -->
+<div class="screen" id="prelude-screen"></div>
+
+<!-- V18: 校准屏幕 -->
+<div class="screen" id="calibrate-screen"></div>
+
+<div class="screen" id="ending-screen"></div>
+<div class="screen" id="gallery-screen"></div>
+
+<script>
+// V19 R4.4: ModuleGuard — 模块加载守护,检测关键模块加载失败并显示兜底 UI
+(function(){
+  var MODULES = [
+    { name: 'analysis-engine.js', check: function(){ return typeof AnalysisEngine !== 'undefined'; } },
+    { name: 'evo-lite.js', check: function(){ return typeof EvoLite !== 'undefined'; } },
+    { name: 'calibrate.js', check: function(){ return typeof CalibratePanel !== 'undefined'; } },
+    { name: 'M4-Data-WhiteHouse.js', check: function(){ return typeof whitehouseData !== 'undefined'; } },
+    { name: 'M5-Data-Ming.js', check: function(){ return typeof mingData !== 'undefined'; } },
+    { name: 'M3-Engine.js', check: function(){ return typeof AudioEngine !== 'undefined'; } },
+    { name: 'M6-Mechanics.js', check: function(){ return typeof scenarios !== 'undefined'; } },
+  ];
+  window.__moduleCheck = function(){
+    var failed = [];
+    for (var i = 0; i < MODULES.length; i++) {
+      try { if (!MODULES[i].check()) failed.push(MODULES[i].name); }
+      catch(e){ failed.push(MODULES[i].name); }
+    }
+    return failed;
+  };
+  window.__showModuleError = function(failed){
+    var box = document.createElement('div');
+    box.id = 'moduleGuardError';
+    box.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(10,8,6,0.96);padding:2rem;font-family:serif;';
+    box.innerHTML = '<div style="max-width:520px;text-align:center;color:#c9a96e;">'
+      + '<div style="font-size:1.4rem;margin-bottom:1rem;letter-spacing:0.1em;">模块加载失败</div>'
+      + '<div style="font-size:0.85rem;color:#8a7a5a;line-height:1.8;margin-bottom:1.5rem;">以下文件未正确加载,游戏可能无法正常运行:</div>'
+      + '<div style="font-size:0.78rem;color:#b45c4a;font-family:monospace;line-height:1.9;margin-bottom:1.5rem;">' + failed.join('<br>') + '</div>'
+      + '<div style="font-size:0.8rem;color:#8a7a5a;margin-bottom:1rem;">建议刷新页面重试;若问题持续,请检查网络或部署配置。</div>'
+      + '<button onclick="location.reload()" style="padding:0.6rem 2rem;background:rgba(201,169,110,0.1);border:1px solid #c9a96e;color:#c9a96e;font-family:serif;cursor:pointer;letter-spacing:0.1em;">刷新页面</button>'
+      + '</div>';
+    document.body.appendChild(box);
+  };
+  // DOMContentLoaded 后检查
+  function _dismissLoader(){
+    var loader = document.getElementById('appLoader');
+    if (!loader || loader.dataset.dismissed) return;
+    loader.dataset.dismissed = '1';
+    loader.style.opacity = '0';
+    setTimeout(function(){ if(loader.parentNode) loader.parentNode.removeChild(loader); }, 800);
+  }
+  function _runGuard(){
+    var failed = window.__moduleCheck();
+    _dismissLoader();
+    if (failed.length > 0) {
+      console.error('[ModuleGuard] 加载失败的模块:', failed);
+      window.__showModuleError(failed);
+    } else {
+      console.log('[ModuleGuard] 所有关键模块加载完成 ✓');
+    }
+  }
+  window.addEventListener('DOMContentLoaded', function(){ setTimeout(_runGuard, 1100); });
+  // V21: loader 兜底 — 无论 DOMContentLoaded 是否延迟,load 事件后 1.2s 或硬上限 3.5s 强制淡出
+  // 避免 defer 脚本加载慢时开幕卡死
+  window.addEventListener('load', function(){ setTimeout(_dismissLoader, 1200); });
+  setTimeout(_dismissLoader, 3500);
+})();
+</script>
+<script defer src="analysis-engine.js"></script>
+<script defer src="analysis-renderer.js"></script>
+<script defer src="evo-lite.js"></script>
+<script defer src="calibrate.js"></script>
+<script defer src="M4-Data-WhiteHouse.js"></script>
+<script defer src="M5-Data-Ming.js"></script>
+<script defer src="M7-Data-AI.js"></script>
+<script defer src="M8-Data-Africa.js"></script>
+<script defer src="M9-Data-3077.js"></script>
+<script defer src="M10-Data-Korea.js"></script>
+<script defer src="M11-Data-Chaos.js"></script>
+<script defer src="M12-Data-Xianjian.js"></script>
+<script defer src="M13-ChannelTint.js"></script>
+<script defer src="M3-Engine.js"></script>
+<script defer src="M6-Mechanics.js"></script>
+<script>
+// V20 R6: 首页 UI 三套变体随机切换 — 现有(grid)20% / 抓娃娃机40% / 命运星图40%
+// V21: ui-list→ui-claw(抓娃娃机) / ui-cinematic→ui-astro(命运星图)
+(function pickLandingVariant() {
+  const landing = document.getElementById('landing');
+  if (!landing) return;
+  // V20 R9 (P2-1): 优先读取 sessionStorage 缓存的变体,避免刷新跳变;仅无缓存时随机
+  let variant = null;
+  try { variant = sessionStorage.getItem('landingVariant'); } catch(e){}
+  // 兼容旧缓存值
+  if (variant === 'ui-list') variant = 'ui-claw';
+  if (variant === 'ui-cinematic') variant = 'ui-astro';
+  if (variant !== 'ui-grid' && variant !== 'ui-claw' && variant !== 'ui-astro') {
+    const r = Math.random();
+    variant = 'ui-grid'; // 默认 20%
+    if (r >= 0.20 && r < 0.60) variant = 'ui-claw';
+    else if (r >= 0.60) variant = 'ui-astro';
+    try { sessionStorage.setItem('landingVariant', variant); } catch(e){}
+  } else {
+    try { sessionStorage.setItem('landingVariant', variant); } catch(e){}
+  }
+  landing.classList.add(variant);
+  // 抓娃娃机/命运星图:渲染逻辑在下方脚本块定义,延迟到 DOMContentLoaded 后初始化
+  function _initVariant(){
+    if (variant === 'ui-claw' && typeof initClawMachine === 'function') initClawMachine();
+    if (variant === 'ui-astro' && typeof initAstroMap === 'function') initAstroMap();
+    // V21: 设置切换按钮标签
+    var btn = document.getElementById('variantSwitchBtn');
+    if (btn) {
+      var labels = { 'ui-grid': '殿 堂', 'ui-claw': '抓 取', 'ui-astro': '星 图' };
+      btn.textContent = labels[variant] || '幻 景';
+    }
+    // V21: 音频已启用时启动对应 BGM
+    try {
+      if (typeof audioEngine !== 'undefined' && audioEngine.enabled) {
+        var bgmMap = { 'ui-grid': 'landing_grid', 'ui-claw': 'landing_claw', 'ui-astro': 'landing_astro' };
+        if (typeof startBGM === 'function') startBGM(bgmMap[variant]);
+      }
+    } catch(e){}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _initVariant);
+  } else { _initVariant(); }
+})();
+</script>
+
+<script>
+// V21: 抓娃娃机(ui-claw)与命运星图(ui-astro)变体渲染逻辑
+// 每个道路 .choice-card 的 data-scenario 与 onclick(renderPrelude) 保持不变,只改外观与定位
+(function(){
+  // 道路配色(球/星点光晕)
+  var SCENE_COLOR = {
+    ming:      { c:'rgba(201,169,110,0.32)', g:'rgba(201,169,110,0.55)' },
+    whitehouse:{ c:'rgba(122,139,160,0.32)', g:'rgba(160,180,210,0.55)' },
+    xianjian:  { c:'rgba(184,169,212,0.32)', g:'rgba(184,169,212,0.6)' },
+    ai:        { c:'rgba(78,205,196,0.3)',   g:'rgba(78,205,196,0.55)' },
+    africa:    { c:'rgba(180,140,90,0.32)',  g:'rgba(200,160,100,0.55)' },
+    cyber:     { c:'rgba(196,92,180,0.32)',  g:'rgba(220,120,200,0.55)' },
+    korea:     { c:'rgba(200,150,170,0.3)',  g:'rgba(220,170,190,0.55)' },
+  };
+
+  // 抓娃娃机:7 个预设散落位置(百分比,相对机台),按可见球顺序分配
+  var CLAW_SLOTS = [
+    { x: 18, y: 62 }, { x: 38, y: 72 }, { x: 58, y: 64 }, { x: 78, y: 74 },
+    { x: 28, y: 80 }, { x: 50, y: 82 }, { x: 70, y: 80 },
+  ];
+
+  window.initClawMachine = function(){
+    var landing = document.getElementById('landing');
+    if (!landing) return;
+    var cards = landing.querySelectorAll('.choice-card');
+    if (!cards.length) return;
+
+    // 构建机台
+    var machine = document.createElement('div');
+    machine.className = 'claw-machine';
+    machine.innerHTML =
+      '<div class="claw-marquee">◆ 命 运 抓 取 机 ◆</div>' +
+      '<div class="claw-rail"></div>' +
+      '<div class="claw-arm" id="clawArm"><div class="claw-cord" id="clawCord"></div><div class="claw-grip"></div></div>' +
+      '<div class="claw-coin-slot"></div>' +
+      '<div class="claw-hint">点球进入 · 或按抓取随机选</div>' +
+      '<button class="claw-button" id="clawButton">抓 取</button>';
+
+    // 插入到 choice-cards 之前
+    var cardsWrap = landing.querySelector('.choice-cards');
+    cardsWrap.parentNode.insertBefore(machine, cardsWrap);
+
+    // 球散落:把每个 choice-card 移入机台,加 .claw-ball,分配位置
+    var visible = [];
+    cards.forEach(function(card, i){
+      var sc = card.getAttribute('data-scenario') || 'ming';
+      var col = SCENE_COLOR[sc] || SCENE_COLOR.ming;
+      card.classList.add('claw-ball');
+      card.style.setProperty('--ball-color', col.c);
+      card.style.setProperty('--ball-glow', col.g);
+      machine.appendChild(card);
+      visible.push(card);
+    });
+    // 分配散落位置(可见球数可能 < 7)
+    visible.forEach(function(card, i){
+      var slot = CLAW_SLOTS[i % CLAW_SLOTS.length];
+      card.style.left = slot.x + '%';
+      card.style.top = slot.y + '%';
+      // 错峰漂浮
+      card.style.animationDelay = (i * 0.4) + 's';
+    });
+
+    // 抓取动画 + 音效
+    var arm = machine.querySelector('#clawArm');
+    var cord = machine.querySelector('#clawCord');
+    var btn = machine.querySelector('#clawButton');
+    var busy = false;
+    btn.addEventListener('click', function(){
+      if (busy) return;
+      busy = true; btn.disabled = true;
+      // 投币音
+      try { audioEngine.play('coin'); } catch(e){}
+      // 随机选一个可见球作为目标
+      var target = visible[Math.floor(Math.random() * visible.length)];
+      var targetLeft = parseFloat(target.style.left);
+      var targetTop = parseFloat(target.style.top);
+      // 1. 爪子移到目标正上方(轨道 top 16px, 用 left% 定位)
+      arm.style.left = targetLeft + '%';
+      target.classList.add('claw-target');
+      // 2. 下降(cord 高度 = 球 top - 轨道)+ 机械音
+      var dropH = (targetTop / 100) * 480 - 16;
+      setTimeout(function(){ cord.style.height = dropH + 'px'; arm.classList.add('claw-grabbing'); try { audioEngine.play('claw_drop'); } catch(e){} }, 650);
+      // 3. 闭合 + 咬合音
+      setTimeout(function(){ arm.classList.remove('claw-grabbing'); arm.classList.add('claw-closed'); try { audioEngine.play('claw_grab'); } catch(e){} }, 1250);
+      // 4. 升起 + 成功庆祝音 + 粒子
+      setTimeout(function(){
+        cord.style.height = '0px';
+        try { audioEngine.play('claw_win'); } catch(e){}
+        // 庆祝粒子
+        spawnClawConfetti(machine, target);
+      }, 1700);
+      // 5. 提示该球高亮,2.9s 后触发进入
+      setTimeout(function(){
+        arm.classList.remove('claw-closed');
+        target.classList.remove('claw-target');
+        // 模拟点击进入该道路
+        target.click();
+        busy = false; btn.disabled = false;
+      }, 2900);
+    });
+  };
+
+  // 抓取成功庆祝粒子
+  function spawnClawConfetti(machine, target){
+    var rect = target.getBoundingClientRect();
+    var mx = machine.getBoundingClientRect();
+    var cx = rect.left + rect.width/2 - mx.left;
+    var cy = rect.top + rect.height/2 - mx.top;
+    var colors = ['#c9a96e', '#b8a9d4', '#7a8ba0', '#4ecdc4', '#ffb7c5'];
+    for (var k = 0; k < 14; k++) {
+      var p = document.createElement('div');
+      p.className = 'claw-confetti';
+      p.style.left = cx + 'px';
+      p.style.top = cy + 'px';
+      p.style.background = colors[k % colors.length];
+      var ang = (Math.PI * 2 * k) / 14;
+      var dist = 50 + Math.random() * 50;
+      p.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+      p.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+      machine.appendChild(p);
+      (function(el){ setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 900); })(p);
+    }
+  }
+
+  // 命运星图:星点散落 + SVG 连线
+  var ASTRO_SLOTS = [
+    { x: 22, y: 28 }, { x: 50, y: 18 }, { x: 78, y: 30 },
+    { x: 30, y: 58 }, { x: 62, y: 64 }, { x: 44, y: 82 }, { x: 80, y: 78 },
+  ];
+
+  window.initAstroMap = function(){
+    var landing = document.getElementById('landing');
+    if (!landing) return;
+    var cards = landing.querySelectorAll('.choice-card');
+    if (!cards.length) return;
+
+    var map = document.createElement('div');
+    map.className = 'astro-map';
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'astro-lines');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    map.appendChild(svg);
+    map.insertAdjacentHTML('beforeend', '<div class="astro-caption">— 命运的星图,由你点亮 —</div>');
+    // V21: 流星
+    map.insertAdjacentHTML('beforeend', '<div class="astro-meteor"></div>');
+
+    var cardsWrap = landing.querySelector('.choice-cards');
+    cardsWrap.parentNode.insertBefore(map, cardsWrap);
+
+    var nodes = []; // {card, x, y}
+    cards.forEach(function(card, i){
+      var sc = card.getAttribute('data-scenario') || 'ming';
+      var slot = ASTRO_SLOTS[i % ASTRO_SLOTS.length];
+      card.classList.add('astro-star');
+      card.style.left = slot.x + '%';
+      card.style.top = slot.y + '%';
+
+      // 重组内部结构:图标→astro-star-core,标题→astro-name,era→astro-era
+      var icon = card.querySelector('.card-icon');
+      var h2 = card.querySelector('h2');
+      var era = card.querySelector('.card-era');
+      var core = document.createElement('div');
+      core.className = 'astro-star-core';
+      if (icon) core.appendChild(icon);
+      var name = document.createElement('div');
+      name.className = 'astro-name';
+      if (h2) name.textContent = h2.textContent;
+      var eraEl = document.createElement('div');
+      eraEl.className = 'astro-era';
+      if (era) eraEl.textContent = era.textContent;
+      // 清空原内容,填入新结构
+      while (card.firstChild) card.removeChild(card.firstChild);
+      card.appendChild(core); card.appendChild(name); card.appendChild(eraEl);
+
+      map.appendChild(card);
+      nodes.push({ card: card, x: slot.x, y: slot.y });
+    });
+
+    // 连线:按顺序连成星座(环形 + 部分交叉)
+    var lineEls = [];
+    var pairs = [
+      [0,1],[1,2],[2,5],[5,4],[4,3],[3,0],[0,5],[1,4]
+    ];
+    pairs.forEach(function(p, idx){
+      if (!nodes[p[0]] || !nodes[p[1]]) return;
+      var line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', nodes[p[0]].x); line.setAttribute('y1', nodes[p[0]].y);
+      line.setAttribute('x2', nodes[p[1]].x); line.setAttribute('y2', nodes[p[1]].y);
+      // V21: 逐条画出动画 — 初始隐藏,delay 逐条显现
+      line.classList.add('astro-line-draw');
+      line.style.animationDelay = (0.6 + idx * 0.18) + 's';
+      svg.appendChild(line);
+      lineEls.push({ el: line, a: p[0], b: p[1] });
+      // 连线绘制音
+      (function(d){ setTimeout(function(){ try { audioEngine.play('line_draw'); } catch(e){} }, (0.6 + d * 0.18) * 1000); })(idx);
+    });
+
+    // hover 星点:点亮星点 + 相连线 + 涟漪 + 音效
+    nodes.forEach(function(node, idx){
+      node.card.addEventListener('mouseenter', function(){
+        lineEls.forEach(function(l){
+          if (l.a === idx || l.b === idx) l.el.classList.add('lit');
+        });
+        try { audioEngine.play('star_ping'); } catch(e){}
+        spawnAstroRipple(map, node.card);
+      });
+      node.card.addEventListener('mouseleave', function(){
+        lineEls.forEach(function(l){ l.el.classList.remove('lit'); });
+      });
+    });
+  };
+
+  // 星点涟漪
+  function spawnAstroRipple(map, star){
+    var r = document.createElement('div');
+    r.className = 'astro-ripple';
+    r.style.left = star.style.left;
+    r.style.top = star.style.top;
+    map.appendChild(r);
+    setTimeout(function(){ if (r.parentNode) r.parentNode.removeChild(r); }, 900);
+  }
+
+  // V21: 变体自主切换 — 循环 grid→claw→astro→grid
+  var VARIANT_ORDER = ['ui-grid', 'ui-claw', 'ui-astro'];
+  var VARIANT_LABEL = { 'ui-grid': '殿 堂', 'ui-claw': '抓 取', 'ui-astro': '星 图' };
+  window.cycleLandingVariant = function(){
+    var landing = document.getElementById('landing');
+    if (!landing) return;
+    var current = null;
+    VARIANT_ORDER.forEach(function(v){ if (landing.classList.contains(v)) current = v; });
+    if (!current) current = 'ui-grid';
+    var next = VARIANT_ORDER[(VARIANT_ORDER.indexOf(current) + 1) % VARIANT_ORDER.length];
+
+    // 清理 claw/astro 注入的机台/星图 DOM,并把卡片还原回 .choice-cards
+    landing.querySelectorAll('.claw-machine, .astro-map').forEach(function(el){ el.remove(); });
+    var cardsWrap = landing.querySelector('.choice-cards');
+    // 还原所有卡片:移除 claw-ball/astro-star class 与内联定位,把卡片放回 choice-cards
+    var cards = landing.querySelectorAll('.choice-card');
+    cards.forEach(function(card){
+      card.classList.remove('claw-ball', 'astro-star');
+      card.removeAttribute('style');
+      // astro 变体重组过内部结构,需还原原始结构(图标/era/h2/p)
+      if (!card.querySelector('h2')) {
+        // 极少数情况:astro 重组后 h2 被移除,从 astro-name 还原
+        var nameEl = card.querySelector('.astro-name');
+        var coreEl = card.querySelector('.astro-star-core');
+        var eraEl = card.querySelector('.astro-era');
+        if (nameEl || coreEl || eraEl) {
+          var icon = coreEl ? coreEl.querySelector('.card-icon') : null;
+          var eraText = eraEl ? eraEl.textContent : '';
+          var nameText = nameEl ? nameEl.textContent : '';
+          while (card.firstChild) card.removeChild(card.firstChild);
+          var atm = document.createElement('div'); atm.className = 'card-atmosphere'; card.appendChild(atm);
+          if (icon) card.appendChild(icon);
+          if (eraText) { var e = document.createElement('div'); e.className = 'card-era'; e.textContent = eraText; card.appendChild(e); }
+          if (nameText) { var h = document.createElement('h2'); h.textContent = nameText; card.appendChild(h); }
+        }
+      }
+      if (cardsWrap) cardsWrap.appendChild(card);
+    });
+
+    // 切换 class
+    VARIANT_ORDER.forEach(function(v){ landing.classList.remove(v); });
+    landing.classList.add(next);
+    try { sessionStorage.setItem('landingVariant', next); } catch(e){}
+
+    // 重新初始化对应变体
+    if (next === 'ui-claw' && typeof initClawMachine === 'function') initClawMachine();
+    if (next === 'ui-astro' && typeof initAstroMap === 'function') initAstroMap();
+
+    // 切换音效 + BGM
+    try { audioEngine.play('variant_switch'); } catch(e){}
+    try {
+      if (audioEngine && audioEngine.enabled) {
+        var bgmMap = { 'ui-grid': 'landing_grid', 'ui-claw': 'landing_claw', 'ui-astro': 'landing_astro' };
+        startBGM(bgmMap[next]);
+      }
+    } catch(e){}
+
+    // 更新按钮标签
+    var btn = document.getElementById('variantSwitchBtn');
+    if (btn) btn.textContent = VARIANT_LABEL[next] || '幻 景';
+  };
+})();
+</script>
+
+<script>
+// V20 R12: 以下逻辑依赖外部模块(safeStorage / showScreen / initLanding 等)。
+// 外部脚本已加 defer, 会在 DCL 前按序执行完毕, 故此处包进 DOMContentLoaded 以保证依赖就绪。
+window.addEventListener('DOMContentLoaded', function() {
+// V14.3: 隐藏道路解锁状态 — 未解锁时显示锁定占位卡
+(function() {
+  var lockInfo = {
+    ai: { hint: '🔒 通关「白宫」或「大明」后解锁', fullText: '共生时代 · 2036年。<span class="locked-unlock">解锁后：在人类与AI之间搭建信任的桥梁。</span>' },
+    africa: { hint: '🔒 在白宫道路做出「非我族类」的选择', fullText: '非洲之心 · 异星大地。<span class="locked-unlock">解锁后：成为人类与兽群的双语使者。</span>' },
+    cyber: { hint: '🔒 在AI道路见证一次「觉醒」事件', fullText: '3077 · 赛博贫民窟。<span class="locked-unlock">解锁后：在机器的世界里守住人性。</span>' },
+    korea: { hint: '🔒 在大明道路按私账融入官场', fullText: '日常投影 · 首尔。<span class="locked-unlock">解锁后：在咖啡店的日常里，过自己的人生。</span>' },
+  };
+  Object.entries(lockInfo).forEach(function(entry) {
+    var road = entry[0], info = entry[1];
+    var card = document.getElementById(road + 'Card');
+    if (!card) return;
+    var unlocked = false;
+    try { unlocked = !!(typeof safeStorage !== 'undefined' ? safeStorage.get(road + 'Unlocked') : localStorage.getItem(road + 'Unlocked')); } catch(e) {}
+    if (unlocked) {
+      card.style.display = '';
+      var lockEl = card.querySelector('.card-lock');
+      if (lockEl) lockEl.remove();
+    } else if (road === 'ai' && Math.random() < 0.3) {
+      card.style.display = '';
+      try { if (typeof safeStorage !== 'undefined') safeStorage.set('aiUnlocked', 'true'); else localStorage.setItem('aiUnlocked', 'true'); } catch(e) {}
+      var lockEl2 = card.querySelector('.card-lock');
+      if (lockEl2) lockEl2.remove();
+    } else {
+      card.style.display = '';
+      card.classList.add('locked-road');
+      card.setAttribute('onclick', '');
+      card.style.cursor = 'default';
+      var p = card.querySelector('p');
+      if (p) p.innerHTML = info.fullText;
+      var era = card.querySelector('.card-era');
+      if (era) era.textContent = info.hint;
+    }
+  });
+  var chaosEntry = document.getElementById('chaosEntry');
+  if (chaosEntry) {
+    var chaosUnlocked = false;
+    try { chaosUnlocked = !!(typeof safeStorage !== 'undefined' ? safeStorage.get('chaosUnlocked') : localStorage.getItem('chaosUnlocked')); } catch(e) {}
+    if (chaosUnlocked) chaosEntry.style.display = '';
+  }
+})();
+// V18 Round 3: 可访问性增强 — 键盘导航 + ARIA + 焦点管理
+(function initA11y() {
+  // 1. 全局键盘委托: Enter/Space 激活 [role="button"] 与带 onclick 的非表单元素
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const el = e.target;
+    if (!el || el.tagName === 'BUTTON' || el.tagName === 'A' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+    if (el.getAttribute('role') === 'button' || el.hasAttribute('onclick') || el.classList.contains('choice-card') || el.classList.contains('chaos-entry')) {
+      e.preventDefault();
+      el.click();
+    }
+  }, { passive: false });
+  // 2. 为可点击 div 增强 role + tabindex (landing 卡牌 / 混沌入口 / 道路卡)
+  function enhanceClickable() {
+    const sel = '.choice-card, .chaos-entry, [onclick]:not(button):not(a):not(input):not(textarea)';
+    document.querySelectorAll(sel).forEach(el => {
+      if (!el.getAttribute('role')) el.setAttribute('role', 'button');
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+    });
+  }
+  enhanceClickable();
+  // 3. canvas aria-label — 让屏幕阅读器理解装饰性画布
+  const canvasLabels = {
+    'particles': '装饰性粒子背景动画',
+    'fateRiverCanvas': '命运河流 — 你的每次选择在此留下流光',
+    'radarCanvas': '五维选择画像雷达图',
+    'endingRadarCanvas': '本局选择画像雷达快照'
+  };
+  Object.entries(canvasLabels).forEach(([id, label]) => {
+    const c = document.getElementById(id);
+    if (c) { c.setAttribute('role', 'img'); c.setAttribute('aria-label', label); }
+  });
+  // 4. 焦点管理 — 屏幕切换时把焦点移到新屏幕 (键盘用户受益)
+  const _origShowScreen = window.showScreen;
+  if (typeof _origShowScreen === 'function') {
+    window.showScreen = function(id) {
+      const ret = _origShowScreen.apply(this, arguments);
+      const screen = document.getElementById(id);
+      if (screen) {
+        // 让屏幕可获焦但不破坏布局
+        screen.setAttribute('tabindex', '-1');
+        // 延迟聚焦, 等待转场动画渲染
+        setTimeout(() => { try { screen.focus({ preventScroll: true }); } catch(e){} }, 120);
+      }
+      return ret;
+    };
+  }
+  // 5. 跳过链接 (动态注入) — 键盘用户跳到主内容
+  const skip = document.createElement('a');
+  skip.href = '#landing';
+  skip.className = 'skip-link';
+  skip.textContent = '跳到主内容';
+  document.body.insertBefore(skip, document.body.firstChild);
+  // DOM 变更后重新增强 (动态生成的卡牌) — 防抖避免频繁扫描
+  let _enhanceTimer = null;
+  const obs = new MutationObserver(() => {
+    if (_enhanceTimer) return;
+    _enhanceTimer = setTimeout(() => { enhanceClickable(); _enhanceTimer = null; }, 200);
+  });
+  obs.observe(document.body, { childList: true, subtree: true });
+})();
+// V14.6: 首页初始化 — 卡牌hover音效+标题乱码
+initLanding();
+}); // end DOMContentLoaded
+</script>
+</body>
+</html>
